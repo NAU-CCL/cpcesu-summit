@@ -1,0 +1,110 @@
+$regularFont: 'Open Sans', "Lucida Sans", sans-serif;
+$statementFont: 'Raleway', sans-serif;
+$bodyFont: 'Roboto', sans-serif;
+
+$mobileRes: 320px;
+$tabletRes: 600px;
+$miniDesktopRes: 960px;
+$wideDesktopRes: 1200px;
+$widrDesktopRes: 1600px;
+$futuDesktopRes: 2100px;
+
+$colorDarkGrey:  #696969;
+$colorLightGrey: #adadad;
+$colorHighlight: #33b5e5;
+$colorNAUDarkBlue: #003d7d;
+$colorNAUBlue: #005daa;
+$colorNAUGold: #ffd200;
+$colorNAUOrange: #F6B332;
+$colorACMLightBlue: #00afec;
+
+@mixin minResolutionCheck($pixels){
+  @media only screen and (min-width: $pixels){
+    @content;
+  }
+}
+
+@mixin maxResolutionCheck($pixels){
+  @media only screen and (max-width: $pixels){
+    @content;
+  }
+}
+
+
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|Raleway|Roboto');
+
+// @import 'Style/reset';
+//
+// // Partials
+// @import 'Style/Partials/footer';
+// @import 'Style/Partials/header';
+// @import 'Style/Partials/pageNav';
+
+// Assets
+
+// Views
+
+/* Defaults and Mobile Phones Width */
+[class*="col-"] {
+  /* Take up the whole width since the device width is not wide enough */
+  width: 100%;
+  float: left;
+  padding: 15px;
+  transition: width .4s ease, height .4s ease;
+  >.row >[class*="col-"]{
+    padding: 0;
+  }
+}
+
+/* Tablet Screen Space */
+@include minResolutionCheck($tabletRes){
+  .col-m-1  {width:  8.33%;}
+  .col-m-2  {width: 16.66%;}
+  .col-m-3  {width: 25.00%;}
+  .col-m-4  {width: 33.33%;}
+  .col-m-5  {width: 41.66%;}
+  .col-m-6  {width: 50.00%;}
+  .col-m-7  {width: 58.33%;}
+  .col-m-8  {width: 66.66%;}
+  .col-m-9  {width: 75.00%;}
+  .col-m-10 {width: 83.33%;}
+  .col-m-11 {width: 91.66%;}
+  .col-m-12 {width: 100.0%;}
+}
+
+/* Desktop Screen Space */
+@include minResolutionCheck($miniDesktopRes){
+  .col-t-1  {width:  8.33%;}
+  .col-t-2  {width: 16.66%;}
+  .col-t-3  {width: 25.00%;}
+  .col-t-4  {width: 33.33%;}
+  .col-t-5  {width: 41.66%;}
+  .col-t-6  {width: 50.00%;}
+  .col-t-7  {width: 58.33%;}
+  .col-t-8  {width: 66.66%;}
+  .col-t-9  {width: 75.00%;}
+  .col-t-10 {width: 83.33%;}
+  .col-t-11 {width: 91.66%;}
+  .col-t-12 {width: 100.0%;}
+}
+
+/* Large Desktop Screen Space */
+@include minResolutionCheck($wideDesktopRes){
+  .col-1  {width:  8.33%;}
+  .col-2  {width: 16.66%;}
+  .col-3  {width: 25.00%;}
+  .col-4  {width: 33.33%;}
+  .col-5  {width: 41.66%;}
+  .col-6  {width: 50.00%;}
+  .col-7  {width: 58.33%;}
+  .col-8  {width: 66.66%;}
+  .col-9  {width: 75.00%;}
+  .col-10 {width: 83.33%;}
+  .col-11 {width: 91.66%;}
+  .col-12 {width: 100.0%;}
+}
+
+/* Ultra Desktop Screen Space */
+@include minResolutionCheck($futuDesktopRes){
+
+}
