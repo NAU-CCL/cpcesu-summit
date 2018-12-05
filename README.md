@@ -78,7 +78,7 @@ Next, after extracting your private key (id_rsa), you will need to move it into 
 ```
 cd ~/Desktop
 ls # To confirm you extracted it here
-mv id_rsa ~/.ssh/
+mv <KEY FILE NAME-id> ~/.ssh/id_rsa
 ```
 
 Lastly, you will need to change the file permissions for your private key. Otherwise, the BitBucket server/Git will reject your SSH requests. Go to Terminal and type the following:

@@ -51,6 +51,8 @@ DJANGO_APPS = [
 PROJ_APPS = [
     # Project-based apps
     # Order alphabetically
+    'summit.libs',
+    'summit.apps.core'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + PROJ_APPS
@@ -89,7 +91,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(PROJ_DIR, 'templates')],
+        'DIRS': [os.path.join(PROJ_DIR, 'libs/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

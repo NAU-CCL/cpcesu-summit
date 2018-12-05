@@ -21,6 +21,7 @@ from django.views.generic import RedirectView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url('', include('summit.apps.core.urls')),
 ]
 
 if settings.DEBUG:
