@@ -52,6 +52,7 @@ PROJ_APPS = [
     # Project-based apps
     # Order alphabetically
     'summit.libs',
+    'summit.libs.auth',
     'summit.apps.core'
 ]
 
@@ -156,9 +157,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 APPEND_SLASH = True
 LOGIN_URL = '/login/'
 LOGOUT_REDIRECT_URL = 'index'
+AUTH_USER_MODEL = 'summit.libs.auth.User'
 
 
 # TO DO STILL
 # EMAIL_BACKEND =
 # ADMINS
-# AUTH_USER_MODEL
