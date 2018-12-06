@@ -221,7 +221,21 @@ Now you have set the virtual environment and checked out your branch. Be sure to
 
 Whenever the development version of the software has a new change, you should pull it in and deal with the conflicts right away. Otherwise, you will be in conflict hell when you try to do your pull request.
 
+*For PyCharm:*
+
 To update your branch, click on the Git dropdown at the bottom righthand corner of the screen and click on "origin/develop" and "Merge Into Current".
+
+*For Terminal:*
+
+To update your branch, get to the root directory of the project with the "_repo" folder. Next, follow these steps:
+
+```
+git status
+git checkout develop
+git pull
+git checkout <YOUR_BRANCH_NAME>
+git merge develop
+```
 
 #### Init project (if not done prior)
 
@@ -294,3 +308,38 @@ http://192.168.0.2:8000
 
 This will only work on a local network unless you have done all of the necessary things to make it WAN accessible such as port forwarding.
 
+To exit Gunicorn, just press Control-C.
+
+
+#### Committing changes to remote Git repo
+
+*For PyCharm:*
+
+Now that you have made changes, go ahead and open the "Version Control" tab at the bottom of the window to view the change list. If you are ready to review and commit, click on the green check mark in the VC window.
+
+A window will pop up. Go ahead and review your changes and make the commit message. Lastly, hit the triangle inside of the "Commit" button and click "Commit And Push".
+
+_Reminder:_ Please make sure to pull in the most recent version of the "develop" branch when possible so that you do not get conflicts.
+
+*For Terminal:*
+
+Make sure you are in the same folder as "_repo". Next, do the following series of commands:
+
+```
+git status # to view changes
+git branch # Chaeck the branch name
+
+# You can commit one file/folder at a time or chain all of them together. Using '.' works to grab everything too!
+git add <FILE/FOLDER NAME> [<ANOTHER FILE> <ANOTHER FOLDER> ...]
+# Examples
+git add file.py folder/folder/file.py another_file.css
+git add .
+
+
+# Create a commit message via the template
+git commit
+# OR use the in-line arg
+git commit -m "Commit message here"
+
+git push
+```
