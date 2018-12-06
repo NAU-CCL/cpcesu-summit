@@ -51,6 +51,9 @@ DJANGO_APPS = [
 PROJ_APPS = [
     # Project-based apps
     # Order alphabetically
+    'summit.libs',
+    'summit.libs.auth',
+    'summit.apps.core'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + PROJ_APPS
@@ -89,7 +92,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(PROJ_DIR, 'templates')],
+        'DIRS': [os.path.join(PROJ_DIR, 'libs/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -154,9 +157,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 APPEND_SLASH = True
 LOGIN_URL = '/login/'
 LOGOUT_REDIRECT_URL = 'index'
+AUTH_USER_MODEL = 'summit.libs.auth.User'
 
 
 # TO DO STILL
 # EMAIL_BACKEND =
 # ADMINS
-# AUTH_USER_MODEL

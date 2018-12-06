@@ -1,0 +1,22 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    {% include 'partials/head.html'%}
+  </head>
+  <body>
+    <header>
+      {% include 'partials/header.html' %}
+    </header>
+    <div class="container">
+        <div id="primary">
+            {% block primary %}{{ primary|safe|default:"No content"}}{% endblock %}
+        </div>
+    </div>
+
+    <footer>
+      {% include 'partials/footer.html' %}
+    </footer>
+  </body>
+</html>

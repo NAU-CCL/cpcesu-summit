@@ -151,9 +151,10 @@ tags
 ### VirtualEnv ###
 # Virtualenv
 # http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
-/venv-dev
-/venv-production
+venv-dev/
+venv-production/
 
 # End of https://www.gitignore.io/api/vim,python,django,virtualenv
 
 collected_static/
+.idea/
