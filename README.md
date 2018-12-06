@@ -1,6 +1,6 @@
-# Env-Testing
+# Summit Project Management System - Repository
 
-Just a pre-prototype repo to figure out repo init and environment testing.
+The official repository of Summit - the Colorado Plateau Cooperative Ecosystem Studies Unit project management system.
 
 ## Dev instructions
 
@@ -12,28 +12,28 @@ There should be the following programs already installed when you start the VM:
 
 System programs:
 
-* Git 2.17.2
+* Git 2.19.2
     * git --version
-* Java 8 - Oracle JDK/JRE
+* Java 8 - Oracle JDK/JRE 1.8.0_191
     * java -version
 * PostgreSQL 8.4.22
     * psql --version
-* Python 3.6.6
+* Python 3.6.7
     * python3 --version
 * Python pip3 9.0.1
     * pip3 --version
-* Virtual Environment 15.1.0
+* Virtual Environment 16.1.0
     * virtualenv --version
 
 Dev tools:
 
-* Atom 1.32.2
+* Atom 1.26.1
     * atom --version
 * pg Admin III - 1.22.2
     * pgadmin3 --version
 * Prepros 6.2.3
     * Open Prepros -> 'i' icon at the bottom-left corner -> "About Prepros"
-* PyCharm Community Edition 2018.2.5
+* PyCharm 2018.3.1 (Community Edition), built Dec 4, 2018
     * Open Pycharm -> Help -> About
 
 If any of these are missing, please report it to Joseph Remy - remy@nau.edu .
@@ -78,12 +78,13 @@ Next, after extracting your private key (id_rsa), you will need to move it into 
 ```
 cd ~/Desktop
 ls # To confirm you extracted it here
-mv <KEY FILE NAME-id> ~/.ssh/id_rsa
+mv id_rsa ~/.ssh/
 ```
 
 Lastly, you will need to change the file permissions for your private key. Otherwise, the BitBucket server/Git will reject your SSH requests. Go to Terminal and type the following:
 
 ```
+sudo chown summit ~/.ssh/id_rsa
 sudo chmod 0700 ~/.ssh/id_rsa
 ```
 
@@ -134,29 +135,8 @@ virtualenv ./venv-dev -p /usr/bin/python3
 Call the following commands to start the virtual environment and update it with our current packages:
 
 ```
-source ./venv-dev/bin/activate
+source venv-dev/bin/activate
 pip install -r requirements/local.txt
-```
-
-
-#### Prepros compiler
-
-If you are working on any of the static files, namely the CSS and JavaScript, you will need to run Prepros to compile them. This helps allow us the break down our files in a tiered way that helps with the overall organization and maintainability of the project.
-
-To run Prepros, just click on the icon in the dock. Next, if the project doesn't appear, open the repo in Files and navigate to the project root (where manage.py exists). Next, open "summit" and you should see the "static" folder. Drag and drop this into Prepros and it'll automatically start running and compiling files.
-
-*Presently, this system is only for global CSS and JS. We are working on a way to do per-app that overrides the global files.*
-
-
-#### Init project (if not done prior)
-
-Do these commands to init the project after cloning. Not required if done previously.
-
-```
-python manage.py migrate
-python manage.py createsuperuser
-python manage.py collectstatic
-python manage.py runserver
 ```
 
 
@@ -192,7 +172,99 @@ pip install -r requirements/production.txt
 ```
 
 
+#### Deactivating environment
+
+When you are done, just deactivate the environment.
+
+```
+deactivate
+```
+
+
+
+### Final Dev Setup
+
+#### Setting up PyCharm
+
+If you don't want to use Terminal and Atom, you can also do everything in PyCharm, which is already installed.
+
+First, open the project directory with PyCharm (the directory containing _repo and the like). Now, go to File --> Settings. Look for "Project: summit" in the left nav bar and open "Project Interpreter."
+
+On the Project Interpreter screen, click on the gear icon on the right of the Project Interpreter dropdown and click "Add..." (might say "Python 3.6"). Here we will add our two virtual environments.
+
+Click on the "Existing environment" option if it isn't already selected. Now, in the dropdown to the right of the radio button, select the "venv-dev" environment and hit "Ok" at the bottom of the window.
+
+Now you've added the dev environment to PyCharm. If you want to rename it so that it makes more sense, go back to the "Project Interpreter" window and click on the gear icon then "Show All..." Then select the dev environment (might be called "Python 3.6 (summit)" and click on the edit button / pencil icon. Here you can rename the environment. I called it "Summit Dev."
+
+Repeat this process with the production environment.
+
+Now we have the virtual environments added to PyCharm, we need to set the right branch then initialize the project.
+
+
+#### Git Setup
+
+First, if you haven't already, you will need to create the branch [using the Jira board](http://jira.remy.network) if you are making an entirely new feature. Make sure to branch off of "develop" and select the "Feature" branch type. Lastly, name the branch after the issue ID i.e. "EC-123" or a shorthand version of the issue such as "site-auth-app". You can also create branches [using the Bitbucket server](http://bitbucket.remy.network:7990/plugins/servlet/create-branch).
+
+After creating your branch, go back to PyCharm and go to the bottom righthand corner of the window, which should said "Git: master" and click on the up and down arrows. You should see your branch name under "Remote Branches."
+
+*If the branch appears in the list:*
+
+Click on your branch name then click "Checkout As..." and hit "Ok."
+
+*If the branch does NOT appear:*
+
+Click on "Checkout Tag or Revision" and use the autocomplete to find your branch. Be sure to add the appropriate prefix. For example, the above branch would be at "origin/feature/EC-123."
+
+Now you have set the virtual environment and checked out your branch. Be sure to check these every time you start PyCharm.
+
+#### Update branch with Dev
+
+Whenever the development version of the software has a new change, you should pull it in and deal with the conflicts right away. Otherwise, you will be in conflict hell when you try to do your pull request.
+
+To update your branch, click on the Git dropdown at the bottom righthand corner of the screen and click on "origin/develop" and "Merge Into Current".
+
+#### Init project (if not done prior)
+
+Now, either using Terminal and activating the dev virtual environment OR opening PyCharm and going to "Terminal" at the bottom lefthand corner of the screen, call the following commands. 
+
+Not required if done previously.
+
+```
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py collectstatic
+```
+
+#### Setting up the Prepros compiler
+
+If you are working on any of the static files, namely the CSS and JavaScript in summit/static, you will need to run Prepros to compile them. This helps allow us the break down our files in a tiered way that helps with the overall organization and maintainability of the project.
+
+To run Prepros, just click on the icon in the dock. Next, if the project doesn't appear, open the repo in Files and navigate to the project root (where manage.py exists). Next, open "summit" and you should see the "static" folder. Drag and drop this into Prepros and it'll automatically start running and compiling files.
+
+*Presently, this system is only for global CSS and JS. We are working on a way to do per-app that overrides the global files.*
+
+If you have changed the global static, added/removed/modified any app's static, etc., call the following command before using the production version of the application:
+```
+python manage.py collectstatic
+``` 
+
+#### Running the server in development mode
+
+First, make sure that you are using the venv-dev environment. In Terminal (both Ubuntu shell and PyCharm), it will have the prefix "(venv-dev)".
+
+Next, call this command to run the server.
+
+```
+python manage.py runserver
+```
+
+To exit, do Control-C.
+
+
 #### Running the server in production mode
+
+
+First, make sure you change the virtual environment to "venv-production". See the Terminal (Ubunutu shell or PyCharm) prefix "(venv-production)".
 
 Now that are you are ready to try out the production side, go ahead and run Gunicorn, the WSGI software for this Django project:
 
@@ -220,12 +292,5 @@ Next, grab that IP address and put it into the browser and add ":8000" to the en
 http://192.168.0.2:8000
 ```
 
-This will only work on a local network unless you have done all of the necessary things to make it WAN accessible.
+This will only work on a local network unless you have done all of the necessary things to make it WAN accessible such as port forwarding.
 
-#### Deactivating environment
-
-When you are done, just deactivate the environment.
-
-```
-deactivate
-```
