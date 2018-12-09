@@ -6,7 +6,7 @@ from .models import Project
 
 
 def index(request):
-    template_name = 'apps/projects/index.html'
+    template_name = 'apps/projects/project_index.html'
 
     context = {
         'pageId': 'core.home',

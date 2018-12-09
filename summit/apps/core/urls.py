@@ -6,5 +6,5 @@ from . import views
 app_name = 'summit.apps.core'
 urlpatterns = [
     url(r'^$', views.index),
-    url(r'^projects/', include('plugins.urls')),
+    url(r'^projects/', include('summit.apps.projects.urls')),
 ]

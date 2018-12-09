@@ -9,6 +9,7 @@ _help_text = {
     'short_summary': 'This field is displayed in "overviews" such as the projects listing page.',
     'description': 'A free-form description of the plugin.',
     'sensitive': 'True if data is sensitive and cannot be revealed to the public.',
+    'budget': 'Any amount that pertains to the overall budget of a project.',
     'student_support': 'A project may have support from students.',
 }
 
@@ -28,4 +29,4 @@ class Project(models.Model):
     description = models.TextField(help_text=_help_text['description'])
     sensitive = models.BooleanField(default=False, help_text=_help_text['sensitive'])
     budget = models.CharField(max_length=100, help_text=_help_text['budget'])
-    student_support = models.CharField(choices=STUDENT_SUPPORT, default=NA)
+    student_support = models.CharField(max_length=1, choices=STUDENT_SUPPORT, default=NA)
