@@ -1,3 +1,4 @@
+# TODO: Are we gonna use slugs? Yes. (Demo will just be inc.) Public facing.
 from django.conf.urls import url
 
 from . import views
