@@ -2,10 +2,10 @@
 # TODO: Set up urls to point to the projects views.py
 from django.conf.urls import url
 
-from . import views
+from .views import ProjectListView
 
 app_name = 'summit.apps.projects'
 urlpatterns = [
-    url(r'^$', views.index),
+    url(r'^$', ProjectListView.as_view(), name='project-list'),
     # url(r'^index', views.index),
 ]

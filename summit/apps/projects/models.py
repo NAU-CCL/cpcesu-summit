@@ -15,18 +15,21 @@ _help_text = {
 
 
 class Project(models.Model):
-    GRADUATE = 'GRAD'
-    PRE_GRAD = 'PREGRAD'
-    NA = 'NONE'
+    GRADUATE = 'G'
+    PRE_GRAD = 'PG'
+    NONE = 'NA'
     STUDENT_SUPPORT = (
         (GRADUATE, 'Graduate'),
         (PRE_GRAD, 'Pre-Graduate'),
-        (NA, 'None')
+        (NONE, 'None')
     )
 
     project_title = models.CharField(max_length=500, unique=True, help_text=_help_text['project_title'])
     short_summary = models.CharField(max_length=500, help_text=_help_text['short_summary'])
     description = models.TextField(help_text=_help_text['description'])
     sensitive = models.BooleanField(default=False, help_text=_help_text['sensitive'])
-    budget = models.CharField(max_length=100, help_text=_help_text['budget'])
-    student_support = models.CharField(max_length=1, choices=STUDENT_SUPPORT, default=NA)
+    budget = models.DecimalField(max_digits=12, decimal_places=2, help_text=_help_text['budget'])
+    student_support = models.CharField(max_length=2, choices=STUDENT_SUPPORT, default=NONE)
+
+    def __str__(self):
+        return self.project_title

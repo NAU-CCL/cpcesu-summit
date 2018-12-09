@@ -13,22 +13,22 @@ def index(request):
         'pagetitle': 'Projects',
         'title': 'Project page',
         'bannerTemplate': 'fullscreen',
-        # 'header': {
-        #     'background': 'apps/core/imgs/default.jpg',
-        #     'heading1': 'See how I got here and my future ambitions',
-        #     'heading2': 'Looking towards the horizon',
-        #     'buttons':[
-        #         # {
-        #         # 'name': 'My History',
-        #         # 'link': '/#button1'
-        #         # },
-        #         # {
-        #         # 'name': 'Download Resume',
-        #         # 'link': 'https://www.google.com/',
-        #         # 'target': '_blank'
-        #         # }
-        #     ]
-        # },
+        'header': {
+            'background': 'apps/core/imgs/default.jpg',
+            'heading1': 'See how I got here and my future ambitions',
+            'heading2': 'Looking towards the horizon',
+            'buttons':[
+                # {
+                # 'name': 'My History',
+                # 'link': '/#button1'
+                # },
+                # {
+                # 'name': 'Download Resume',
+                # 'link': 'https://www.google.com/',
+                # 'target': '_blank'
+                # }
+            ]
+        },
         'cssFiles': [
             'css/apps/core/testing.css'
         ]
@@ -39,9 +39,11 @@ def index(request):
 # TODO: Refactor ProjectList() to display projects in order by title.
 
 
-class ProjectList(ListView):
+class ProjectListView(ListView):
+    template_name = 'apps/projects/project_index.html'
+    model = Project
     context_object_name = 'projects'
 
-    def get_queryset(self):
-        return Project.objects.order_by('project_title')
-
+    def get_context_data(self, **kwargs):
+        ctx = super(ProjectListView, self).get_context_data(**kwargs)
+        return ctx
