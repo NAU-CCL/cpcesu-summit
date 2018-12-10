@@ -1,21 +1,114 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, Permission, Group
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 
 import uuid
 
 from summit.libs.models import AuditModel
 
+class UserManager(BaseUserManager):
+    """
+    Called when the User model needs to be created
+    """
+    def create_user(self, email, first_name, last_name, password=None):
+        """
+        Creates a normal user
+        :param email: email address
+        :param first_name: first name
+        :param last_name: last name
+        :param password: the user's password. Default: None
+        :return: user model
+        """
+
+        if not email:
+            raise ValueError("User must have an email address.")
+
+        user = self.model(
+            email = self.normalize_email(email),
+            first_name = first_name,
+            last_name = last_name,
+        )
+
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, first_name, last_name, password):
+        """
+        Used to create a super user (CPCESU admin) with all permissions
+        :param email: email address
+        :param first_name: first name
+        :param last_name: last name
+        :param password: password for user. Default: None
+        :return: user model
+        """
+
+        user = self.create_user(email=email, first_name=first_name, last_name=last_name, password=password)
+        user.is_admin = True
+        user.save(using=self._db)
+        return user
+
 
 class User(AbstractUser, AuditModel):
-    full_name = models.CharField(max_length=300)
-    first_name = None
-    last_name = None
+    """
+    User model
+    """
+    email = models.EmailField(
+        verbose_name='email_address',
+        max_length=255,
+        unique=True
+    )
+
     external_id = models.CharField(max_length=100, unique=True, blank=False, default=uuid.uuid4)
 
-
-class Permission(Permission):
     is_active = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=False)
 
+    objects = UserManager()
 
-class Group(Group):
-    is_active = models.BooleanField(default=True)
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name']
+
+    def get_full_name(self):
+        """
+        Returns the first and last names of the user
+        :return: first and last names as a concat string
+        """
+        return self.first_name + " " + self.last_name
+
+    def get_short_name(self):
+        """
+        Returns the user's email
+        :return: user's email address as string
+        """
+        return self.email
+
+    def __str__(self):
+        """
+        User's email
+        :return: user's email address
+        """
+        return self.email
+
+    def has_perm(self, perm, obj=None):
+        """
+        #TODO: Add actual functionality
+        :param perm:
+        :param obj:
+        :return:
+        """
+        return True
+
+    def has_module_perms(self, app_label):
+        """
+        #TODO: Add actual functionality
+        :param app_label:
+        :return:
+        """
+        return True
+
+    def is_superuser(self):
+        """
+        Returns if administrator (all perms
+        :return: Boolean, true or false on self.is_admin
+        """
+        return self.is_admin

@@ -1,10 +1,95 @@
+from django import forms
 from django.contrib import admin
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Group
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 from summit.libs.auth.models import User
 
 
-admin.site.register(User)
-admin.site.register(Permission)
+class UserCreationForm(forms.ModelForm):
+    """
+    A form for creating new users with a password confirmation field.
+    """
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
 
-# Register your models here.
+    class Meta:
+        model = User
+        fields = ('email', 'first_name', 'last_name')
+
+    def clean_password(self):
+        """
+        Checks that both of the passwords match
+        :return: String - Password or Boolean False otherwise
+        """
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError('Passwords do not match')
+        return password2
+
+    def save(self, commit=True):
+        """
+        Save data, mostly the password, in a hashed form
+        :param commit: Whether or not to commit the change to DB
+        :return: user model with hashed password
+        """
+        user = super(UserCreationForm, self).save(commit=False)
+        user.set_password(self.cleaned_data['password1'])
+
+        if commit:
+            user.save()
+
+        return user
+
+
+class UserChangeForm(forms.ModelForm):
+    """
+    For updating users. Includes all fields but replaces the password field with the hash display field
+    """
+
+    password = ReadOnlyPasswordHashField()
+
+    class Meta:
+        model = User
+        fields = ('email', 'first_name', 'last_name', 'is_active', 'is_admin')
+
+    def clean_password(self):
+        """
+        Sets the initial password
+        :return: initialized password
+        """
+        return self.initial['password']
+
+
+class UserAdmin(BaseUserAdmin):
+    """
+    For adding and changing users
+    """
+
+    form = UserChangeForm
+    add_form = UserCreationForm
+
+    # For displaying the user model
+    list_display = ('email', 'first_name', 'last_name', 'is_admin')
+    list_filter = ('is_admin', )
+    fieldsets = (
+        (None, {'fields': ('email', 'password')}),
+        ('Personal Info', {'fields': ('first_name', 'last_name')}),
+        ('Permissions', {'fields': ('is_admin', )}),
+    )
+
+    # Adding new user fieldsets
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('email', 'first_name', 'last_name', 'password1', 'password2')
+        })
+    )
+    search_fields = ('email', 'first_name', 'last_name',)
+    ordering = ('email', 'first_name', 'last_name', 'is_admin')
+    filter_horizontal = ()
+
+
+admin.site.register(User, UserAdmin)
