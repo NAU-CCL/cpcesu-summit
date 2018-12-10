@@ -157,7 +157,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 APPEND_SLASH = True
 LOGIN_URL = '/login/'
 LOGOUT_REDIRECT_URL = 'index'
-AUTH_USER_MODEL = 'summit.libs.auth.User'
+AUTH_USER_MODEL = 'summit_auth.User'
 
 
 # TO DO STILL
