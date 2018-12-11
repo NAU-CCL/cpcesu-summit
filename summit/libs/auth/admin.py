@@ -72,23 +72,25 @@ class UserAdmin(BaseUserAdmin):
     add_form = UserCreationForm
 
     # For displaying the user model
-    list_display = ('email', 'first_name', 'last_name', 'is_admin')
-    list_filter = ('is_admin', )
+    list_display = ('username', 'email', 'first_name', 'last_name', 'last_login', 'date_joined', 'is_active', 'is_admin')
+    list_filter = ('is_admin', 'is_active')
+    readonly_fields = ('date_joined', 'last_login', 'is_superuser')
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
+        (None, {'fields': ('username', 'email', 'password')}),
         ('Personal Info', {'fields': ('first_name', 'last_name')}),
-        ('Permissions', {'fields': ('is_admin', )}),
+        ('Permissions', {'fields': ('is_admin', 'is_superuser', 'user_permissions', )}),
+        ('Auditing', {'fields': ('is_active', 'date_joined', 'last_login')}),
     )
 
     # Adding new user fieldsets
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'first_name', 'last_name', 'password1', 'password2')
-        })
+            'fields': ('username', 'email', 'first_name', 'last_name', 'password1', 'password2', 'group', 'is_admin')
+        }),
     )
-    search_fields = ('email', 'first_name', 'last_name',)
-    ordering = ('email', 'first_name', 'last_name', 'is_admin')
+    search_fields = ('username', 'email', 'first_name', 'last_name',)
+    ordering = ('username', 'email', 'first_name', 'last_name', 'is_admin')
     filter_horizontal = ()
 
 

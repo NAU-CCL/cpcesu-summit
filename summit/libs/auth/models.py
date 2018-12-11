@@ -5,13 +5,15 @@ import uuid
 
 from summit.libs.models import AuditModel
 
+
 class UserManager(BaseUserManager):
     """
     Called when the User model needs to be created
     """
-    def create_user(self, email, first_name, last_name, password=None):
+    def create_user(self, username, email, first_name, last_name, password=None):
         """
         Creates a normal user
+        :param username: user's username
         :param email: email address
         :param first_name: first name
         :param last_name: last name
@@ -23,18 +25,20 @@ class UserManager(BaseUserManager):
             raise ValueError("User must have an email address.")
 
         user = self.model(
-            email = self.normalize_email(email),
-            first_name = first_name,
-            last_name = last_name,
+            username=username,
+            email=self.normalize_email(email),
+            first_name=first_name,
+            last_name=last_name,
         )
 
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, first_name, last_name, password):
+    def create_superuser(self, username, email, first_name, last_name, password):
         """
         Used to create a super user (CPCESU admin) with all permissions
+        :param username: user's username
         :param email: email address
         :param first_name: first name
         :param last_name: last name
@@ -42,7 +46,13 @@ class UserManager(BaseUserManager):
         :return: user model
         """
 
-        user = self.create_user(email=email, first_name=first_name, last_name=last_name, password=password)
+        user = self.create_user(
+            username=username,
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
+            password=password
+        )
         user.is_admin = True
         user.save(using=self._db)
         return user
@@ -53,20 +63,27 @@ class User(AbstractUser, AuditModel):
     User model
     """
     email = models.EmailField(
-        verbose_name='email_address',
+        verbose_name='Email Address',
         max_length=255,
         unique=True
     )
 
-    external_id = models.CharField(max_length=100, unique=True, blank=False, default=uuid.uuid4)
-
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
+    first_name = models.CharField(blank=False, max_length=150)
+    last_name = models.CharField(blank=False, max_length=150)
+
+    external_id = models.CharField(
+        max_length=100,
+        unique=True,
+        blank=False,
+        default=uuid.uuid4
+    )
+
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
 
     def get_full_name(self):
         """
@@ -106,9 +123,18 @@ class User(AbstractUser, AuditModel):
         """
         return True
 
-    def is_superuser(self):
+    @property
+    def is_staff(self):
         """
         Returns if administrator (all perms
         :return: Boolean, true or false on self.is_admin
         """
         return self.is_admin
+
+    @property
+    def is_superstaff(self):
+        return self.is_superuser
+
+class Group():
+    name = models.CharField(max_length=150, unique=True)
+
