@@ -53,6 +53,7 @@ PROJ_APPS = [
     # Order alphabetically
     'summit.libs',
     'summit.libs.auth',
+    'summit.apps.docs',
     'summit.apps.core'
 ]
 
