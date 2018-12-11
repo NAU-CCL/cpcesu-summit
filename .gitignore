@@ -158,3 +158,7 @@ venv-production/
 
 collected_static/
 .idea/
+summit/apps/core/templates
+summit/apps/core/
+summit/apps/docs/static/imgs/
+summit/apps/projects
