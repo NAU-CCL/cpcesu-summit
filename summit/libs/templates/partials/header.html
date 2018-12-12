@@ -4,6 +4,16 @@
 {% with backgroundUrl=header.background|default:'imgs/coverImages/_Index.jpg'%}
 
 {% if bannerTemplate == 'fullscreen' %}
+<!--Fixed Nav Bar-->
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark black scrolling-navbar">
+      <a class="navbar-brand" href="#"><strong>Summit</strong></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      {% navLinks %}
+    </nav>
+<!--Fixed Nav Bar-->
 <div class="headerCnt fullscreen">
   <div class="bannerCnt">
     <a class="banner" href="" title="Learn more about the new website">
@@ -32,22 +42,23 @@
     {% endif %}
   </div>
 
-  <div class="navCnt">
-    <div class="nav">
-      <div class="menuItem active" title="">
-        <a href="/" target="">Home</a>
-      </div>
-      <div class="menuItem" title="">
-        <a href="/about/" target="">About</a>
-      </div>
-      <div class="menuItem" title="">
-        <a href="/polls/" target="">Polls</a>
-      </div>
-      <div class="menuItem button" title="">
-        <a href="/" target="">Contact</a>
-      </div>
-    </div>
-  </div>
+  <!--<div class="navCnt">-->
+    <!--<div class="nav">-->
+      <!--<div class="menuItem active" title="">-->
+        <!--<a href="/" target="">Home</a>-->
+      <!--</div>-->
+      <!--<div class="menuItem" title="">-->
+        <!--<a href="/about/" target="">About</a>-->
+      <!--</div>-->
+      <!--<div class="menuItem" title="">-->
+        <!--<a href="/polls/" target="">Polls</a>-->
+      <!--</div>-->
+      <!--<div class="menuItem button" title="">-->
+        <!--<a href="/" target="">Contact</a>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->
+
 </div>
 
 {% else %}
