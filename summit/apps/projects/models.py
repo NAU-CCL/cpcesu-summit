@@ -16,7 +16,7 @@ _help_text = {
 
 class Project(models.Model):
     GRADUATE = 'GRAD'
-    UNDERGRADUATE = "UGRAD"
+    UNDERGRADUATE = 'UGRAD'
     BOTH = 'BOTH'
     NONE = 'NONE'
     STUDENT_SUPPORT = (
