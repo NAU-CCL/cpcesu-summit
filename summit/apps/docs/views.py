@@ -129,6 +129,3 @@ def CPView(request):
 
     return render(request, template_name, context)
 
-
-def redirectHome(request):
-    return HttpResponseRedirect('/')
