@@ -7,5 +7,4 @@ from .views import ProjectListView
 app_name = 'summit.apps.projects'
 urlpatterns = [
     url(r'^$', ProjectListView.as_view(), name='project-list'),
-    # url(r'^index', views.index),
 ]

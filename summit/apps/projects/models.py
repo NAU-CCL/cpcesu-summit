@@ -15,12 +15,14 @@ _help_text = {
 
 
 class Project(models.Model):
-    GRADUATE = 'G'
-    PRE_GRAD = 'PG'
-    NONE = 'NA'
+    GRADUATE = 'GRAD'
+    UNDERGRADUATE = "UGRAD"
+    BOTH = 'BOTH'
+    NONE = 'NONE'
     STUDENT_SUPPORT = (
         (GRADUATE, 'Graduate'),
-        (PRE_GRAD, 'Pre-Graduate'),
+        (UNDERGRADUATE, 'Undergraduate'),
+        (BOTH, 'Graduate and Undergraduate'),
         (NONE, 'None')
     )
 

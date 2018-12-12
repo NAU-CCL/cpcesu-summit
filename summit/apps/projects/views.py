@@ -9,9 +9,9 @@ def index(request):
     template_name = 'apps/projects/project_index.html'
 
     context = {
-        'pageId': 'core.home',
+        'pageId': 'apps.projects.index',
         'pagetitle': 'Projects',
-        'title': 'Project page',
+        'title': 'Projects Overview',
         'bannerTemplate': 'fullscreen',
         'header': {
             'background': 'apps/core/imgs/default.jpg',
@@ -30,7 +30,6 @@ def index(request):
             ]
         },
         'cssFiles': [
-            'css/apps/core/testing.css'
         ]
     }
 
