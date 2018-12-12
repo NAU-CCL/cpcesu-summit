@@ -12,7 +12,7 @@ def index(request):
         'title': 'Home page',
         'bannerTemplate': 'fullscreen',
         'header': {
-            'background': 'apps/core/imgs/default.jpg',
+            # 'background': 'apps/core/imgs/default.jpg',
             'heading1': 'Heading 1',
             'heading2': 'Heading 2',
             'buttons': [
@@ -43,7 +43,7 @@ def about(request):
         'pagetitle': 'About',
         'title': 'About the CPCESU',
         'header': {
-            'background': 'apps/core/imgs/canyon-country-2400x600.jpg',
+            'background': 'imgs/coverImgs//canyon-country-2400x600.jpg',
         },
     }
 

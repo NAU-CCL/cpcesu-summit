@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^accounts/', include('summit.libs.auth.urls')),
     url('', include('summit.apps.core.urls')),
     url(r'^docs/', include('summit.apps.docs.urls')),
+    url(r'^projects/', include('summit.apps.projects.urls')),
 ]
 
 if settings.DEBUG:

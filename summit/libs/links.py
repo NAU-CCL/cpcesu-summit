@@ -1,4 +1,4 @@
-from django.conf import settings
+from django.urls import reverse
 
 links = [
     [
@@ -17,8 +17,22 @@ links = [
             'name': 'Contact',
             'link': '/',
         },
+        {
+            'pageId': 'apps.projects.index',
+            'name': 'Projects',
+            'link': reverse('summit.apps.projects:project-list'),
+            'login_required': True
+        }
     ],
     [
+        {
+            'pageId': '',
+            'name': 'Admin Site',
+            'link': reverse("admin:index"),
+            'customClasses': 'btn btn-red btn-sm',
+            'login_required': True,
+            'staff_only': True
+        },
         {
             'pageId': 'apps.core.send_feedback',
             'name': 'Send Feedback',

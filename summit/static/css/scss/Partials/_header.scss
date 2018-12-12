@@ -9,6 +9,18 @@ header{
     overflow: hidden;
     margin-bottom: 100px;
 
+    &.fullscreen > .headerCnt {
+        width: 100%;
+        height: 100vh;
+    }
+
+    &.none {
+        margin-bottom: 150px;
+        > .headerCnt {
+            display: none;
+        }
+    }
+
     >.bannerCnt{
         position: fixed;
         top: 0;
@@ -40,15 +52,6 @@ header{
         background-color: #262626;
         width: 100%;
         height: 30vh;
-
-        &.fullscreen{
-            width: 100%;
-            height: 100vh;
-        }
-
-        &.none{
-            display: none;
-        }
 
         >.backgroundCnt{
             position: absolute;

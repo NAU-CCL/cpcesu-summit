@@ -53,7 +53,8 @@ PROJ_APPS = [
     'summit.libs',
     'summit.libs.auth',
     'summit.apps.core',
-    'summit.apps.docs'
+    'summit.apps.docs',
+    'summit.apps.projects'
 ]
 
 INSTALLED_APPS = PROJ_APPS + DJANGO_APPS

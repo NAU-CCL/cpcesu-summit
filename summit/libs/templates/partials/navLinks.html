@@ -1,16 +1,22 @@
 <ul class="navbar-nav mr-auto">
   {% for link in navLinksLeft %}
-    {% if link.pageId == pageId  %}
-    <li class="nav-item active"
-    {% elif link.customClasses %}
-    <li class="nav-item {{ link.customClasses}}"
-    {% else %}
-    <li class="nav-item"
-    {% endif %}
+    {% if link.login_required and not request.user.is_authenticated %}
 
-    title="{{ link.description }}">
-    <a class="nav-link" href="{{ link.link }}" target="{{ link.target|default:''}}">{{ link.name }}</a>
-    </li>
+    {% elif link.login_required and link.staff_only and request.user.is_authenticated and not request.user.is_staff %}
+
+    {% else %}
+      {% if link.pageId == pageId  %}
+      <li class="nav-item active"
+      {% elif link.customClasses %}
+      <li class="nav-item {{ link.customClasses}}"
+      {% else %}
+      <li class="nav-item"
+      {% endif %}
+
+      title="{{ link.description }}">
+      <a class="nav-link" href="{{ link.link }}" target="{{ link.target|default:''}}">{{ link.name }}</a>
+      </li>
+    {% endif %}
   {% endfor %}
 
   <!-- Dropdown -->
@@ -28,27 +34,23 @@
 
 <ul class="navbar-nav ml-auto">
   {% for link in navLinksRight %}
-    {% if link.pageId == pageId  %}
-    <li class="nav-item active"
-    {% elif link.customClasses %}
-    <li class="nav-item {{ link.customClasses}}"
+    {% if link.login_required and not request.user.is_authenticated %}
+
+    {% elif link.login_required and link.staff_only and request.user.is_authenticated and not request.user.is_staff %}
+
     {% else %}
-    <li class="nav-item"
+      {% if link.pageId == pageId  %}
+      <li class="nav-item active"
+      {% elif link.customClasses %}
+      <li class="nav-item {{ link.customClasses}}"
+      {% else %}
+      <li class="nav-item"
+      {% endif %}
+
+      title="{{ link.description }}">
+      <a class="nav-link" href="{{ link.link }}" target="{{ link.target|default:''}}">{{ link.name }}</a>
+      </li>
     {% endif %}
-
-    title="{{ link.description }}">
-    <a class="nav-link" href="{{ link.link }}" target="{{ link.target|default:''}}">{{ link.name }}</a>
-    </li>
   {% endfor %}
-
-  <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle waves-effect waves-light" id="navbarDropdownMenuLink-4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      Profile
-    </a>
-    <div class="dropdown-menu dropdown-menu-right dropdown-info" aria-labelledby="navbarDropdownMenuLink-4">
-      <a class="dropdown-item waves-effect waves-light" href="#">My account</a>
-      <a class="dropdown-item waves-effect waves-light" href="#">Log out</a>
-    </div>
-  </li>
 </ul>
 

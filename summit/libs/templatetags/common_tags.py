@@ -9,6 +9,10 @@ def navLinks(context):
     try:
         pageId = context['pageId']
     except KeyError:
-        pageId = "NONE"
+        context['pageId'] = "NONE"
     navLinks = links.get()
-    return {'navLinksLeft': navLinks[0], 'navLinksRight': navLinks[1], 'pageId': pageId}
+
+    context['navLinksLeft'] = navLinks[0]
+    context['navLinksRight'] = navLinks[1]
+
+    return context

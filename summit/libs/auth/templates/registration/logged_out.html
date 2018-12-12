@@ -3,8 +3,7 @@
 
 
 {% block primary %}
-    <h1 style="text-align: center">Login page!</h1>
+    <h1 style="text-align: center">You have been logged out successfully!</h1>
 
-    <p>You have been logged out successfully!</p>
-    <a href="{% url 'login' %}">Click here to log back in.</a>
+    <a class="btn btn-primary" href="{% url 'login' %}">Click here to log back in.</a>
 {% endblock %}
