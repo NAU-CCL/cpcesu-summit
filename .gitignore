@@ -158,4 +158,3 @@ venv-production/
 
 collected_static/
 .idea/
-summit/apps/projects/migrations

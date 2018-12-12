@@ -54,6 +54,7 @@ PROJ_APPS = [
     'summit.libs',
     'summit.libs.auth',
     'summit.apps.core',
+    'summit.apps.docs',
     'summit.apps.projects'
 ]
 
