@@ -1,26 +1,41 @@
 {% load common_tags %}
 {% load static %}
 
+<div class="bannerCnt">
+  <a class="banner" href="" title="Learn more about the new website">
+    <p>Important Update: the website is still under construction. Please excuse the dust!</p>
+  </a>
+</div>
+
+<!--Fixed Nav Bar-->
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark scrolling-navbar">
+  <a class="navbar-brand" href="/"><strong>Summit</strong></a>
+
+  <!-- Collapse button -->
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
+          aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <!-- Collapsible content -->
+  <div class="collapse navbar-collapse" id="basicExampleNav">
+
+    <!-- Links -->
+    {% navLinks %}
+    <!-- Links -->
+  </div>
+  <!-- Collapsible content -->
+</nav>
+<!--Fixed Nav Bar-->
+
 {% with backgroundUrl=header.background|default:'imgs/coverImages/_Index.jpg'%}
 
-{% if bannerTemplate == 'fullscreen' %}
-<!--Fixed Nav Bar-->
-    <nav class="navbar fixed-top navbar-expand-lg navbar-dark black scrolling-navbar">
-      <a class="navbar-brand" href="#"><strong>Summit</strong></a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      {% navLinks %}
-    </nav>
-<!--Fixed Nav Bar-->
-<div class="headerCnt fullscreen">
-  <div class="bannerCnt">
-    <a class="banner" href="" title="Learn more about the new website">
-      <p>Important Update: the website is still under construction. Please excuse the dust!</p>
-    </a>
-  </div>
 
+{% if bannerTemplate == 'fullscreen' %}
+  <div class="headerCnt fullscreen">
+{% else %}
+  <div class="headerCnt">
+{% endif %}
   <div class="backgroundCnt"></div>
   <div class="backgroundImg" style="background-image: url('{% static backgroundUrl %}')"></div>
   <div class="coverTextCnt">
@@ -60,47 +75,5 @@
   <!--</div>-->
 
 </div>
-
-{% else %}
-
-<div class="headerCnt">
-  <div class="bannerCnt">
-    <a class="banner" href="" title="Learn more about the new website">
-      <p>Important Update: the website is still under construction. Please excuse the dust!</p>
-    </a>
-  </div>
-
-  <div class="backgroundCnt"></div>
-  <div class="backgroundImg" style="background-image: url('{% static backgroundUrl %}');"></div>
-  <div class="nav">
-    <div class="hamIcon">
-      <div class="on">&#9776;</div>
-      <div class="off">X</div>
-    </div>
-   <div class="menu">
-     {% navLinks %}
-   </div>
-  </div>
-  <div class="coverTextCnt">
-    {% if header %}
-    {% with heading1=header.heading1 heading2=header.heading2 buttons=header.buttons %}
-    <div class="coverText">
-      <h2>{{ heading2 }}</h2>
-      <h1>{{ heading1 }}</h1>
-
-      <p class="buttonsDiv">
-        {% for button in buttons %}
-        <a href="{{ button.link }}" class="button" target="{{ button.target|default:'' }}">
-          {{ button.name }}
-        </a>
-        {% endfor %}
-      </p>
-    </div>
-    {% endwith %}
-    {% endif %}
-  </div>
-</div>
-
-{% endif %}
 
 {% endwith %}

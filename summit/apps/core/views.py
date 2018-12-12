@@ -2,47 +2,50 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
+
 def index(request):
     template_name = 'apps/core/index.html'
 
     context = {
-        'pageId': 'core.home',
+        'pageId': 'apps.core.home',
         'pagetitle': 'Home',
         'title': 'Home page',
         'bannerTemplate': 'fullscreen',
         'header': {
             'background': 'apps/core/imgs/default.jpg',
-            'heading1': 'See how I got here and my future ambitions',
-            'heading2': 'Looking towards the horizon',
-            'buttons':[
+            'heading1': 'Heading 1',
+            'heading2': 'Heading 2',
+            'buttons': [
                 {
-                'name': 'My History',
-                'link': '/#button1'
+                    'name': 'Button 1',
+                    'link': '/#button1'
                 },
                 {
-                'name': 'Download Resume',
-                'link': 'https://www.google.com/',
-                'target': '_blank'
+                    'name': 'External Button',
+                    'link': 'https://www.google.com/',
+                    'target': '_blank'
                 }
             ]
         },
         'cssFiles': [
-            'css/apps/core/testing.css'
+            # 'css/apps/core/testing.css'
         ]
     }
 
     return render(request, template_name, context)
 
+
 def about(request):
     template_name = 'apps/core/about.html'
 
     context = {
-        'pageId': 'core.about',
+        'pageId': 'apps.core.about',
         'pagetitle': 'About',
-        # 'title': 'Understanding More, Learning More'
+        'title': 'About the CPCESU',
+        'header': {
+            'background': 'apps/core/imgs/canyon-country-2400x600.jpg',
+        },
     }
 
     return render(request, template_name, context)
 
-def redirectHome(request):
-    return HttpResponseRedirect('/')

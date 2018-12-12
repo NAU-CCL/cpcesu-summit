@@ -58,7 +58,7 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(AbstractUser, AuditModel):
+class User(AbstractUser):
     """
     User model
     """
@@ -69,7 +69,10 @@ class User(AbstractUser, AuditModel):
     )
 
     is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False,
+                                   help_text="With this checked, it allows this user to access the administrative " +
+                                             "backend",
+                                   verbose_name="Admin site access?")
 
     first_name = models.CharField(blank=False, max_length=150)
     last_name = models.CharField(blank=False, max_length=150)
@@ -97,14 +100,14 @@ class User(AbstractUser, AuditModel):
         Returns the user's email
         :return: user's email address as string
         """
-        return self.email
+        return self.username
 
     def __str__(self):
         """
         User's email
         :return: user's email address
         """
-        return self.email
+        return self.first_name + " " + self.last_name + " <" + self.email + ">"
 
     def has_perm(self, perm, obj=None):
         """
@@ -135,6 +138,17 @@ class User(AbstractUser, AuditModel):
     def is_superstaff(self):
         return self.is_superuser
 
-class Group():
+
+class UserProfile(AuditModel):
+    user = models.OneToOneField(User)
+    avatar = models.ImageField()
+
+    class Meta:
+        verbose_name = "User Profile"
+
+
+class Partner(AuditModel):
     name = models.CharField(max_length=150, unique=True)
+    description = models.TextField(max_length=300, blank=True)
+
 

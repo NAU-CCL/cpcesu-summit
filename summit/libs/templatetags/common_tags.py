@@ -3,6 +3,7 @@ from django import template
 
 register = template.Library()
 
+
 @register.inclusion_tag('partials/navLinks.html', takes_context=True)
 def navLinks(context):
     try:
@@ -10,4 +11,4 @@ def navLinks(context):
     except KeyError:
         pageId = "NONE"
     navLinks = links.get()
-    return {'navLinks': navLinks, 'pageId': pageId}
+    return {'navLinksLeft': navLinks[0], 'navLinksRight': navLinks[1], 'pageId': pageId}

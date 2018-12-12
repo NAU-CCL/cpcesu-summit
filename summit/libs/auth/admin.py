@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from summit.libs.auth.models import User
+from summit.libs.auth.models import Partner, User, UserProfile
 
 
 class UserCreationForm(forms.ModelForm):
@@ -86,7 +86,7 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'first_name', 'last_name', 'password1', 'password2', 'group', 'is_admin')
+            'fields': ('username', 'email', 'first_name', 'last_name', 'password1', 'password2', 'is_admin')
         }),
     )
     search_fields = ('username', 'email', 'first_name', 'last_name',)
@@ -95,3 +95,6 @@ class UserAdmin(BaseUserAdmin):
 
 
 admin.site.register(User, UserAdmin)
+admin.site.register(Partner)
+admin.site.register(UserProfile)
+admin.site.unregister(Group)

@@ -1,0 +1,161 @@
+.top-nav-collapse {
+    background-color: #000;
+}
+
+header{
+    position: relative;
+    padding: 0 0 0 0;
+    background-color: #fff;
+    overflow: hidden;
+    margin-bottom: 100px;
+
+    >.bannerCnt{
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index:1000000;
+        >a{
+            >p{
+                width: 100%;
+                margin: 0;
+                padding: 5px;
+                text-align: center;
+                background-color: #000;
+                color: #fff;
+                transition: border-bottom .2s ease-in-out;
+                border-bottom: 0 $colorNAUGold solid;
+                &:hover{
+                    border-bottom: 5px $colorNAUGold solid;
+                }
+            }
+        }
+    }
+
+    >.bannerCnt + .navbar{
+        margin-top: 30px;
+    }
+
+    >.headerCnt {
+        background-color: #262626;
+        width: 100%;
+        height: 30vh;
+
+        &.fullscreen{
+            width: 100%;
+            height: 100vh;
+        }
+
+        >.backgroundCnt{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 5;
+        }
+
+        >.backgroundImg{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+        }
+
+        >.coverTextCnt{
+            position: relative;
+            padding: 40px 10px;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            >.coverText{
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 90%;
+                max-height: 90%;
+                transform: translate(-50%, -50%);
+                -webkit-transform: translate(-50%, -50%);
+                color: #fff;
+                >h1, >h2, >p{
+                    text-align: center;
+                    transition: font-size .4s ease;
+                }
+                >h1{
+                    text-transform: uppercase;
+                    font-size: 36px;
+                    font-weight: 600;
+                    @include minResolutionCheck($tabletRes){
+                        font-size: 48px;
+                    }
+                    @include minResolutionCheck($miniDesktopRes){
+                        font-size: 72px;
+                    }
+                    @include minResolutionCheck($futuDesktopRes){
+                        font-size: 120px;
+                    }
+                }
+                >h2{
+                    margin: 10px auto;
+                    font-style: italic;
+                    font-size: 16px;
+                    @include minResolutionCheck($miniDesktopRes){
+                        font-size: 20px;
+                    }
+                    @include minResolutionCheck($wideDesktopRes){
+                        font-size: 24px;
+                    }
+                    @include minResolutionCheck($futuDesktopRes){
+                        font-size: 36px;
+                    }
+                }
+                >.buttonsDiv{
+                    >.button{
+                        display: block;
+                        width: 80%;
+                        padding: 10px;
+                        border: 2px #fff solid;
+                        margin: 20px auto;
+                        color: #fff;
+                        font-weight: 600;
+                        text-transform: uppercase;
+                        transition: all .4s ease;
+                        &:hover, :active{
+                            background-color: #e0e0e0;
+                            color: #000;
+                            box-shadow: inset 0px 0px 5px 0px #D1D1D1;
+                        }
+                        @include minResolutionCheck($tabletRes){
+                            display: inline-block;
+                            width: auto;
+                            margin: 10px auto;
+                        }
+                        @include minResolutionCheck($miniDesktopRes){
+                            font-size: 16px;
+                            padding: 15px;
+                            border: 4px #fff solid;
+                        }
+                        @include minResolutionCheck($futuDesktopRes){
+                            font-size: 24px;
+                            padding: 25px;
+                            border: 8px #fff solid;
+                        }
+                    }
+                    >.button + .button{
+                        @include minResolutionCheck($tabletRes){
+                            margin-left: 10px;
+                        }
+                        @include minResolutionCheck($futuDesktopRes){
+                            margin-left: 30px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
