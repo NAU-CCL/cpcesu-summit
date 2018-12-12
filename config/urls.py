@@ -21,7 +21,10 @@ from django.views.generic import RedirectView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^accounts/', include('django.contrib.auth.urls')),
+    url(r'^accounts/', include('summit.libs.auth.urls')),
     url('', include('summit.apps.core.urls')),
+    url(r'^docs/', include('summit.apps.docs.urls')),
 ]
 
 if settings.DEBUG:

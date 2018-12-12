@@ -46,6 +46,10 @@ header{
             height: 100vh;
         }
 
+        &.none{
+            display: none;
+        }
+
         >.backgroundCnt{
             position: absolute;
             top: 0;

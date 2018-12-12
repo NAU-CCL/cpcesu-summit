@@ -16,19 +16,20 @@ links = [
             'pageId': 'contact.index',
             'name': 'Contact',
             'link': '/',
-            'customClasses': 'button'
         },
     ],
     [
         {
             'pageId': 'apps.core.send_feedback',
             'name': 'Send Feedback',
-            'link': '/'
+            'link': '/',
+            'customClasses': 'btn btn-primary btn-sm'
         },
         {
             'pageId': 'apps.docs.index',
             'name': 'Documentation',
-            'link': '/'
+            'link': '/docs',
+            'customClasses': 'btn btn-primary btn-sm'
         },
     ]
 ]
