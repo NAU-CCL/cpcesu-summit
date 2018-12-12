@@ -53,7 +53,8 @@ PROJ_APPS = [
     # Order alphabetically
     'summit.libs',
     'summit.libs.auth',
-    'summit.apps.core'
+    'summit.apps.core',
+    'summit.apps.docs'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + PROJ_APPS
