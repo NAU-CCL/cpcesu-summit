@@ -2,3 +2,4 @@ Django>=1.11,<2.0
 psycopg2<=2.7.6
 django-environ==0.4
 whitenoise
+pillow

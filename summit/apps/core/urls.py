@@ -6,4 +6,5 @@ from . import views
 app_name = 'summit.apps.core'
 urlpatterns = [
     url(r'^$', views.index),
+    url(r'^about/', views.about),
 ]

@@ -3,16 +3,16 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
 
-def index(request):
-    template_name = 'apps/core/index.html'
+def logged_out(request):
+    template_name = 'registration/logged_out.html'
 
     context = {
-        'pageId': 'apps.core.home',
-        'pagetitle': 'Home',
-        'title': 'Home page',
+        'pageId': 'libs.auth.logged_out',
+        'pagetitle': 'Logged Out',
+        'title': 'Successful Log Out',
         'bannerTemplate': 'fullscreen',
         'header': {
-            # 'background': 'apps/core/imgs/default.jpg',
+            'background': 'apps/core/imgs/default.jpg',
             'heading1': 'Heading 1',
             'heading2': 'Heading 2',
             'buttons': [
@@ -33,19 +33,3 @@ def index(request):
     }
 
     return render(request, template_name, context)
-
-
-def about(request):
-    template_name = 'apps/core/about.html'
-
-    context = {
-        'pageId': 'apps.core.about',
-        'pagetitle': 'About',
-        'title': 'About the CPCESU',
-        'header': {
-            'background': 'imgs/coverImgs//canyon-country-2400x600.jpg',
-        },
-    }
-
-    return render(request, template_name, context)
-

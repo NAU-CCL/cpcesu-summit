@@ -1,106 +1,80 @@
 {% load common_tags %}
 {% load static %}
 
-{% with backgroundUrl=header.background|default:'imgs/coverImages/_Index.jpg'%}
-
-{% if bannerTemplate == 'fullscreen' %}
-<!--Fixed Nav Bar-->
-    <nav class="navbar fixed-top navbar-expand-lg navbar-dark black scrolling-navbar">
-      <a class="navbar-brand" href="#"><strong>Summit</strong></a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      {% navLinks %}
-    </nav>
-<!--Fixed Nav Bar-->
-<div class="headerCnt fullscreen">
-  <div class="bannerCnt">
-    <a class="banner" href="" title="Learn more about the new website">
-      <p>Important Update: the website is still under construction. Please excuse the dust!</p>
-    </a>
-  </div>
-
-  <div class="backgroundCnt"></div>
-  <div class="backgroundImg" style="background-image: url('{% static backgroundUrl %}')"></div>
-  <div class="coverTextCnt">
-    {% if header %}
-    {% with heading1=header.heading1 heading2=header.heading2 buttons=header.buttons %}
-    <div class="coverText">
-      <h2>{{ heading2 }}</h2>
-      <h1>{{ heading1 }}</h1>
-
-      <p class="buttonsDiv">
-        {% for button in buttons %}
-        <a href="{{ button.link }}" class="button" target="{{ button.target|default:'' }}">
-          {{ button.name }}
-        </a>
-        {% endfor %}
-      </p>
-    </div>
-    {% endwith %}
-    {% endif %}
-  </div>
-
-  <!--<div class="navCnt">-->
-    <!--<div class="nav">-->
-      <!--<div class="menuItem active" title="">-->
-        <!--<a href="/" target="">Home</a>-->
-      <!--</div>-->
-      <!--<div class="menuItem" title="">-->
-        <!--<a href="/about/" target="">About</a>-->
-      <!--</div>-->
-      <!--<div class="menuItem" title="">-->
-        <!--<a href="/polls/" target="">Polls</a>-->
-      <!--</div>-->
-      <!--<div class="menuItem button" title="">-->
-        <!--<a href="/" target="">Contact</a>-->
-      <!--</div>-->
-    <!--</div>-->
-  <!--</div>-->
-
-</div>
-
+{% if bannerTemplate %}
+<header class="{{ bannerTemplate }}">
 {% else %}
-
-<div class="headerCnt">
+<header>
+{% endif %}
   <div class="bannerCnt">
     <a class="banner" href="" title="Learn more about the new website">
       <p>Important Update: the website is still under construction. Please excuse the dust!</p>
     </a>
   </div>
 
-  <div class="backgroundCnt"></div>
-  <div class="backgroundImg" style="background-image: url('{% static backgroundUrl %}');"></div>
-  <div class="nav">
-    <div class="hamIcon">
-      <div class="on">&#9776;</div>
-      <div class="off">X</div>
+  <!--Fixed Nav Bar-->
+  <nav class="navbar fixed-top navbar-expand-lg navbar-dark black">
+    <a class="navbar-brand" href="/"><strong>Summit</strong></a>
+
+    <!-- Collapse button -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
+            aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="basicExampleNav">
+
+      <!-- Links -->
+      {% navLinks %}
+      <!-- Links -->
+      <ul class="navbar-nav justify-content-center">
+        {% if request.user.is_authenticated %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle waves-effect waves-light" id="navbarDropdownMenuLink-4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Profile
+          </a>
+          <div class="dropdown-menu dropdown-menu-right dropdown-info" aria-labelledby="navbarDropdownMenuLink-4">
+            <a class="dropdown-item waves-effect waves-light" href="#">My account</a>
+            <a class="dropdown-item waves-effect waves-light" href="{% url 'logout' %}">Log out</a>
+          </div>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}">Login</a>
+        </li>
+        {% endif %}
+    </ul>
     </div>
-   <div class="menu">
-     {% navLinks %}
-   </div>
-  </div>
-  <div class="coverTextCnt">
-    {% if header %}
-    {% with heading1=header.heading1 heading2=header.heading2 buttons=header.buttons %}
-    <div class="coverText">
-      <h2>{{ heading2 }}</h2>
-      <h1>{{ heading1 }}</h1>
+    <!-- Collapsible content -->
+  </nav>
+  <!--Fixed Nav Bar-->
 
-      <p class="buttonsDiv">
-        {% for button in buttons %}
-        <a href="{{ button.link }}" class="button" target="{{ button.target|default:'' }}">
-          {{ button.name }}
-        </a>
-        {% endfor %}
-      </p>
+  {% with backgroundUrl=header.background|default:'imgs/coverImages/default.jpg'%}
+
+
+  <div class="headerCnt">
+    <div class="backgroundCnt"></div>
+    <div class="backgroundImg" style="background-image: url('{% static backgroundUrl %}')"></div>
+    <div class="coverTextCnt">
+      {% if header %}
+      {% with heading1=header.heading1 heading2=header.heading2 buttons=header.buttons %}
+      <div class="coverText">
+        <h2>{{ heading2 }}</h2>
+        <h1>{{ heading1 }}</h1>
+
+        <p class="buttonsDiv">
+          {% for button in buttons %}
+          <a href="{{ button.link }}" class="button" target="{{ button.target|default:'' }}">
+            {{ button.name }}
+          </a>
+          {% endfor %}
+        </p>
+      </div>
+      {% endwith %}
+      {% endif %}
     </div>
-    {% endwith %}
-    {% endif %}
   </div>
-</div>
 
-{% endif %}
-
-{% endwith %}
+  {% endwith %}
+</header>

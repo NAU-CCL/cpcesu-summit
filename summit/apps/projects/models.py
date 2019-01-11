@@ -3,6 +3,10 @@
 # TODO: Update student support
 from django.db import models
 
+from django.core.validators import MinValueValidator
+
+from decimal import Decimal
+
 
 _help_text = {
     'project_title': 'The title of the project',
@@ -30,8 +34,8 @@ class Project(models.Model):
     short_summary = models.CharField(max_length=500, help_text=_help_text['short_summary'])
     description = models.TextField(help_text=_help_text['description'])
     sensitive = models.BooleanField(default=False, help_text=_help_text['sensitive'])
-    budget = models.DecimalField(max_digits=12, decimal_places=2, help_text=_help_text['budget'])
-    student_support = models.CharField(max_length=2, choices=STUDENT_SUPPORT, default=NONE)
+    budget = models.DecimalField(validators=[MinValueValidator(0.001)], max_digits=12, decimal_places=3, help_text=_help_text['budget'])
+    student_support = models.CharField(max_length=5, choices=STUDENT_SUPPORT, default=NONE)
 
     def __str__(self):
         return self.project_title
