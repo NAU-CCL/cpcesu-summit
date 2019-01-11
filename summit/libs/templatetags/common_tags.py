@@ -3,11 +3,16 @@ from django import template
 
 register = template.Library()
 
+
 @register.inclusion_tag('partials/navLinks.html', takes_context=True)
 def navLinks(context):
     try:
         pageId = context['pageId']
     except KeyError:
-        pageId = "NONE"
+        context['pageId'] = "NONE"
     navLinks = links.get()
-    return {'navLinks': navLinks, 'pageId': pageId}
+
+    context['navLinksLeft'] = navLinks[0]
+    context['navLinksRight'] = navLinks[1]
+
+    return context

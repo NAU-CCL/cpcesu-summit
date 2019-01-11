@@ -19,10 +19,10 @@ from .shared import(
     STATIC_URL,
     STATICFILES_DIRS,
     STATIC_ROOT,
-    env,
     APPEND_SLASH,
     LOGIN_URL,
     LOGOUT_REDIRECT_URL,
+    AUTH_USER_MODEL,
 )
 
 __all__ = [
@@ -47,9 +47,9 @@ __all__ = [
     'STATICFILES_DIRS',
     'STATIC_ROOT',
     'APPEND_SLASH',
-    'INTERNAL_IPS',
     'LOGIN_URL',
     'LOGOUT_REDIRECT_URL',
+    'AUTH_USER_MODEL',
 ]
 
 DEBUG = False

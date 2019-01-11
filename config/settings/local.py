@@ -21,7 +21,9 @@ from .shared import(
     STATIC_ROOT,
     APPEND_SLASH,
     LOGIN_URL,
+    LOGIN_REDIRECT_URL,
     LOGOUT_REDIRECT_URL,
+    AUTH_USER_MODEL,
 )
 
 __all__ = [
@@ -48,7 +50,9 @@ __all__ = [
     'APPEND_SLASH',
     'INTERNAL_IPS',
     'LOGIN_URL',
+    'LOGIN_REDIRECT_URL',
     'LOGOUT_REDIRECT_URL',
+    'AUTH_USER_MODEL',
 ]
 
 MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
