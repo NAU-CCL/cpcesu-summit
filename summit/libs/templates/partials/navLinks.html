@@ -1,20 +1,20 @@
 <ul class="navbar-nav mr-auto">
   {% for link in navLinksLeft %}
-    {% if link.login_required and not request.user.is_authenticated %}
+    {% if link.auth_required and not request.user.is_authenticated %}
 
-    {% elif link.login_required and link.staff_only and request.user.is_authenticated and not request.user.is_staff %}
+    {% elif link.auth_required and link.staff_only and request.user.is_authenticated and not request.user.is_staff %}
 
     {% else %}
-      {% if link.pageId == pageId  %}
+      {% if link.name == name  %}
       <li class="nav-item active"
-      {% elif link.customClasses %}
-      <li class="nav-item {{ link.customClasses}}"
+      {% elif link.custom_classes %}
+      <li class="nav-item {{ link.custom_classes}}"
       {% else %}
       <li class="nav-item"
       {% endif %}
 
       title="{{ link.description }}">
-      <a class="nav-link" href="{{ link.link }}" target="{{ link.target|default:''}}">{{ link.name }}</a>
+      <a class="nav-link" href="{{ link.link }}" target="{{ link.target|default:''}}">{{ link.label }}</a>
       </li>
     {% endif %}
   {% endfor %}
@@ -34,21 +34,24 @@
 
 <ul class="navbar-nav ml-auto">
   {% for link in navLinksRight %}
-    {% if link.login_required and not request.user.is_authenticated %}
+    {% if link.auth_required and not request.user.is_authenticated %}
 
-    {% elif link.login_required and link.staff_only and request.user.is_authenticated and not request.user.is_staff %}
+    {% elif link.auth_required and link.staff_only and request.user.is_authenticated and not request.user.is_staff %}
 
     {% else %}
-      {% if link.pageId == pageId  %}
+      {% if link.name == name  %}
       <li class="nav-item active"
-      {% elif link.customClasses %}
-      <li class="nav-item {{ link.customClasses}}"
       {% else %}
       <li class="nav-item"
       {% endif %}
 
       title="{{ link.description }}">
-      <a class="nav-link" href="{{ link.link }}" target="{{ link.target|default:''}}">{{ link.name }}</a>
+      {% if link.custom_classes  %}
+      <a class="nav-link {{ link.custom_classes }}"
+      {% else %}
+      <a class="nav-link"
+      {% endif %}
+      href="{{ link.link }}" target="{{ link.target|default:''}}">{{ link.label }}</a>
       </li>
     {% endif %}
   {% endfor %}

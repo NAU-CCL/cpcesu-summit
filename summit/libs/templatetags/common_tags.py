@@ -1,4 +1,4 @@
-from summit.libs import links
+from config import links
 from django import template
 
 register = template.Library()
@@ -7,9 +7,9 @@ register = template.Library()
 @register.inclusion_tag('partials/navLinks.html', takes_context=True)
 def navLinks(context):
     try:
-        pageId = context['pageId']
+        name = context['name']
     except KeyError:
-        context['pageId'] = "NONE"
+        context['name'] = "NONE"
     navLinks = links.get()
 
     context['navLinksLeft'] = navLinks[0]
