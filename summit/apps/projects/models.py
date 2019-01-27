@@ -30,7 +30,7 @@ class Project(models.Model):
         (NONE, 'None')
     )
 
-    project_title = models.CharField(max_length=500, unique=True, help_text=_help_text['project_title'])
+    project_title = models.CharField(max_length=500, unique=True, help_text=_help_text['project_title'] )
     short_summary = models.CharField(max_length=500, help_text=_help_text['short_summary'])
     description = models.TextField(help_text=_help_text['description'])
     sensitive = models.BooleanField(default=False, help_text=_help_text['sensitive'])
