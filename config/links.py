@@ -93,8 +93,8 @@ def add_link(regex, name, link_args=None):
     if 'auth_required' in link_args:
         new_link['auth_required'] = link_args['auth_required']
 
-    if 'staff_only' in link_args and 'auth_required' in new_link:
-        new_link['staff_only'] = link_args['staff_only']
+    if 'auth_perms' in link_args and 'auth_required' in new_link:
+        new_link['auth_perms'] = link_args['auth_perms']
 
     # Add link to left or right side of nav
     # If it doesn't belong to a dropdown
@@ -104,14 +104,12 @@ def add_link(regex, name, link_args=None):
         else:
             links[0].append(new_link)
     elif isinstance(dropdown, dict):
-        print('dict', dropdown)
         dropdown['links'].append(new_link)
         if side == 'right':
             links[1].append(dropdown)
         else:
             links[0].append(dropdown)
     else:
-        print('num', dropdown)
         if side == 'right':
             links[1][dropdown]['links'].append(new_link)
         else:
