@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 from .models import Project
+from .forms import ProjectForm
 
 
 def index(request):
@@ -58,11 +59,13 @@ class ProjectListView(LoginRequiredMixin, ListView):
     def get_absolute_url(self):
         return reverse('project:detail', kwargs={'pk':self})
 
+
 class ProjectDetail(DeleteView):
     model = Project
     template_name = 'apps/projects/project_detail.html'
 
+
 class ProjectCreate(CreateView):
     template_name = 'apps/projects/project_form.html'
     model = Project
-    fields = ['project_title', 'short_summary', 'description', 'budget', 'student_support']
+    form_class = ProjectForm
