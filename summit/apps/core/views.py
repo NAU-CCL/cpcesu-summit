@@ -1,13 +1,11 @@
-from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
-from django.urls import reverse
 
 
-def index(request):
+def index(request, name):
     template_name = 'apps/core/index.html'
 
     context = {
-        'pageId': 'apps.core.home',
+        'name': name,
         'pagetitle': 'Home',
         'title': 'Home page',
         'bannerTemplate': 'fullscreen',
@@ -35,11 +33,11 @@ def index(request):
     return render(request, template_name, context)
 
 
-def about(request):
+def about(request, name):
     template_name = 'apps/core/about.html'
 
     context = {
-        'pageId': 'apps.core.about',
+        'name': name,
         'pagetitle': 'About',
         'title': 'About the CPCESU',
         'header': {

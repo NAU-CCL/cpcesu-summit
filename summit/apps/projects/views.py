@@ -27,31 +27,32 @@ class ProjectListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = {
-            'pageId': 'apps.projects.index',
-            'pagetitle': 'Projects',
-            'title': 'Projects Overview',
-            'bannerTemplate': 'none',
+            'name': self.kwargs['name'],
+            'pagetitle': 'Home',
+            'title': 'Home page',
+            'bannerTemplate': 'fullscreen',
             'header': {
-                'background': 'apps/core/imgs/default.jpg',
-                'heading1': 'See how I got here and my future ambitions',
-                'heading2': 'Looking towards the horizon',
+                # 'background': 'apps/core/imgs/default.jpg',
+                'heading1': 'Heading 1',
+                'heading2': 'Heading 2',
                 'buttons': [
-                    # {
-                    # 'name': 'My History',
-                    # 'link': '/#button1'
-                    # },
-                    # {
-                    # 'name': 'Download Resume',
-                    # 'link': 'https://www.google.com/',
-                    # 'target': '_blank'
-                    # }
+                    {
+                        'name': 'Button 1',
+                        'link': '/#button1'
+                    },
+                    {
+                        'name': 'External Button',
+                        'link': 'https://www.google.com/',
+                        'target': '_blank'
+                    }
                 ]
             },
             'cssFiles': [
+                # 'css/apps/core/testing.css'
             ]
         }
         ctx = super(ProjectListView, self).get_context_data(**kwargs)
-        ctx = { **ctx, **context}
+        ctx = {**ctx, **context}
         return ctx
 
     def get_absolute_url(self):
