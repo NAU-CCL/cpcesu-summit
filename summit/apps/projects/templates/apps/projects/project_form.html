@@ -10,9 +10,10 @@
     <h5 class="card-title">Please fill out all fields.</h5>
         <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
+            {{ form.non_field_errors }}
             {% include 'apps/projects/form-template.html'%}
+            <input class="btn btn-primary" type="submit" value="Submit">
         </form>
-    <button type="submit" class="btn btn-success btn-rounded">Success</button>
   </div>
 </div>
 {% endblock %}

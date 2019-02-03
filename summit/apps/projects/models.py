@@ -2,11 +2,12 @@
 # TODO: Determine if each project title is unique (Ask CP)
 # TODO: Update student support
 from django.db import models
-
+from config.links import get_name
 from django.core.validators import MinValueValidator
 
 from decimal import Decimal
 
+from summit.libs.auth.models import Partner
 
 _help_text = {
     'project_title': 'The title of the project',
@@ -36,6 +37,11 @@ class Project(models.Model):
     sensitive = models.BooleanField(default=False, help_text=_help_text['sensitive'])
     budget = models.DecimalField(validators=[MinValueValidator(0.001)], max_digits=12, decimal_places=3, help_text=_help_text['budget'])
     student_support = models.CharField(max_length=5, choices=STUDENT_SUPPORT, default=NONE)
+    partner = models.ForeignKey(Partner, on_delete=models.CASCADE,
+                               related_name='partner', default=0)
+
+    def get_absolute_url(self):
+        return u'/projects/'
 
     def __str__(self):
         return self.project_title
