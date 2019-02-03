@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -31,22 +31,22 @@ class ProjectListView(LoginRequiredMixin, ListView):
             'name': self.kwargs['name'],
             'pagetitle': 'Home',
             'title': 'Home page',
-            'bannerTemplate': 'fullscreen',
+            # 'bannerTemplate': 'fullscreen',
             'header': {
                 # 'background': 'apps/core/imgs/default.jpg',
-                'heading1': 'Heading 1',
-                'heading2': 'Heading 2',
-                'buttons': [
-                    {
-                        'name': 'Button 1',
-                        'link': '/#button1'
-                    },
-                    {
-                        'name': 'External Button',
-                        'link': 'https://www.google.com/',
-                        'target': '_blank'
-                    }
-                ]
+                # 'heading1': 'Heading 1',
+                # 'heading2': 'Heading 2',
+                # 'buttons': [
+                #     {
+                #         'name': 'Button 1',
+                #         'link': '/#button1'
+                #     },
+                #     {
+                #         'name': 'External Button',
+                #         'link': 'https://www.google.com/',
+                #         'target': '_blank'
+                #     }
+                # ]
             },
             'cssFiles': [
                 # 'css/apps/core/testing.css'
@@ -60,9 +60,13 @@ class ProjectListView(LoginRequiredMixin, ListView):
         return reverse('project:detail', kwargs={'pk':self})
 
 
-class ProjectDetail(DeleteView):
-    model = Project
-    template_name = 'apps/projects/project_detail.html'
+# class ProjectDetail(DetailView):
+#     model = Project
+#     template_name = 'apps/projects/project_detail.html'
+#
+#     def get_object(self, **kwargs):
+#         pk_ = self.kwargs.get("pk")
+#         return get_object_or_404(Project, pk=pk_)
 
 
 class ProjectCreate(CreateView):
