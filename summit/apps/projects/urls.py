@@ -1,6 +1,5 @@
 # TODO: Circular import on reverse. Success of form should redirect to project_index
 from config.links import link, get_name
-from django.urls import reverse
 
 from . import views
 

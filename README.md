@@ -135,7 +135,13 @@ virtualenv ./venv-dev -p /usr/bin/python3
 Call the following commands to start the virtual environment and update it with our current packages:
 
 ```
+LINUX:
 source venv-dev/bin/activate
+
+WINDOWS (CMD ONLY):
+.\venv-dev\Scripts\activate
+
+BOTH:
 pip install -r requirements/local.txt
 ```
 
@@ -167,7 +173,13 @@ virtualenv ./venv-production -p /usr/bin/python3
 Call the following commands to start the virtual environment and update it with our current packages:
 
 ```
-source ./venv-production/bin/activate
+LINUX:
+source venv-production/bin/activate
+
+WINDOWS (CMD ONLY):
+.\venv-production\Scripts\activate
+
+BOTH:
 pip install -r requirements/production.txt
 ```
 
