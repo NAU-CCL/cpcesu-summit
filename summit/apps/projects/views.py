@@ -6,17 +6,26 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-from .models import Project
+from .models import Project, Notification
 from .forms import ProjectForm
 
+def index_view(request):
+    notifications = Notification.objects.all()
+    return render(request, 'apps/projects/project_index.html', {'notifications': notifications})
+# class IndexView(ListView):
+#     model = Notification
+#     template_name = 'apps/projects/project_index.html'
+#     context_object_name = 'notifications'
+#
+#     def get_context_data(self, **kwargs):
+#         context = {'type': self.kwargs['type']}
+#         ctx = super(IndexView, self).get_context_data(**kwargs)
+#         ctx = {**ctx, **context}
+#         return ctx
 
-def index(request):
 
-    template_name = 'apps/projects/project_index.html'
-
-
-
-    return render(request, template_name, context)
+    #def get_context_data(self, **kwargs):
+        #return Project.objects.all()
 
 # TODO: Refactor ProjectList() to display projects in order by title.
 
@@ -29,6 +38,7 @@ class ProjectListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = {
             'name': self.kwargs['name'],
+            'notifications': Notification.objects.all(),
             'pagetitle': 'Home',
             'title': 'Home page',
             # 'bannerTemplate': 'fullscreen',
