@@ -35,7 +35,7 @@ def index(request):
 
     return render(request, template_name, context)
 
-# TODO: Refactor ProjectList() to display projects in order by title.
+# TODO: Refactor ProjectList() to display projects in order by status.
 
 
 class ProjectListView(ListView):
