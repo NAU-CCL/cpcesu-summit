@@ -1,15 +1,52 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser, BaseUserManager, Permission
 
 import uuid
 
 from summit.libs.models import AuditModel
 
 
+class UserGroup(AuditModel):
+    name = models.CharField(max_length=150, unique=True)
+    description = models.TextField(max_length=300, blank=True)
+    avatar = models.ImageField(blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Partner(UserGroup):
+
+    class Meta:
+        verbose_name = "Partner"
+
+    def __str__(self):
+        return self.name
+
+
+class CESUnit(UserGroup):
+
+    class Meta:
+        verbose_name = "CES Unit"
+
+    def __str__(self):
+        return self.name
+
+
+class FederalAgency(UserGroup):
+
+    class Meta:
+        verbose_name = "Federal Agency"
+
+    def __str__(self):
+        return self.name
+
+
 class UserManager(BaseUserManager):
     """
     Called when the User model needs to be created
     """
+
     def create_user(self, username, email, first_name, last_name, password=None):
         """
         Creates a normal user
@@ -77,6 +114,8 @@ class User(AbstractUser):
     first_name = models.CharField(blank=False, max_length=150)
     last_name = models.CharField(blank=False, max_length=150)
 
+    group = models.OneToOneField(UserGroup, default=1)
+
     external_id = models.CharField(
         max_length=100,
         unique=True,
@@ -143,14 +182,16 @@ class UserProfile(AuditModel):
     user = models.OneToOneField(User)
     avatar = models.ImageField()
 
+    title = models.CharField(max_length=150, blank=True)
+    department = models.CharField(max_length=150, blank=True)
+    location = models.CharField(max_length=150, blank=True)
+    address = models.TextField(max_length=300, blank=True)
+    phone_number = models.CharField(max_length=30, blank=True)
+    fax_number = models.CharField(max_length=30, blank=True)
+    email_address = models.EmailField(blank=True)
+
     class Meta:
+        permissions = (
+            ('view_profile', 'Can see user profiles'),
+        )
         verbose_name = "User Profile"
-
-
-class Partner(AuditModel):
-    name = models.CharField(max_length=150, unique=True)
-    description = models.TextField(max_length=300, blank=True)
-
-    def __str__(self):
-        return self.name
-

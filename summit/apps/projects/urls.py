@@ -7,7 +7,7 @@ app_name = 'summit.apps.projects'
 app_regex = r'^projects/'
 project_index = get_name(app_name, 'Projects')
 urlpatterns = [
-    link('^$', views.ProjectListView.as_view(), name=project_index, link_args={
+    link(r'^$', views.ProjectListView.as_view(), name=project_index, link_args={
         'auth_required': True,
         'app_regex': app_regex,
         'dropdown_id': app_name,
