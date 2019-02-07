@@ -44,6 +44,7 @@ class Project(models.Model):
     sensitive = models.BooleanField(default=False, help_text=_help_text['sensitive'])
     budget = models.DecimalField(max_digits=12, decimal_places=2, help_text=_help_text['budget'])
     student_support = models.CharField(max_length=2, choices=STUDENT_SUPPORT, default=NONE)
+    status = models.CharField(max_length=2, choices=STATUS, default=DRAFTING)
 
     def __str__(self):
         return self.project_title
