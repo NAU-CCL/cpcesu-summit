@@ -22,7 +22,6 @@ def link(regex, view, name, kwargs=None, link_args=None):
     if not hasattr(kwargs, 'name'):
         kwargs['name'] = name
 
-    print("link() - ", name)
     add_link(regex, name, link_args)
 
     # Define URL
@@ -72,7 +71,11 @@ def add_link(regex, name, link_args=None):
     else:
         href = str(regex)
         href += '/' if href[-1] != '/' else ''
-        href = href.replace('r', '/').strip('$^')
+        if href[0] == 'r':
+            href = "/" + href[:1]
+        href = href.strip('^$')
+
+        href = '/' + href if href[0] != '/' else href
         new_link['link'] = href
 
     # If specified, add the app_regex so that it isn't root
