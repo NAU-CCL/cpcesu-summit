@@ -153,6 +153,7 @@ tags
 # http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
 venv-dev/
 venv-production/
+venv-prod/
 
 # End of https://www.gitignore.io/api/vim,python,django,virtualenv
 

@@ -1,8 +1,12 @@
-# TODO: Add project fields based on requirements
 # TODO: Determine if each project title is unique (Ask CP)
-# TODO: Update student support
+# TODO: Add new field: status, cesu
 from django.db import models
+from config.links import get_name
+from django.core.validators import MinValueValidator
 
+from decimal import Decimal
+
+from summit.libs.auth.models import Partner, FederalAgency
 
 _help_text = {
     'project_title': 'The title of the project',
@@ -19,14 +23,22 @@ class Project(models.Model):
     UNDERGRADUATE = 'UGRAD'
     BOTH = 'BOTH'
     NONE = 'NONE'
+    DRAFTING = 'DRAFTING'
+    EXECUTED = 'EXECUTED'
+    CLOSED = 'CLOSED'
     STUDENT_SUPPORT = (
         (GRADUATE, 'Graduate'),
         (UNDERGRADUATE, 'Undergraduate'),
         (BOTH, 'Graduate and Undergraduate'),
         (NONE, 'None')
     )
+    STATUS = (
+        (EXECUTED, 'Executed'),
+        (DRAFTING, 'Drafting'),
+        (CLOSED, 'Closed')
+              )
 
-    project_title = models.CharField(max_length=500, unique=True, help_text=_help_text['project_title'])
+    project_title = models.CharField(max_length=500, unique=True, help_text=_help_text['project_title'] )
     short_summary = models.CharField(max_length=500, help_text=_help_text['short_summary'])
     description = models.TextField(help_text=_help_text['description'])
     sensitive = models.BooleanField(default=False, help_text=_help_text['sensitive'])
