@@ -56,20 +56,32 @@ class ProjectListView(LoginRequiredMixin, ListView):
         ctx = {**ctx, **context}
         return ctx
 
-    def get_absolute_url(self):
-        return reverse('project:detail', kwargs={'pk':self})
+    #TODO: integrate this get_obkect into context
+    def get_object(self, **kwargs):
+        pk_ = self.kwargs.get("id")
+        return get_object_or_404(Project, pk=pk_)
 
+#TODO: Change context object name
+class ProjectDetail(DetailView):
+    model = Project
+    template_name = 'apps/projects/project_detail.html'
 
-# class ProjectDetail(DetailView):
-#     model = Project
-#     template_name = 'apps/projects/project_detail.html'
-#
-#     def get_object(self, **kwargs):
-#         pk_ = self.kwargs.get("pk")
-#         return get_object_or_404(Project, pk=pk_)
+    def get_object(self, **kwargs):
+        pk_ = self.kwargs.get("id")
+        return get_object_or_404(Project, pk=pk_)
 
 
 class ProjectCreate(CreateView):
     template_name = 'apps/projects/project_form.html'
     model = Project
     form_class = ProjectForm
+
+class ProjectEdit(UpdateView):
+    template_name = 'apps/projects/project_form.html'
+    model = Project
+    form_class = ProjectForm
+
+    def get_object(self, **kwargs):
+        pk_ = self.kwargs.get("id")
+        return get_object_or_404(Project, pk=pk_)
+
