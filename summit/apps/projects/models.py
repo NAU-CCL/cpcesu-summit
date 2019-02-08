@@ -2,11 +2,12 @@
 # TODO: Add new field: status, cesu
 from django.db import models
 from config.links import get_name
+from django.urls import reverse
 from django.core.validators import MinValueValidator
 
 from decimal import Decimal
 
-from summit.libs.auth.models import Partner, FederalAgency
+from summit.libs.auth.models import Partner, FederalAgency, CESUnit
 
 _help_text = {
     'project_title': 'The title of the project',
@@ -23,9 +24,9 @@ class Project(models.Model):
     UNDERGRADUATE = 'UGRAD'
     BOTH = 'BOTH'
     NONE = 'NONE'
-    DRAFTING = 'DRAFTING'
-    EXECUTED = 'EXECUTED'
-    CLOSED = 'CLOSED'
+    DRAFTING = 'DRAFT'
+    EXECUTED = 'EXEC'
+    CLOSED = 'CLOSE'
     STUDENT_SUPPORT = (
         (GRADUATE, 'Graduate'),
         (UNDERGRADUATE, 'Undergraduate'),
@@ -33,8 +34,8 @@ class Project(models.Model):
         (NONE, 'None')
     )
     STATUS = (
-        (EXECUTED, 'Executed'),
         (DRAFTING, 'Drafting'),
+        (EXECUTED, 'Executed'),
         (CLOSED, 'Closed')
               )
 
@@ -43,8 +44,17 @@ class Project(models.Model):
     description = models.TextField(help_text=_help_text['description'])
     sensitive = models.BooleanField(default=False, help_text=_help_text['sensitive'])
     budget = models.DecimalField(max_digits=12, decimal_places=2, help_text=_help_text['budget'])
-    student_support = models.CharField(max_length=2, choices=STUDENT_SUPPORT, default=NONE)
-    status = models.CharField(max_length=2, choices=STATUS, default=DRAFTING)
+    student_support = models.CharField(max_length=4, choices=STUDENT_SUPPORT, default=NONE)
+    status = models.CharField(max_length=5, choices=STATUS, default=DRAFTING)
+    partner = models.ForeignKey(Partner, on_delete=models.CASCADE,
+                                related_name='partner', default=None)
+    federal_agency = models.ForeignKey(FederalAgency, on_delete=models.CASCADE,
+                                       related_name='federal_agency', default=None)
+    cesu_unit = models.ForeignKey(CESUnit, on_delete=models.CASCADE,
+                                       related_name='cesu_unit', default=None)
+
+    def get_absolute_url(self):
+        return reverse('summit.apps.projects:project-detail', args=[str(self.id)])
 
     def __str__(self):
         return self.project_title

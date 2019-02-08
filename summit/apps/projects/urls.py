@@ -1,5 +1,6 @@
 # TODO: Circular import on reverse. Success of form should redirect to project_index
 from config.links import link, get_name
+from django.conf.urls import url
 
 from . import views
 
@@ -18,4 +19,5 @@ urlpatterns = [
         'app_regex': app_regex,
         'dropdown_id': app_name
     }),
+    url(r'^(?P<project_title>[-\w]+)/$', views.ProjectDetail.as_view(), name='project-detail'),
 ]
