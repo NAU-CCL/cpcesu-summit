@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block primary %}
+    <h1 style="text-align: center">You have been logged out successfully!</h1>
+
+    <a class="btn btn-primary" href="{% url 'login' %}">Click here to log back in.</a>
+{% endblock %}

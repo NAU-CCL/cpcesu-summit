@@ -17,10 +17,11 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
-from django.views.generic import RedirectView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^accounts/', include('django.contrib.auth.urls')),
+    url(r'^accounts/', include('summit.libs.auth.urls')),
     url('', include('summit.apps.core.urls')),
     url(r'^docs/', include('summit.apps.docs.urls')),
     url(r'^projects/', include('summit.apps.projects.urls')),

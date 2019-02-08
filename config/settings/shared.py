@@ -33,7 +33,6 @@ DEBUG = env('DEBUG', default=True)
 ALLOWED_HOSTS = []
 
 
-
 # Application definition
 
 DJANGO_APPS = [
@@ -50,7 +49,7 @@ DJANGO_APPS = [
 
 PROJ_APPS = [
     # Project-based apps
-    # Order alphabetically
+    # Order alphabetically, first loading the libs over apps
     'summit.libs',
     'summit.libs.auth',
     'summit.apps.core',
@@ -58,8 +57,7 @@ PROJ_APPS = [
     'summit.apps.projects'
 ]
 
-INSTALLED_APPS = DJANGO_APPS + PROJ_APPS
-
+INSTALLED_APPS = PROJ_APPS + DJANGO_APPS
 
 
 # Middleware definition
@@ -86,7 +84,6 @@ PROJ_MIDDLEWARES = [
 MIDDLEWARE = DJANGO_MIDDLEWARES + PROJ_MIDDLEWARES
 
 
-
 # Routing, templating, and WSGI
 
 ROOT_URLCONF = 'config.urls'
@@ -110,7 +107,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
-
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
@@ -120,7 +116,6 @@ DATABASES = {
         'NAME': 'summit_db',
     }
 }
-
 
 
 # Password validation
@@ -134,7 +129,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
@@ -145,21 +139,20 @@ USE_L10N = True
 USE_TZ = True
 
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
 
 
-
 # Custom Shared config
 STATICFILES_DIRS = ['%s/static' % PROJ_DIR]
 STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 APPEND_SLASH = True
-LOGIN_URL = '/login/'
-LOGOUT_REDIRECT_URL = 'index'
-AUTH_USER_MODEL = 'summit.libs.auth.User'
+LOGIN_URL = '/accounts/login'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = None
+AUTH_USER_MODEL = 'summit_auth.User'
 
 
 # TO DO STILL

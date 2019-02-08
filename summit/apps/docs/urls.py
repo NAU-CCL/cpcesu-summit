@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from config.links import link, get_name
 
 from . import views
 
@@ -6,8 +6,8 @@ from . import views
 
 app_name = 'summit.apps.docs'
 urlpatterns = [
-    url(r'^public$', views.PublicView),
-    url(r'^org$', views.OrgView),
-    url(r'^cpcesu$', views.CPView),
-    # url(r'^index', views.index),
+    link(r'$', views.index, get_name(app_name, 'Documentation'), link_args={
+        'custom_classes': 'btn btn-primary btn-sm',
+        'side': 'right'
+    }),
 ]
