@@ -17,7 +17,7 @@ add_link('/admin', get_name(app_name, 'Admin Site'), {
     'staff_only': True
 })
 
-add_link('/', get_name(app_name, 'Send Feedback'), {
-    'custom_classes': 'btn btn-primary btn-sm',
-    'side': 'right'
-})
+# add_link('/', get_name(app_name, 'Send Feedback'), {
+#     'custom_classes': 'btn btn-primary btn-sm',
+#     'side': 'right'
+# })

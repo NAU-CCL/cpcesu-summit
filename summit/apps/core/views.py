@@ -41,7 +41,7 @@ def about(request, name):
         'pagetitle': 'About',
         'title': 'About the CPCESU',
         'header': {
-            'background': 'imgs/coverImgs//canyon-country-2400x600.jpg',
+            'background': 'imgs/coverImages/canyon-country-2400x600.jpg',
         },
     }
 
