@@ -144,10 +144,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# Media files (PDFs, Docx, Google Docs, etc.)
+
+MEDIA_URL = '/data/'
+
 
 # Custom Shared config
 STATICFILES_DIRS = ['%s/static' % PROJ_DIR]
 STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'data')
 APPEND_SLASH = True
 LOGIN_URL = '/accounts/login'
 LOGIN_REDIRECT_URL = '/'
