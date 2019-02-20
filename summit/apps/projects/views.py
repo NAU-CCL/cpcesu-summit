@@ -3,7 +3,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
 from .models import Project
@@ -14,17 +14,19 @@ def index(request):
 
     template_name = 'apps/projects/project_index.html'
 
-
-
     return render(request, template_name, context)
 
 # TODO: Refactor ProjectList() to display projects in order by status.
 
 
-class ProjectListView(LoginRequiredMixin, ListView):
+class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     template_name = 'apps/projects/project_index.html'
     model = Project
     context_object_name = 'projects'
+
+    permission_required = 'summit_projects.add_project'
+    permission_denied_message = 'You do not have the correction permissions to access this page.'
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         context = {

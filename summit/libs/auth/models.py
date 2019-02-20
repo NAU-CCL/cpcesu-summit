@@ -6,9 +6,25 @@ import uuid
 from summit.libs.models import AuditModel
 
 
+def get_all_user_groups():
+    user_groups = UserGroup.__subclasses__()
+    subclasses = []
+    count = 0
+    print(user_groups)
+    for user_group in user_groups:
+        subclasses.append((count, user_group.__name__))
+        count += 1
+    return subclasses
+
+
 class UserGroup(AuditModel):
     name = models.CharField(max_length=150, unique=True)
     description = models.TextField(max_length=300, blank=True)
+    permissions = models.ManyToManyField(
+        Permission,
+        verbose_name='permissions',
+        blank=True,
+    )
     avatar = models.ImageField(blank=True)
 
     def __str__(self):
@@ -114,7 +130,7 @@ class User(AbstractUser):
     first_name = models.CharField(blank=False, max_length=150)
     last_name = models.CharField(blank=False, max_length=150)
 
-    group = models.OneToOneField(UserGroup, default=1)
+    group = models.ForeignKey(UserGroup, default=1, on_delete=models.CASCADE)
 
     external_id = models.CharField(
         max_length=100,
@@ -179,7 +195,7 @@ class User(AbstractUser):
 
 
 class UserProfile(AuditModel):
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, default=None)
     avatar = models.ImageField()
 
     title = models.CharField(max_length=150, blank=True)
@@ -189,6 +205,9 @@ class UserProfile(AuditModel):
     phone_number = models.CharField(max_length=30, blank=True)
     fax_number = models.CharField(max_length=30, blank=True)
     email_address = models.EmailField(blank=True)
+
+    def __str__(self):
+        return self.user.get_full_name()
 
     class Meta:
         permissions = (
