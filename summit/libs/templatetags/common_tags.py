@@ -6,7 +6,6 @@ register = template.Library()
 
 @register.inclusion_tag('partials/nav_links.html', takes_context=True)
 def nav_links(context):
-    print(context)
     try:
         name = context['name']
     except KeyError:

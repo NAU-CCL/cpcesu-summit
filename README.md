@@ -54,9 +54,9 @@ sudo service postgresql start
 Now, create the user and database and add permissions:
 
 ```
-CREATE DATABASE summit_db;
-CREATE USER summit_db_user WITH PASSWORD '$umM1T_DB)';
-GRANT ALL PRIVILEGES ON DATABASE summit_db TO summit_db_user;
+CREATE DATABASE cpcesupm;
+CREATE USER cpcesu WITH PASSWORD 'HjMNGN4cJtQcg';
+GRANT ALL PRIVILEGES ON DATABASE cpcesupm TO cpcesu;
 ```
 
 To exit psql and the 'postgres' user:
