@@ -2,33 +2,35 @@
 {% load static %}
 
 {% block primary %}
-    <h1 style="text-align: center">PROJECT PAGE</h1>
+<h1 style="text-align: center">PROJECT PAGE</h1>
 
-    <p class="animated fadeIn text-muted">Project List</p>
+<p class="animated fadeIn text-muted">Project List</p>
 
-    <table class="table">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Title</th>
-      <th scope="col">Status</th>
-      <th scope="col">Partner</th>
-    </tr>
-  </thead>
-  <tbody>
-  {% for project in projects %}
-    <tr>
-      <th scope="row">{{ project.id }}</th>
-      <td>{{ project.project_title }}</td>
-      <td>{{ project.status }}</td>
-      <td>{{ project.partner }}</td>
-        <td>
-            <a href="{% url 'summit.apps.projects:project-detail' id=project.id %}">View More</a>
-        </td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
-
-
+    <table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+              <th class="th-sm">#</th>
+              <th class="th-sm">Title</th>
+              <th class="th-sm">Status</th>
+              <th class="th-sm">Partner</th>
+                <th class="th-sm">Details</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for project in projects %}
+            <tr>
+                <th scope="row">{{ project.id }}</th>
+                <td href="">{{ project.project_title }}</td>
+                <td>{{ project.status }}</td>
+                <td>{{ project.partner }}</td>
+                <td>
+                    <a type="button" class="btn btn-outline-primary btn-sm m-0 waves-effect"
+                    href="{% url 'summit.apps.projects:project-detail' id=project.id %}">
+                        View More
+                    </a>
+                </td>
+            </tr>
+    {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

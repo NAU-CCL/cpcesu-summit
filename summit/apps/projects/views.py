@@ -49,19 +49,25 @@ class ProjectListView(LoginRequiredMixin, ListView):
                 # ]
             },
             'cssFiles': [
-                # 'css/apps/core/testing.css'
+                'libs/mdb/css/addons/datatables.min.css',
+                'css/apps/projects/dashboard.css'
+            ],
+            'jsFiles': [
+                'libs/mdb/js/addons/datatables.min.js',
+                'js/apps/projects/dashboard.js'
             ]
         }
         ctx = super(ProjectListView, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
         return ctx
 
-    #TODO: integrate this get_obkect into context
+    # TODO: integrate this get_obkect into context
     def get_object(self, **kwargs):
         pk_ = self.kwargs.get("id")
         return get_object_or_404(Project, pk=pk_)
 
-#TODO: Change context object name
+
+# TODO: Change context object name
 class ProjectDetail(DetailView):
     model = Project
     template_name = 'apps/projects/project_detail.html'
@@ -75,6 +81,7 @@ class ProjectCreate(CreateView):
     template_name = 'apps/projects/project_form.html'
     model = Project
     form_class = ProjectForm
+
 
 class ProjectEdit(UpdateView):
     template_name = 'apps/projects/project_form.html'
