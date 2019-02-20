@@ -19,6 +19,8 @@ from .shared import(
     STATIC_URL,
     STATICFILES_DIRS,
     STATIC_ROOT,
+    MEDIA_ROOT,
+    MEDIA_URL,
     APPEND_SLASH,
     LOGIN_URL,
     LOGOUT_REDIRECT_URL,
