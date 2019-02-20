@@ -1,13 +1,15 @@
 # TODO: Determine if each project title is unique (Ask CP)
-# TODO: Add new field: status, cesu
 from django.db import models
 from config.links import get_name
 from django.core.validators import MinValueValidator
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
 
 from decimal import Decimal
 
 from summit.libs.auth.models import Partner, FederalAgency, CESUnit
 
+# TODO: Create help text for each field.
 _help_text = {
     'project_title': 'The title of the project',
     'short_summary': 'This field is displayed in "overviews" such as the projects listing page.',
@@ -19,6 +21,10 @@ _help_text = {
 
 
 class Project(models.Model):
+
+    def project_directory_path(self, filename):
+        return 'projects/{0}/{1}'.format(self.project_title, filename)
+
     GRADUATE = 'GRAD'
     UNDERGRADUATE = 'UGRAD'
     BOTH = 'BOTH'
@@ -36,21 +42,25 @@ class Project(models.Model):
         (DRAFTING, 'Drafting'),
         (EXECUTED, 'Executed'),
         (CLOSED, 'Closed')
-              )
+    )
 
-    project_title = models.CharField(max_length=500, unique=True, help_text=_help_text['project_title'] )
+    project_title = models.CharField(max_length=500, unique=True, help_text=_help_text['project_title'])
     short_summary = models.CharField(max_length=500, help_text=_help_text['short_summary'])
     description = models.TextField(help_text=_help_text['description'])
     sensitive = models.BooleanField(default=False, help_text=_help_text['sensitive'])
     budget = models.DecimalField(max_digits=12, decimal_places=2, help_text=_help_text['budget'])
-    student_support = models.CharField(max_length=4, choices=STUDENT_SUPPORT, default=NONE)
+    student_support = models.CharField(max_length=5, choices=STUDENT_SUPPORT, default=NONE)
     status = models.CharField(max_length=5, choices=STATUS, default=DRAFTING)
     partner = models.ForeignKey(Partner, on_delete=models.CASCADE,
                                 related_name='partner', default=None)
     federal_agency = models.ForeignKey(FederalAgency, on_delete=models.CASCADE,
                                        related_name='federal_agency', default=None)
     cesu_unit = models.ForeignKey(CESUnit, on_delete=models.CASCADE,
-                                       related_name='cesu_unit', default=None)
+                                  related_name='cesu_unit', default=None)
+    # TODO: Read file in 'chunks' ---> https://docs.djangoproject.com/en/1.11/topics/http/file-uploads/
+    # TODO: Create File model
+    file = models.FileField(upload_to=project_directory_path,
+                            default=str(settings.MEDIA_ROOT) + '/projects/default.txt')
 
     def get_absolute_url(self):
         from django.urls import reverse

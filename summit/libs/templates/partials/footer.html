@@ -50,3 +50,7 @@
 <script src="{% static 'libs/mdb/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'libs/mdb/js/mdb.min.js' %}"></script>
 <script src="{% static '/js/site.js' %}"></script>
+
+{% for jsFile in jsFiles %}
+    <script src=" {% static jsFile %}"></script>
+{% endfor %}
