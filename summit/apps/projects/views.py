@@ -3,37 +3,30 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
 from .models import Project, Notification
 from .forms import ProjectForm
 
-def index_view(request):
-    notifications = Notification.objects.all()
-    return render(request, 'apps/projects/project_index.html', {'notifications': notifications})
-# class IndexView(ListView):
-#     model = Notification
-#     template_name = 'apps/projects/project_index.html'
-#     context_object_name = 'notifications'
-#
-#     def get_context_data(self, **kwargs):
-#         context = {'type': self.kwargs['type']}
-#         ctx = super(IndexView, self).get_context_data(**kwargs)
-#         ctx = {**ctx, **context}
-#         return ctx
+
+def index(request):
+
+    template_name = 'apps/projects/project_index.html'
+
+    return render(request, template_name, context)
+
+# TODO: Refactor ProjectList() to display projects in order by status.
 
 
-    #def get_context_data(self, **kwargs):
-        #return Project.objects.all()
-
-# TODO: Refactor ProjectList() to display projects in order by title.
-
-
-class ProjectListView(LoginRequiredMixin, ListView):
+class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     template_name = 'apps/projects/project_index.html'
     model = Project
     context_object_name = 'projects'
+
+    permission_required = 'summit_projects.add_project'
+    permission_denied_message = 'You do not have the correction permissions to access this page.'
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         context = {
@@ -59,27 +52,46 @@ class ProjectListView(LoginRequiredMixin, ListView):
                 # ]
             },
             'cssFiles': [
-                # 'css/apps/core/testing.css'
+                'libs/mdb/css/addons/datatables.min.css',
+                'css/apps/projects/dashboard.css'
+            ],
+            'jsFiles': [
+                'libs/mdb/js/addons/datatables.min.js',
+                'js/apps/projects/dashboard.js'
             ]
         }
         ctx = super(ProjectListView, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
         return ctx
 
-    def get_absolute_url(self):
-        return reverse('project:detail', kwargs={'pk':self})
+    # TODO: integrate this get_obkect into context
+    def get_object(self, **kwargs):
+        pk_ = self.kwargs.get("id")
+        return get_object_or_404(Project, pk=pk_)
 
 
-# class ProjectDetail(DetailView):
-#     model = Project
-#     template_name = 'apps/projects/project_detail.html'
-#
-#     def get_object(self, **kwargs):
-#         pk_ = self.kwargs.get("pk")
-#         return get_object_or_404(Project, pk=pk_)
+# TODO: Change context object name
+class ProjectDetail(DetailView):
+    model = Project
+    template_name = 'apps/projects/project_detail.html'
+
+    def get_object(self, **kwargs):
+        pk_ = self.kwargs.get("id")
+        return get_object_or_404(Project, pk=pk_)
 
 
 class ProjectCreate(CreateView):
     template_name = 'apps/projects/project_form.html'
     model = Project
     form_class = ProjectForm
+
+
+class ProjectEdit(UpdateView):
+    template_name = 'apps/projects/project_form.html'
+    model = Project
+    form_class = ProjectForm
+
+    def get_object(self, **kwargs):
+        pk_ = self.kwargs.get("id")
+        return get_object_or_404(Project, pk=pk_)
+

@@ -19,6 +19,8 @@ from .shared import(
     STATIC_URL,
     STATICFILES_DIRS,
     STATIC_ROOT,
+    MEDIA_ROOT,
+    MEDIA_URL,
     APPEND_SLASH,
     LOGIN_URL,
     LOGIN_REDIRECT_URL,
@@ -58,9 +60,9 @@ __all__ = [
 MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
 DATABASES['default'] = {
     'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'summit_db',
-    'USER': 'summit_db_user',
-    'PASSWORD': '$umM1T_DB)',
+    'NAME': 'cpcesupm',
+    'USER': 'cpcesu',
+    'PASSWORD': 'HjMNGN4cJtQcg',
     'HOST': '127.0.0.1',
     'PORT': '5432'
 }

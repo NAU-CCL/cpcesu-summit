@@ -6,7 +6,6 @@ register = template.Library()
 
 @register.inclusion_tag('partials/nav_links.html', takes_context=True)
 def nav_links(context):
-    print(context)
     try:
         name = context['name']
     except KeyError:
@@ -44,7 +43,10 @@ def nav_links(context):
 def create_link(link_dict, context, is_dropdown_item):
     link_str = ''
 
-    if 'auth_required' in link_dict and link_dict['auth_required'] and context['user'].is_authenticated():
+    if 'auth_required' in link_dict:
+        print(link_dict)
+
+    if 'auth_required' in link_dict and link_dict['auth_required'] and context['user'].is_authenticated() is False:
         return link_str
 
     if 'auth_perms' in link_dict and link_dict['auth_perms'] \
@@ -62,9 +64,18 @@ def create_link(link_dict, context, is_dropdown_item):
 
         link_str += '<div class="dropdown-menu dropdown-primary" aria-labelledby="' + link_dict['id'] + '">'
 
+        # Used to track number of links in dropdown
+        link_count = 0
         for link in link_dict['links']:
-            print(link)
             link_str += '<a class="dropdown-item '
+
+            if 'auth_required' in link and link['auth_required'] and context[
+                'user'].is_authenticated() is False:
+                continue
+
+            if 'auth_perms' in link and link['auth_perms'] \
+                    and context['user'].has_perms(link['auth_perms']) is False:
+                continue
 
             if link['name'] == context['name']:
                 link_str += 'active '
@@ -82,8 +93,12 @@ def create_link(link_dict, context, is_dropdown_item):
                 link_str += '">'
 
             link_str += link['label'] + '</a>'
+            link_count += 1
 
         link_str += '</div>'
+
+        if link_count == 0:
+            return ''
     # Single item
     else:
         if link_dict['name'] == context['name']:

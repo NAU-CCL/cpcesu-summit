@@ -2,7 +2,27 @@
 {% load static %}
 
 {% block primary %}
+    <div class="card-header">
+        <a href="https://placeholder.com"><img src="https://via.placeholder.com/150"></a>
+        <br>
+        <h2>{{ object.project_title }}</h2><p>{{ object.short_summary }}</p>
+    </div>
 
-{{ object.project_title }}
+    <div class="card-body">
+        <h6> {{ object.status }} </h6>
+        <h6> {{ object.partner }} </h6>
+        <h6> {{ object.federal_agency }} </h6>
+        <h6> {{ object.description }} </h6>
+        <h6> {{ object.budget }} </h6>
+        <h6> {{ object.student_support }} </h6>
+        <a href=" {{ object.file.url }} " target="_blank"> {{ object.file.url }} </a>
+    </div>
+    <br>
+
+
+        <a href="{% url 'summit.apps.projects:project-edit' id=object.id %}">
+            <button type="button" class="btn btn-light">Edit Project</button>
+        </a>
 
 {% endblock %}
+

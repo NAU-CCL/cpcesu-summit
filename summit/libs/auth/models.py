@@ -1,15 +1,68 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser, BaseUserManager, Permission
 
 import uuid
 
 from summit.libs.models import AuditModel
 
 
+def get_all_user_groups():
+    user_groups = UserGroup.__subclasses__()
+    subclasses = []
+    count = 0
+    print(user_groups)
+    for user_group in user_groups:
+        subclasses.append((count, user_group.__name__))
+        count += 1
+    return subclasses
+
+
+class UserGroup(AuditModel):
+    name = models.CharField(max_length=150, unique=True)
+    description = models.TextField(max_length=300, blank=True)
+    permissions = models.ManyToManyField(
+        Permission,
+        verbose_name='permissions',
+        blank=True,
+    )
+    avatar = models.ImageField(blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Partner(UserGroup):
+
+    class Meta:
+        verbose_name = "Partner"
+
+    def __str__(self):
+        return self.name
+
+
+class CESUnit(UserGroup):
+
+    class Meta:
+        verbose_name = "CES Unit"
+
+    def __str__(self):
+        return self.name
+
+
+class FederalAgency(UserGroup):
+
+    class Meta:
+        verbose_name = "Federal Agency"
+
+    def __str__(self):
+        return self.name
+
+
 class UserManager(BaseUserManager):
     """
     Called when the User model needs to be created
     """
+
     def create_user(self, username, email, first_name, last_name, password=None):
         """
         Creates a normal user
@@ -77,6 +130,8 @@ class User(AbstractUser):
     first_name = models.CharField(blank=False, max_length=150)
     last_name = models.CharField(blank=False, max_length=150)
 
+    group = models.ForeignKey(UserGroup, default=1, on_delete=models.CASCADE)
+
     external_id = models.CharField(
         max_length=100,
         unique=True,
@@ -140,17 +195,22 @@ class User(AbstractUser):
 
 
 class UserProfile(AuditModel):
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, default=None)
     avatar = models.ImageField()
 
-    class Meta:
-        verbose_name = "User Profile"
-
-
-class Partner(AuditModel):
-    name = models.CharField(max_length=150, unique=True)
-    description = models.TextField(max_length=300, blank=True)
+    title = models.CharField(max_length=150, blank=True)
+    department = models.CharField(max_length=150, blank=True)
+    location = models.CharField(max_length=150, blank=True)
+    address = models.TextField(max_length=300, blank=True)
+    phone_number = models.CharField(max_length=30, blank=True)
+    fax_number = models.CharField(max_length=30, blank=True)
+    email_address = models.EmailField(blank=True)
 
     def __str__(self):
-        return self.name
+        return self.user.get_full_name()
 
+    class Meta:
+        permissions = (
+            ('view_profile', 'Can see user profiles'),
+        )
+        verbose_name = "User Profile"

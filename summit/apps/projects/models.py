@@ -1,16 +1,15 @@
-# TODO: Add project fields based on requirements
 # TODO: Determine if each project title is unique (Ask CP)
-# TODO: Update student support
 from django.db import models
 from config.links import get_name
 from django.core.validators import MinValueValidator
-from django.contrib import messages
-import datetime
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
 
 from decimal import Decimal
 
-from summit.libs.auth.models import Partner
+from summit.libs.auth.models import Partner, FederalAgency, CESUnit
 
+# TODO: Create help text for each field.
 _help_text = {
     'project_title': 'The title of the project',
     'short_summary': 'This field is displayed in "overviews" such as the projects listing page.',
@@ -21,29 +20,50 @@ _help_text = {
 }
 
 class Project(models.Model):
+
+    def project_directory_path(self, filename):
+        return 'projects/{0}/{1}'.format(self.project_title, filename)
+
     GRADUATE = 'GRAD'
     UNDERGRADUATE = 'UGRAD'
     BOTH = 'BOTH'
     NONE = 'NONE'
+    DRAFTING = 'DRAFT'
+    EXECUTED = 'EXEC'
+    CLOSED = 'CLOSE'
     STUDENT_SUPPORT = (
         (GRADUATE, 'Graduate'),
         (UNDERGRADUATE, 'Undergraduate'),
         (BOTH, 'Graduate and Undergraduate'),
         (NONE, 'None')
     )
+    STATUS = (
+        (DRAFTING, 'Drafting'),
+        (EXECUTED, 'Executed'),
+        (CLOSED, 'Closed')
+    )
 
-    project_title = models.CharField(max_length=500, unique=True, help_text=_help_text['project_title'] )
+    project_title = models.CharField(max_length=500, unique=True, help_text=_help_text['project_title'])
     short_summary = models.CharField(max_length=500, help_text=_help_text['short_summary'])
     description = models.TextField(help_text=_help_text['description'])
     sensitive = models.BooleanField(default=False, help_text=_help_text['sensitive'])
-    budget = models.DecimalField(validators=[MinValueValidator(0.001)], max_digits=12, decimal_places=3, help_text=_help_text['budget'])
+    budget = models.DecimalField(max_digits=12, decimal_places=2, help_text=_help_text['budget'])
     student_support = models.CharField(max_length=5, choices=STUDENT_SUPPORT, default=NONE)
-    partner = models.ForeignKey(Partner, on_delete=models.CASCADE, related_name='partner', default=0)
-    # Temp field, for testing purposes
-    date = models.DateField(default=datetime.datetime.now, blank=True)
+    status = models.CharField(max_length=5, choices=STATUS, default=DRAFTING)
+    partner = models.ForeignKey(Partner, on_delete=models.CASCADE,
+                                related_name='partner', default=None)
+    federal_agency = models.ForeignKey(FederalAgency, on_delete=models.CASCADE,
+                                       related_name='federal_agency', default=None)
+    cesu_unit = models.ForeignKey(CESUnit, on_delete=models.CASCADE,
+                                  related_name='cesu_unit', default=None)
+    # TODO: Read file in 'chunks' ---> https://docs.djangoproject.com/en/1.11/topics/http/file-uploads/
+    # TODO: Create File model
+    file = models.FileField(upload_to=project_directory_path,
+                            default=str(settings.MEDIA_ROOT) + '/projects/default.txt')
 
     def get_absolute_url(self):
-        return u'/projects/'
+        from django.urls import reverse
+        return reverse('summit.apps.projects:project-detail', args=[str(self.id)])
 
     def __str__(self):
         return self.project_title

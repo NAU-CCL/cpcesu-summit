@@ -1,10 +1,10 @@
 from django import forms
 from django.contrib import admin
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, Permission
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from summit.libs.auth.models import Partner, User, UserProfile
+from summit.libs.auth.models import User, UserProfile, Partner, CESUnit, FederalAgency
 
 
 class UserCreationForm(forms.ModelForm):
@@ -16,7 +16,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name')
+        fields = ('email', 'first_name', 'last_name', 'is_active')
 
     def clean_password(self):
         """
@@ -78,7 +78,7 @@ class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'email', 'password')}),
         ('Personal Info', {'fields': ('first_name', 'last_name')}),
-        ('Permissions', {'fields': ('is_admin', 'is_superuser', 'user_permissions', )}),
+        ('Permissions', {'fields': ('is_admin', 'is_superuser', 'user_permissions', 'group')}),
         ('Auditing', {'fields': ('is_active', 'date_joined', 'last_login')}),
     )
 
@@ -96,5 +96,8 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Partner)
+admin.site.register(CESUnit)
+admin.site.register(FederalAgency)
 admin.site.register(UserProfile)
+admin.site.register(Permission)
 admin.site.unregister(Group)
