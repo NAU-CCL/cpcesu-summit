@@ -50,11 +50,11 @@ def about(request, name):
     return render(request, template_name, context)
 
 
-def error404(request, name):
-    template_name = 'apps/core/error.html'
+def error404(request):
+    template_name = 'error.html'
 
     context = {
-        'name': name,
+        'name': 'Error',
         'pagetitle': 'Error',
         'title': 'That\'s an Error',
         'header': {
@@ -65,5 +65,5 @@ def error404(request, name):
             below. <a class="button" href="{% url \'summit.apps.core:Home\' %}">Send Feedback</a>'
     }
 
-    return render(request, template_name, context)
+    return render(request, template_name, context=context, status=404)
 
