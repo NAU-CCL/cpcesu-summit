@@ -1,22 +1,11 @@
-from django.shortcuts import redirect, render, get_object_or_404
-from django.conf import settings
-from django.core.urlresolvers import reverse
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.shortcuts import get_object_or_404
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
 from .models import Project
 from .forms import ProjectForm
-
-
-def index(request):
-
-    template_name = 'apps/projects/project_index.html'
-
-    return render(request, template_name, context)
-
-# TODO: Refactor ProjectList() to display projects in order by status.
 
 
 class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -31,8 +20,8 @@ class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = {
             'name': self.kwargs['name'],
-            'pagetitle': 'Home',
-            'title': 'Home page',
+            'pagetitle': 'Projects List',
+            'title': 'Projects List',
             # 'bannerTemplate': 'fullscreen',
             'header': {
                 # 'background': 'apps/core/imgs/default.jpg',

@@ -55,13 +55,5 @@ __all__ = [
 ]
 
 DEBUG = False
-DATABASES['default'] = {
-    'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'cpcesupm',
-    'USER': 'cpcesu',
-    'PASSWORD': 'HjMNGN4cJtQcg',
-    'HOST': '127.0.0.1',
-    'PORT': '5432'
-}
 # SECRET_KEY = env('SECRET_KEY')
 ALLOWED_HOSTS = ['*']

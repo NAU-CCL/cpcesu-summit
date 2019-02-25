@@ -99,6 +99,10 @@ def add_link(regex, name, link_args=None):
     if 'auth_perms' in link_args and 'auth_required' in new_link:
         new_link['auth_perms'] = link_args['auth_perms']
 
+    # Is external link
+    if 'target' in link_args:
+        new_link['target'] = link_args['target']
+
     # Add link to left or right side of nav
     # If it doesn't belong to a dropdown
     if dropdown is None:
