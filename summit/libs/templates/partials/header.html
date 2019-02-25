@@ -32,10 +32,10 @@
         {% if request.user.is_authenticated %}
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle waves-effect waves-light" id="navbarDropdownMenuLink-4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Profile
+            Welcome, {{ request.user.username }}
           </a>
           <div class="dropdown-menu dropdown-menu-right dropdown-info" aria-labelledby="navbarDropdownMenuLink-4">
-            <a class="dropdown-item waves-effect waves-light" href="#">My account</a>
+            <a class="dropdown-item waves-effect waves-light" href="{% url 'summit.libs.auth:profile' %}">My account</a>
             <a class="dropdown-item waves-effect waves-light" href="{% url 'logout' %}">Log out</a>
           </div>
         </li>
@@ -65,7 +65,11 @@
 
         <p class="buttonsDiv">
           {% for button in buttons %}
+          {% if button.uses_reverse %}
+          <a href="{% url button.link %}" class="button" target="{{ button.target|default:'' }}">
+          {% else %}
           <a href="{{ button.link }}" class="button" target="{{ button.target|default:'' }}">
+          {% endif %}
             {{ button.name }}
           </a>
           {% endfor %}

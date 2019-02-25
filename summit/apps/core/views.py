@@ -11,17 +11,19 @@ def index(request, name):
         'bannerTemplate': 'fullscreen',
         'header': {
             # 'background': 'apps/core/imgs/default.jpg',
-            'heading1': 'Heading 1',
-            'heading2': 'Heading 2',
+            'heading1': 'Welcome to Summit',
+            'heading2': 'Your New Cooperative Ecosystem Studies Unit Project Management System',
             'buttons': [
                 {
-                    'name': 'Button 1',
-                    'link': '/#button1'
+                    'name': 'About Summit',
+                    'link': "summit.apps.core:summit.apps.core_About",
+                    'uses_reverse': True
                 },
                 {
-                    'name': 'External Button',
-                    'link': 'https://www.google.com/',
-                    'target': '_blank'
+                    'name': 'Current Projects',
+                    'link': "summit.apps.projects:summit.apps.projects_Projects",
+                    'uses_reverse': True
+                    # 'target': '_blank'
                 }
             ]
         },
@@ -43,6 +45,24 @@ def about(request, name):
         'header': {
             'background': 'imgs/coverImages/canyon-country-2400x600.jpg',
         },
+    }
+
+    return render(request, template_name, context)
+
+
+def error404(request, name):
+    template_name = 'apps/core/error.html'
+
+    context = {
+        'name': name,
+        'pagetitle': 'Error',
+        'title': 'That\'s an Error',
+        'header': {
+            'background': 'imgs/coverImages/canyon-country-2400x600.jpg',
+        },
+        'error_msg': 'Error 404 - Page Not Found',
+        'error_desc': 'Please check the URL and try again. If you feel like this is an error, please submit feedback \
+            below. <a class="button" href="{% url \'summit.apps.core:Home\' %}">Send Feedback</a>'
     }
 
     return render(request, template_name, context)
