@@ -58,13 +58,7 @@ __all__ = [
 ]
 
 MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
-DATABASES['default'] = {
-    'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'cpcesupm',
-    'USER': 'cpcesu',
-    'PASSWORD': 'HjMNGN4cJtQcg',
-    'HOST': '127.0.0.1',
-    'PORT': '5432'
-}
+
+DEBUG = True
 INTERNAL_IPS = ['127.0.0.1', 'localhost']
 INSTALLED_APPS = ['whitenoise.runserver_nostatic', *INSTALLED_APPS, 'debug_toolbar']
