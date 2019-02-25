@@ -5,5 +5,5 @@
 {% block primary %}
 <h1>{{ error_msg|default:"Looks like you've hit a snag in our system"}}!</h1>
 
-<p>{{ error_msg|default:"Please report this by using the 'Send Feedback' button at the top of this page" }}</p>
+<p>{{ error_desc|default:"Please report this by using the 'Send Feedback' button at the top of this page" }}</p>
 {% endblock %}
