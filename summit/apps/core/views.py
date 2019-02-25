@@ -62,7 +62,7 @@ def error404(request):
         },
         'error_msg': 'Error 404 - Page Not Found',
         'error_desc': 'Please check the URL and try again. If you feel like this is an error, please submit feedback \
-            below. <a class="button" href="{% url \'summit.apps.core:Home\' %}">Send Feedback</a>'
+            below.'
     }
 
     return render(request, template_name, context=context, status=404)
