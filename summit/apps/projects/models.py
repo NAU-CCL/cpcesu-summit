@@ -4,7 +4,7 @@ from config.links import get_name
 from django.core.validators import MinValueValidator
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-
+import datetime
 from decimal import Decimal
 
 from summit.libs.auth.models import Partner, FederalAgency, CESUnit
@@ -18,6 +18,7 @@ _help_text = {
     'budget': 'Any amount that pertains to the overall budget of a project.',
     'student_support': 'A project may have support from students.',
 }
+
 
 class Project(models.Model):
 
@@ -61,6 +62,8 @@ class Project(models.Model):
     file = models.FileField(upload_to=project_directory_path,
                             default=str(settings.MEDIA_ROOT) + '/projects/default.txt')
 
+    date = models.DateTimeField(default=datetime.datetime.now, blank=True)
+
     def get_absolute_url(self):
         from django.urls import reverse
         return reverse('summit.apps.projects:project-detail', args=[str(self.id)])
@@ -72,16 +75,16 @@ class Project(models.Model):
 class Notification(models.Model):
     TYPE_OPTIONS = (
         ('CHECKUP', 'Checkup'),
-        ('NONE', 'None')
+        ('NONE', 'None'),
     )
 
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     type = models.CharField(max_length=10, choices=TYPE_OPTIONS, default='NONE')
     description = models.TextField(help_text=_help_text['description'])
     seen = models.BooleanField(default=False)
 
-    #def get_all_objects(self):
-    #    queryset = self.__class__.objects.all()
-    #    return queryset
+    #def mark_seen(self):
+    #    self.seen = True
 
     def __str__(self):
         return self.description

@@ -8,6 +8,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 
 from .models import Project, Notification
 from .forms import ProjectForm
+from .tasks import add
+
+
+def mark_seen(request):
+    notification = Notification.objects.get(pk=pk)
+    notification.seen = True
+    notification.save()
 
 
 def index(request):
@@ -29,9 +36,15 @@ class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     raise_exception = True
 
     def get_context_data(self, **kwargs):
+        add_result1 = add.apply_async((2, 2))
+        add_result2 = add.delay(2, 2)
+        print("add_result-status: " + str(add_result1.status))
+        print("Backend: " + str(add_result1.backend))
+        print("Backend: " + str(add_result2.backend))
+        print("add_result: " + str(add_result1.get()))
+        print("add_result: " + str(add_result2.get()))
         context = {
             'name': self.kwargs['name'],
-            'notifications': Notification.objects.all(),
             'pagetitle': 'Home',
             'title': 'Home page',
             # 'bannerTemplate': 'fullscreen',

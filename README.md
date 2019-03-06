@@ -355,3 +355,33 @@ git commit -m "Commit message here"
 
 git push
 ```
+
+#### Setting up Celery
+
+Install redis-server with 
+```
+sudo apt install redis-server
+```
+then in /etc/redis/redis.conf, change supervised to systemd
+```
+in /etc/redis/redis.conf
+
+# Note: these supervision methods only signal "process is ready."
+#       They do not enable continuous liveness pings back to your supervisor.
+supervised systemd
+```
+
+See [this link](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-18-04)
+for more info on testing the distro, or configuration for Windows, untested atm.
+
+Given celery pip installs correctly, activate it with the following command
+
+```
+celery -A summit worker -B -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+```
+
+to double check that tasks are being created and their status is correct, do
+```
+pip install flower
+celery flower -A summit --address=127.0.0.1 --port=5555
+```

@@ -50,6 +50,7 @@ DJANGO_APPS = [
 PROJ_APPS = [
     # Project-based apps
     # Order alphabetically, first loading the libs over apps
+    'django_celery_beat',
     'summit.libs',
     'summit.libs.auth',
     'summit.apps.core',
@@ -99,6 +100,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'summit.libs.templates.context_processors.notification_context_processor',
             ],
         },
     },
@@ -113,7 +116,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'summit_db',
+        'NAME': 'cpcesupm',
+        'USER': 'cpcesu',
+        'PASSWORD': 'HjMNGN4cJtQcg',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
@@ -163,3 +170,5 @@ AUTH_USER_MODEL = 'summit_auth.User'
 # TO DO STILL
 # EMAIL_BACKEND =
 # ADMINS
+CELERY_BROKER_URL = 'redis://localhost'
+CELERY_RESULT_BACKEND = 'redis'
