@@ -9,13 +9,16 @@
     </div>
 
     <div class="card-body">
-        <h6> {{ object.status }} </h6>
-        <h6> {{ object.partner }} </h6>
-        <h6> {{ object.federal_agency }} </h6>
-        <h6> {{ object.description }} </h6>
-        <h6> {{ object.budget }} </h6>
-        <h6> {{ object.student_support }} </h6>
-        <a href=" {{ object.file.url }} " target="_blank"> {{ object.file.url }} </a>
+        <h6> <b>Status: </b>{{ object.status }} </h6>
+        <h6> <b>Partner: </b>{{ object.partner }} </h6>
+        <h6> <b>Federal Agency: </b>{{ object.federal_agency }} </h6>
+        <h6> <b>Budget: </b>{{ object.budget }} </h6>
+        <h6> <b>Student Support: </b>{{ object.student_support }} </h6>
+        <h6><b>File(s): </b><a href=" {{ object.file.url }} " target="_blank"> {{ object.file.url }}</a></h6>
+        <br><h6> <b>Description: </b></h6>
+        <div class="card-text">
+            {{ object.description }}
+        </div>
     </div>
     <br>
 
