@@ -38,8 +38,10 @@ DJANGO_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles'
+    'django.contrib.staticfiles',
     # Do not touch
+
+    # Other Django-related libraries (3rd party)
     'django_celery_beat',
 ]
 

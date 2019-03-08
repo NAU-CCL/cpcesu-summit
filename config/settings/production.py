@@ -57,3 +57,13 @@ __all__ = [
 DEBUG = False
 # SECRET_KEY = env('SECRET_KEY')
 ALLOWED_HOSTS = ['*']
+LOGGING = {
+    #  ... omitting the formatters and handlers for brevity ...
+    'loggers': {
+        # ...  you may have other loggers here as well ...
+        'django': {
+            'level': 'WARNING',
+            'propagate': True,
+        }
+    }
+}
