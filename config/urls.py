@@ -27,6 +27,8 @@ urlpatterns = [
     url(r'^projects/', include('summit.apps.projects.urls')),
 ]
 
+handler404 = 'summit.libs.views.error404'
+
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns = [

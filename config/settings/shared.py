@@ -12,10 +12,6 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
-import environ
-
-env = environ.Env()
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 PROJ_DIR = os.path.join(BASE_DIR, 'summit')
@@ -24,11 +20,10 @@ PROJ_DIR = os.path.join(BASE_DIR, 'summit')
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY',
-                 default='u&f_a@de&t00=pdfqc6x6^nif^w-+1eb_cf_g03!^&ch&cavs9')
+SECRET_KEY = 'u&f_a@de&t00=pdfqc6x6^nif^w-+1eb_cf_g03!^&ch&cavs9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG', default=True)
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -45,12 +40,12 @@ DJANGO_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles'
     # Do not touch
+    'django_celery_beat',
 ]
 
 PROJ_APPS = [
     # Project-based apps
     # Order alphabetically, first loading the libs over apps
-    'django_celery_beat',
     'summit.libs',
     'summit.libs.auth',
     'summit.apps.core',
@@ -100,7 +95,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-
                 'summit.libs.templates.context_processors.notification_context_processor',
             ],
         },
@@ -119,8 +113,8 @@ DATABASES = {
         'NAME': 'cpcesupm',
         'USER': 'cpcesu',
         'PASSWORD': 'HjMNGN4cJtQcg',
-        'HOST': 'localhost',
-        'PORT': '',
+        'HOST': '127.0.0.1',
+        'PORT': '5432'
     }
 }
 

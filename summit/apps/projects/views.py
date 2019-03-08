@@ -1,7 +1,5 @@
-from django.shortcuts import redirect, render, get_object_or_404
-from django.conf import settings
-from django.core.urlresolvers import reverse
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.shortcuts import get_object_or_404
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
@@ -15,15 +13,6 @@ def mark_seen(request):
     notification = Notification.objects.get(pk=pk)
     notification.seen = True
     notification.save()
-
-
-def index(request):
-
-    template_name = 'apps/projects/project_index.html'
-
-    return render(request, template_name, context)
-
-# TODO: Refactor ProjectList() to display projects in order by status.
 
 
 class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -45,8 +34,8 @@ class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         print("add_result: " + str(add_result2.get()))
         context = {
             'name': self.kwargs['name'],
-            'pagetitle': 'Home',
-            'title': 'Home page',
+            'pagetitle': 'Projects List',
+            'title': 'Projects List',
             # 'bannerTemplate': 'fullscreen',
             'header': {
                 # 'background': 'apps/core/imgs/default.jpg',
