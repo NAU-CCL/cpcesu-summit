@@ -40,6 +40,7 @@ DJANGO_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles'
     # Do not touch
+    'django_celery_beat',
 ]
 
 PROJ_APPS = [
@@ -94,6 +95,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'summit.libs.templates.context_processors.notification_context_processor',
             ],
         },
     },
@@ -162,3 +164,5 @@ AUTH_USER_MODEL = 'summit_auth.User'
 # TO DO STILL
 # EMAIL_BACKEND =
 # ADMINS
+CELERY_BROKER_URL = 'redis://localhost'
+CELERY_RESULT_BACKEND = 'redis'
