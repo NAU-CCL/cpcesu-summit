@@ -1,4 +1,3 @@
-# TODO: Determine if each project title is unique (Ask CP)
 from django.db import models
 from config.links import get_name
 from django.core.validators import MinValueValidator
