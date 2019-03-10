@@ -1,4 +1,7 @@
+import csv
+from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404
+from django.core.urlresolvers import reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -82,4 +85,31 @@ class ProjectEdit(UpdateView):
     def get_object(self, **kwargs):
         pk_ = self.kwargs.get("id")
         return get_object_or_404(Project, pk=pk_)
+
+
+class ProjectModifications(UpdateView):
+    template_name = 'apps/projects/project_options.html'
+    model = Project
+    form_class = ProjectForm
+
+    def get_object(self, **kwargs):
+        pk_ = self.kwargs.get("id")
+        return get_object_or_404(Project, pk=pk_)
+
+
+def export_to_csv(request, id):
+    project = Project.objects.get(pk=id)
+    if project is None:
+        return Http404("Project does not exist.")
+    file_name = project.project_title
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="'+file_name+'.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['project_title', 'status', 'budget', 'student_support'])
+
+    writer.writerow([project.project_title, project.status, project.budget, project.student_support])
+
+    return response
 
