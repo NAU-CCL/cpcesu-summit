@@ -1,6 +1,7 @@
 {% load common_tags %}
 {% load static %}
 
+
 {% if bannerTemplate %}
 <header class="{{ bannerTemplate }}">
 {% else %}
@@ -24,6 +25,25 @@
       <!-- Links -->
       <ul class="navbar-nav justify-content-center">
         {% if request.user.is_authenticated %}
+
+          <!-- Notifications -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle waves-effect waves-light" id="navbarDropdownMenuLink-5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Notifications
+            </a>
+            <div class="dropdown-menu dropdown-menu-right dropdown-info" aria-labelledby="navbarDropdownMenuLink-5">
+
+              {% for notification in notifications %}
+              <a class="intercept"
+                 href="{% url 'summit.apps.projects:project-detail' id=notification.project.pk %}"
+                 data-arg1="{{ notification.pk }}">
+              {{ notification.project.project_title }} - {{ notification.type }}
+              </a>
+              {% endfor %}
+            </div>
+          </li>
+
+        <!-- Profile -->
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle waves-effect waves-light" id="navbarDropdownMenuLink-4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Welcome, {{ request.user.username }}

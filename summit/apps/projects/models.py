@@ -4,7 +4,7 @@ from config.links import get_name
 from django.core.validators import MinValueValidator
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-
+import datetime
 from decimal import Decimal
 
 from summit.libs.auth.models import Partner, FederalAgency, CESUnit
@@ -127,12 +127,11 @@ class Project(models.Model):
     sci_method = models.BooleanField(default=False)
     req_iacuc = models.BooleanField(verbose_name="Requires IACUC Review/ Concurrence", default=False)
 
+    date = models.DateTimeField(default=datetime.datetime.now, blank=True)
+
     def get_absolute_url(self):
         from django.urls import reverse
         return reverse('summit.apps.projects:project-detail', args=[str(self.id)])
-
-    def get_project_title(self):
-        return self.project_title
 
     def __str__(self):
         return self.project_title
@@ -146,3 +145,21 @@ class File(models.Model):
 
     def __str__(self):
         return file_name
+
+
+class Notification(models.Model):
+    TYPE_OPTIONS = (
+        ('CHECKUP', 'Checkup'),
+        ('NONE', 'None'),
+    )
+
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    type = models.CharField(max_length=10, choices=TYPE_OPTIONS, default='NONE')
+    description = models.TextField(help_text=_help_text['description'])
+    seen = models.BooleanField(default=False)
+
+    #def mark_seen(self):
+    #    self.seen = True
+
+    def __str__(self):
+        return self.description
