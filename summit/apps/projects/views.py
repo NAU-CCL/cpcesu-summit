@@ -1,18 +1,14 @@
+import csv
+from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404
+from django.core.urlresolvers import reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
-from .models import Project, Notification
+from .models import Project
 from .forms import ProjectForm
-from .tasks import add
-
-
-def mark_seen(request):
-    notification = Notification.objects.get(pk=pk)
-    notification.seen = True
-    notification.save()
 
 
 class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -25,13 +21,6 @@ class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     raise_exception = True
 
     def get_context_data(self, **kwargs):
-        add_result1 = add.apply_async((2, 2))
-        add_result2 = add.delay(2, 2)
-        print("add_result-status: " + str(add_result1.status))
-        print("Backend: " + str(add_result1.backend))
-        print("Backend: " + str(add_result2.backend))
-        print("add_result: " + str(add_result1.get()))
-        print("add_result: " + str(add_result2.get()))
         context = {
             'name': self.kwargs['name'],
             'pagetitle': 'Projects List',
@@ -97,3 +86,29 @@ class ProjectEdit(UpdateView):
         pk_ = self.kwargs.get("id")
         return get_object_or_404(Project, pk=pk_)
 
+
+class ProjectModifications(UpdateView):
+    template_name = 'apps/projects/project_options.html'
+    model = Project
+    form_class = ProjectForm
+
+    def get_object(self, **kwargs):
+        pk_ = self.kwargs.get("id")
+        return get_object_or_404(Project, pk=pk_)
+
+
+def export_to_csv(request, id):
+    project = Project.objects.get(pk=id)
+    if project is None:
+        return Http404("Project does not exist.")
+    file_name = project.project_title
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="'+file_name+'.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['project_title', 'status', 'budget', 'student_support'])
+
+    writer.writerow([project.project_title, project.status, project.budget, project.student_support])
+
+    return response
