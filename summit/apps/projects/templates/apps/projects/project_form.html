@@ -2,18 +2,33 @@
 {% load static %}
 
 {% block primary %}
-<div class="card">
-  <div class="card-header">
-      <h3>Create Project</h3>
-  </div>
-  <div class="card-body">
-    <h5 class="card-title">Please fill out all fields.</h5>
-        <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.non_field_errors }}
-            {% include 'apps/projects/form-template.html'%}
-            <input class="btn btn-primary" type="submit" value="Submit">
-        </form>
-  </div>
-</div>
+<h1 align="left">Create Project</h1><br>
+<form action="" method="post" enctype="multipart/form-data">
+    <div class="container-fluid">
+        <div class="row">
+                <div class="card col-4">
+                  <div class="card-header">
+                      <h3>Basic Project Info</h3>
+                  </div>
+                  <div class="card-body">
+                            {% csrf_token %}
+                            {{ form.non_field_errors }}
+                            {% include 'apps/projects/basic-info-form-template.html'%}
+                  </div>
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="card col-7">
+                  <div class="card-header">
+                      <h3>Additional Details</h3>
+                  </div>
+                  <div class="card-body">
+                            {% csrf_token %}
+                            {{ form.non_field_errors }}
+                            {% include 'apps/projects/additional-form-template.html'%}
+                  </div>
+                </div>
+                <input class="btn btn-primary" type="submit" value="Submit">
+        </div>
+    </div>
+</form>
 {% endblock %}
