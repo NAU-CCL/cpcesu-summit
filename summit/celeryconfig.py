@@ -1,4 +1,5 @@
 from celery import shared_task, Celery
+from celery.schedules import crontab
 
 CELERY_BROKER_URL = 'redis://localhost'
 CELERY_RESULT_BACKEND = 'redis'
@@ -15,9 +16,11 @@ app = Celery('mysite',
              #include=['apps.projects.tasks'],)
 
 # 30.0 for seconds
+
 app.conf.beat_schedule = {
     'notify_30_day_old_projects': {
         'task': 'tasks.test_notification',
-        'schedule': 60,#crontab(hour=2, minute=28, day_of_week=3),
+        'schedule': crontab(hour=2, minute=28, day_of_week=3), #60,#
     },
 }
+

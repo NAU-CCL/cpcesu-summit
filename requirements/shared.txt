@@ -5,3 +5,5 @@ whitenoise
 pillow
 celery[redis]
 django_celery_beat
+pytesseract
+Wand

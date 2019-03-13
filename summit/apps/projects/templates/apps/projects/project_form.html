@@ -8,7 +8,7 @@
   </div>
   <div class="card-body">
     <h5 class="card-title">Please fill out all fields.</h5>
-        <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+        <form class="form-horizontal" action="" id="project-form" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.non_field_errors }}
             {% include 'apps/projects/form-template.html'%}
@@ -16,4 +16,7 @@
         </form>
   </div>
 </div>
+
 {% endblock %}
+<script src="static/js/main.js"></script>
+

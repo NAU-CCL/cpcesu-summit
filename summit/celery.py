@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 import os
 from celery import Celery
+from celery.schedules import crontab
 #from summit.apps.projects.tasks import test_notification
 #import .celeryconfig #import Celeryconfig
 
@@ -17,7 +18,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'notify_30_day_old_projects': {
         'task': 'summit.apps.projects.tasks.test_notification',
-        'schedule': 15,  # crontab(hour=2, minute=28, day_of_week=3),
+        'schedule': crontab(hour=2, minute=28, day_of_week=3), #15,  #
     },
 }
 

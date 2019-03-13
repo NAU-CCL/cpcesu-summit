@@ -4,8 +4,11 @@ from config.links import get_name
 from django.core.validators import MinValueValidator
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-import datetime
+#import datetime
+from django.utils import timezone
+import pytz
 from decimal import Decimal
+from django.contrib.auth.models import User
 
 from summit.libs.auth.models import Partner, FederalAgency, CESUnit
 
@@ -52,17 +55,18 @@ class Project(models.Model):
     student_support = models.CharField(max_length=5, choices=STUDENT_SUPPORT, default=NONE)
     status = models.CharField(max_length=5, choices=STATUS, default=DRAFTING)
     partner = models.ForeignKey(Partner, on_delete=models.CASCADE,
-                                related_name='partner', default=None)
+                                related_name='partner', default=None, blank=True, null=True)
     federal_agency = models.ForeignKey(FederalAgency, on_delete=models.CASCADE,
-                                       related_name='federal_agency', default=None)
+                                       related_name='federal_agency', default=None, blank=True, null=True)
     cesu_unit = models.ForeignKey(CESUnit, on_delete=models.CASCADE,
-                                  related_name='cesu_unit', default=None)
+                                  related_name='cesu_unit', default=None, blank=True, null=True)
     # TODO: Read file in 'chunks' ---> https://docs.djangoproject.com/en/1.11/topics/http/file-uploads/
     # TODO: Create File model
     file = models.FileField(upload_to=project_directory_path,
                             default=str(settings.MEDIA_ROOT) + '/projects/default.txt')
 
-    date = models.DateTimeField(default=datetime.datetime.now, blank=True)
+    date = models.DateTimeField(default=timezone.now, blank=True)
+    #created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def get_absolute_url(self):
         from django.urls import reverse
@@ -88,3 +92,14 @@ class Notification(models.Model):
 
     def __str__(self):
         return self.description
+
+
+class ProjectFiles(models.Model):
+    def project_directory_path(self, filename):
+        return 'projects/{0}'.format(filename)
+
+    file = models.FileField(upload_to=project_directory_path,
+                            default=str(settings.MEDIA_ROOT))
+
+    def get_absolute_url(self):
+        return u'create'
