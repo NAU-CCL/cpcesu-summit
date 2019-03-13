@@ -5,3 +5,4 @@ whitenoise
 pillow
 celery[redis]
 django_celery_beat
+django-simple-history
