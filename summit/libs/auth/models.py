@@ -189,13 +189,16 @@ class UserProfile(AuditModel):
     fax_number = models.CharField(max_length=30, blank=True)
     email_address = models.EmailField(blank=True)
 
+    def get_full_name(self):
+        return self.first_name + " " + self.last_name + " (" + str(self.user) + ")"
+
     @staticmethod
     def detail_fields():
         return ['avatar', 'first_name', 'last_name', 'title', 'department', 'location', 'address', 'phone_number',
                 'fax_number', 'email_address']
 
     def __str__(self):
-        return self.user.get_full_name()
+        return self.get_full_name()
 
     class Meta:
         permissions = (
