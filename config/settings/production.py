@@ -23,6 +23,7 @@ from .shared import(
     MEDIA_URL,
     APPEND_SLASH,
     LOGIN_URL,
+    LOGIN_REDIRECT_URL,
     LOGOUT_REDIRECT_URL,
     AUTH_USER_MODEL,
 )
@@ -50,6 +51,7 @@ __all__ = [
     'STATIC_ROOT',
     'APPEND_SLASH',
     'LOGIN_URL',
+    'LOGIN_REDIRECT_URL',
     'LOGOUT_REDIRECT_URL',
     'AUTH_USER_MODEL',
 ]

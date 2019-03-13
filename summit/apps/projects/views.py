@@ -1,7 +1,6 @@
 import csv
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404
-from django.core.urlresolvers import reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -18,7 +17,7 @@ class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
     permission_required = 'summit_projects.add_project'
     permission_denied_message = 'You do not have the correction permissions to access this page.'
-    raise_exception = True
+    raise_exception = False
 
     def get_context_data(self, **kwargs):
         context = {

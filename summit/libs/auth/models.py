@@ -8,9 +8,8 @@ from summit.libs.models import AuditModel
 
 def get_all_user_groups():
     user_groups = UserGroup.__subclasses__()
-    subclasses = []
-    count = 0
-    print(user_groups)
+    subclasses = [(1, 'Public')]
+    count = 1
     for user_group in user_groups:
         subclasses.append((count, user_group.__name__))
         count += 1
@@ -107,6 +106,7 @@ class UserManager(BaseUserManager):
             password=password
         )
         user.is_admin = True
+        user.is_superuser = True
         user.save(using=self._db)
         return user
 
@@ -127,9 +127,6 @@ class User(AbstractUser):
                                              "backend",
                                    verbose_name="Admin site access?")
 
-    first_name = models.CharField(blank=False, max_length=150)
-    last_name = models.CharField(blank=False, max_length=150)
-
     group = models.ForeignKey(UserGroup, default=1, on_delete=models.CASCADE)
 
     external_id = models.CharField(
@@ -141,14 +138,14 @@ class User(AbstractUser):
 
     objects = UserManager()
 
-    REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
+    REQUIRED_FIELDS = ['email']
 
     def get_full_name(self):
         """
         Returns the first and last names of the user
         :return: first and last names as a concat string
         """
-        return self.first_name + " " + self.last_name
+        return self.username
 
     def get_short_name(self):
         """
@@ -162,24 +159,7 @@ class User(AbstractUser):
         User's email
         :return: user's email address
         """
-        return self.first_name + " " + self.last_name + " <" + self.email + ">"
-
-    def has_perm(self, perm, obj=None):
-        """
-        #TODO: Add actual functionality
-        :param perm:
-        :param obj:
-        :return:
-        """
-        return True
-
-    def has_module_perms(self, app_label):
-        """
-        #TODO: Add actual functionality
-        :param app_label:
-        :return:
-        """
-        return True
+        return self.username + " <" + self.email + ">"
 
     @property
     def is_staff(self):
@@ -195,8 +175,11 @@ class User(AbstractUser):
 
 
 class UserProfile(AuditModel):
-    user = models.OneToOneField(User, default=None)
-    avatar = models.ImageField()
+    user = models.OneToOneField(User, null=True, blank=True)
+    avatar = models.ImageField(blank=True)
+
+    first_name = models.CharField(default="", max_length=150)
+    last_name = models.CharField(default="", max_length=150)
 
     title = models.CharField(max_length=150, blank=True)
     department = models.CharField(max_length=150, blank=True)
@@ -206,11 +189,19 @@ class UserProfile(AuditModel):
     fax_number = models.CharField(max_length=30, blank=True)
     email_address = models.EmailField(blank=True)
 
+    @staticmethod
+    def detail_fields():
+        return ['avatar', 'first_name', 'last_name', 'title', 'department', 'location', 'address', 'phone_number',
+                'fax_number', 'email_address']
+
     def __str__(self):
         return self.user.get_full_name()
 
     class Meta:
         permissions = (
-            ('view_profile', 'Can see user profiles'),
+            ('edit_profile.group', 'Can edit other user profiles of same user group'),
+            ('edit_profile.self', 'Can edit own profile'),
+            ('view_profile.others', 'Can see other user profiles'),
+            ('view_profile.self', 'Can see own profile'),
         )
         verbose_name = "User Profile"
