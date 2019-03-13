@@ -26,5 +26,6 @@ urlpatterns = [
     url(r'^edit/(?P<id>[-\w]+)/$', views.ProjectEdit.as_view(), name='project-edit'),
     url(r'^autofill/', views.ProjectAutofill.as_view(), name='project-autofill'),
     url(r'^poll_state$', views.poll_state, name='poll_state'),
+    url(r'^mods/(?P<id>[-\w]+)/$', views.ProjectModifications.as_view(), name='project-mods'),
+    url(r'^detail/download_csv/(?P<id>[-\w]+)/$', views.export_to_csv, name='project-export-csv'),
 ]
-

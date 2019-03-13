@@ -7,9 +7,13 @@ from django.conf.urls.static import static
 app_name = 'summit.apps.core'
 urlpatterns = [
     link(r'^$', views.index, get_name(app_name, 'Home')),
-    link(r'^about/', views.about, get_name(app_name, 'About')),
-    link(r'^$', views.index, get_name(app_name, 'Contact')),
+    link(r'^about/', views.about, get_name(app_name, 'About'))
 ]
+
+add_link('', get_name(app_name, 'Contact'), {
+    'link': 'https://in.nau.edu/cpesu/cpcesu-contact/',
+    'target': '_blank'
+})
 
 # Static links
 add_link('/admin', get_name(app_name, 'Admin Site'), {

@@ -8,8 +8,6 @@ from summit.libs.auth.models import UserProfile, UserGroup, get_all_user_groups
 
 AUDIENCES = get_all_user_groups()
 
-print(AUDIENCES)
-
 
 class Document(AuditModel):
     authors = models.ManyToManyField(UserProfile)

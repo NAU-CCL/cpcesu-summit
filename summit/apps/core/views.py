@@ -11,17 +11,19 @@ def index(request, name):
         'bannerTemplate': 'fullscreen',
         'header': {
             # 'background': 'apps/core/imgs/default.jpg',
-            'heading1': 'Heading 1',
-            'heading2': 'Heading 2',
+            'heading1': 'Welcome to Summit',
+            'heading2': 'Your New Cooperative Ecosystem Studies Unit Project Management System',
             'buttons': [
                 {
-                    'name': 'Button 1',
-                    'link': '/#button1'
+                    'name': 'About Summit',
+                    'link': "summit.apps.core:summit.apps.core_About",
+                    'uses_reverse': True
                 },
                 {
-                    'name': 'External Button',
-                    'link': 'https://www.google.com/',
-                    'target': '_blank'
+                    'name': 'Current Projects',
+                    'link': "summit.apps.projects:summit.apps.projects_Projects",
+                    'uses_reverse': True
+                    # 'target': '_blank'
                 }
             ]
         },
@@ -46,4 +48,3 @@ def about(request, name):
     }
 
     return render(request, template_name, context)
-

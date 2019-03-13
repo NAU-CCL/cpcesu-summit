@@ -7,3 +7,4 @@ celery[redis]
 django_celery_beat
 pytesseract
 Wand
+django-simple-history
