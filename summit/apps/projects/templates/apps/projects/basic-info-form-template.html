@@ -42,6 +42,12 @@
     <label class="control-label col-sm">{{ form.cesu_unit.label_tag }}</label>
     <div class="col-sm">{{ form.cesu_unit }}</div><br>
 
+    <div class="col-sm-offset-2 col-sm-10">
+        <span class="text-danger sml">{{ file_form.file.errors }}</span>
+    </div>
+    <label class="control-label col-sm">{{ file_form.file.label_tag }}</label>
+    <div class="col-sm">{{ file_form.file }}</div><br>
+
 </div>
 
 {% if form.errors %}

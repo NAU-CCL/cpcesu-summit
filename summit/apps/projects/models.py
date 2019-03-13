@@ -1,10 +1,11 @@
-from django.db import models
 from config.links import get_name
+import datetime
+from decimal import Decimal
 from django.core.validators import MinValueValidator
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-import datetime
-from decimal import Decimal
+from django.db import models
+from simple_history.models import HistoricalRecords
 
 from summit.libs.auth.models import Partner, FederalAgency, CESUnit
 
@@ -75,8 +76,8 @@ class Project(models.Model):
     description = models.TextField(help_text=_help_text['description'], verbose_name="Description/Abstract")
     sensitive = models.BooleanField(default=False, help_text=_help_text['sensitive'])
     budget = models.DecimalField(max_digits=12, decimal_places=2, help_text=_help_text['budget'])
-    student_support = models.CharField(max_length=5, choices=STUDENT_SUPPORT, default=NONE)
-    vet_support = models.CharField(max_length=5, choices=STUDENT_SUPPORT, default=NONE,
+    student_support = models.CharField(max_length=7, choices=STUDENT_SUPPORT, default=NONE)
+    vet_support = models.CharField(max_length=5, choices=VET_SUPPORT, default=NONE,
                                    verbose_name="Youth/Veteran involvement")
     status = models.CharField(max_length=5, choices=STATUS, default=DRAFTING)
     partner = models.ForeignKey(Partner, on_delete=models.CASCADE,
@@ -97,7 +98,7 @@ class Project(models.Model):
     init_start_date = models.DateField(blank=True, default="2019-1-1",
                                        verbose_name="Project Initially received (YYYY/MM/DD)")
     comm_start_date = models.DateField(blank=True, default="2019-1-1",
-                                       verbose_name="Date Review Comments Sent (YYYY/MM/DD)")
+                                       verbose_name="Review Comments Sent (YYYY/MM/DD)")
     task_agreement_start_date = models.DateField(blank=True, default="2019-1-1",
                                                  verbose_name="Date Task Agreement Approved (YYYY/MM/DD)")
     # TODO: Make this automatic whenever they change the status to EXEC
@@ -105,7 +106,8 @@ class Project(models.Model):
                                        verbose_name="Date Executed (YYYY/MM/DD)")
     actual_start = models.DateField(blank=True, default="2019-1-1", verbose_name="Actual Start Date (YYYY/MM/DD)")
     actual_end = models.DateField(blank=True, default="2019-1-1", verbose_name="Actual Start Date (YYYY/MM/DD)")
-    fiscal_year = models.DecimalField(blank=True, default=2019, max_digits=4, decimal_places=0, max_length=9999)
+    fiscal_year = models.DecimalField(blank=True, default=2019, max_digits=4, decimal_places=0, max_length=9999,
+                                      verbose_name="Fiscal Year")
     discipline = models.CharField(max_length=500, help_text=_help_text['discipline'], blank=True)
     type = models.CharField(max_length=500, help_text=_help_text['type'], blank=True)
     r_d = models.CharField(max_length=500, help_text=_help_text['r_d'], blank=True,
@@ -127,6 +129,7 @@ class Project(models.Model):
     req_iacuc = models.BooleanField(verbose_name="Requires IACUC Review/ Concurrence", default=False)
 
     date = models.DateTimeField(default=datetime.datetime.now, blank=True)
+    history = HistoricalRecords()
 
     def get_absolute_url(self):
         from django.urls import reverse
@@ -139,7 +142,7 @@ class Project(models.Model):
 class File(models.Model):
     # TODO: Read file in 'chunks' ---> https://docs.djangoproject.com/en/1.11/topics/http/file-uploads/
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True)
-    file_name = 'projects/' + str(project)
+    file_name = 'projects/test'
     file = models.FileField(blank=True, upload_to=file_name)
 
     def __str__(self):

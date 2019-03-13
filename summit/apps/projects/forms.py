@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Project
+from .models import Project, File
 
 
 class ProjectForm(forms.ModelForm):
@@ -11,4 +11,13 @@ class ProjectForm(forms.ModelForm):
                   'student_support', 'vet_support']
         widgets = {
             'project_title': forms.TextInput(attrs={'class': 'input', 'placeholder': 'Enter project title here...'}),
+        }
+
+
+class ProjectFileForm(forms.ModelForm):
+    class Meta:
+        model = File
+        fields = ['file']
+        widgets = {
+            'file': forms.ClearableFileInput(attrs={'multiple': True}),
         }

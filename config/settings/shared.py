@@ -43,6 +43,7 @@ DJANGO_APPS = [
 
     # Other Django-related libraries (3rd party)
     'django_celery_beat',
+    'simple_history',
 ]
 
 PROJ_APPS = [
@@ -72,6 +73,9 @@ DJANGO_MIDDLEWARES = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # Do not touch
+
+    # Other Django-related libraries (3rd party)
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 PROJ_MIDDLEWARES = [
