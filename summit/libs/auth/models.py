@@ -62,13 +62,11 @@ class UserManager(BaseUserManager):
     Called when the User model needs to be created
     """
 
-    def create_user(self, username, email, first_name, last_name, password=None):
+    def create_user(self, username, email, password=None):
         """
         Creates a normal user
         :param username: user's username
         :param email: email address
-        :param first_name: first name
-        :param last_name: last name
         :param password: the user's password. Default: None
         :return: user model
         """
@@ -79,21 +77,17 @@ class UserManager(BaseUserManager):
         user = self.model(
             username=username,
             email=self.normalize_email(email),
-            first_name=first_name,
-            last_name=last_name,
         )
 
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, email, first_name, last_name, password):
+    def create_superuser(self, username, email, password):
         """
         Used to create a super user (CPCESU admin) with all permissions
         :param username: user's username
         :param email: email address
-        :param first_name: first name
-        :param last_name: last name
         :param password: password for user. Default: None
         :return: user model
         """
@@ -101,8 +95,6 @@ class UserManager(BaseUserManager):
         user = self.create_user(
             username=username,
             email=email,
-            first_name=first_name,
-            last_name=last_name,
             password=password
         )
         user.is_admin = True
