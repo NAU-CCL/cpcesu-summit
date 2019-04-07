@@ -32,10 +32,11 @@ _help_text = {
 }
 
 
-class Project(models.Model):
+def get_directory_path(instance, filename):
+    return 'projects/{0}/{1}'.format(instance.project, filename)
 
-    def project_directory_path(self, filename):
-        return 'projects/{0}/{1}'.format(str(self.id), filename)
+
+class Project(models.Model):
 
     GRADUATE = 'GRAD'
     UNDERGRADUATE = 'UGRAD'
@@ -46,22 +47,21 @@ class Project(models.Model):
     YOUTH = 'YOUTH'
     VETS = 'VETS'
 
-
     DRAFTING = 'DRAFT'
     EXECUTED = 'EXEC'
     CLOSED = 'CLOSE'
     STUDENT_SUPPORT = (
+        (NONE, 'None'),
         (GRADUATE, 'Graduate'),
         (UNDERGRADUATE, 'Undergraduate'),
         (BOTH, 'Graduate and Undergraduate'),
         (UNKNOWN, 'Unknown'),
-        (NONE, 'None'),
     )
     VET_SUPPORT = (
-        (YOUTH, 'Youth/Young Adults'),
-        (BOTH, 'Graduate and Undergraduate'),
-        (UNKNOWN, 'Unknown'),
         (NONE, 'None'),
+        (YOUTH, 'Youth/Young Adults'),
+        (VETS, 'Veterans'),
+        (BOTH, 'Youth/Young Adults and Veterans'),
     )
     STATUS = (
         (DRAFTING, 'Drafting'),
@@ -85,7 +85,7 @@ class Project(models.Model):
     federal_agency = models.ForeignKey(FederalAgency, on_delete=models.CASCADE,
                                        related_name='federal_agency', default=None)
     cesu_unit = models.ForeignKey(CESUnit, on_delete=models.CASCADE,
-                                  related_name='cesu_unit', default=None)
+                                  related_name='cesu_unit', default=None, verbose_name="CESUnit")
     location = models.CharField(max_length=500, help_text=_help_text['location'], blank=True)
     fed_poc = models.CharField(max_length=500, help_text=_help_text['fed_poc'], blank=True,
                                verbose_name="Federal Point of Contact")
@@ -139,14 +139,13 @@ class Project(models.Model):
         return self.project_title
 
 
+# TODO: Read file in 'chunks' ---> https://docs.djangoproject.com/en/1.11/topics/http/file-uploads/
 class File(models.Model):
-    # TODO: Read file in 'chunks' ---> https://docs.djangoproject.com/en/1.11/topics/http/file-uploads/
-    project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True)
-    file_name = 'projects/test'
-    file = models.FileField(blank=True, upload_to=file_name)
+    project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, to_field='project_title')
+    file = models.FileField(blank=True, upload_to=get_directory_path, verbose_name="Select File(s)")
 
     def __str__(self):
-        return file_name
+        return str(self.file)
 
 
 class Notification(models.Model):
