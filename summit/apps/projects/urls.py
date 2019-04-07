@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^edit/(?P<id>[-\w]+)/$', views.ProjectEdit.as_view(), name='project-edit'),
     url(r'^mods/(?P<id>[-\w]+)/$', views.ProjectModifications.as_view(), name='project-mods'),
     url(r'^detail/download_csv/(?P<id>[-\w]+)/$', views.export_to_csv, name='project-export-csv'),
+    url('^detail/change_history/(?P<id>[-\w]+)/$', views.change_history, name='project-change-history'),
 ]
