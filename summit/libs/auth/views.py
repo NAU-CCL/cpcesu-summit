@@ -89,7 +89,7 @@ def edit_profile(request):
 
         if profile_form.is_valid():
             profile_form.save()
-            return HttpResponseRedirect('profile')
+            return HttpResponseRedirect('edit_profile')
     elif user_profile is None:
         profile_form = ProfileForm()
     else:

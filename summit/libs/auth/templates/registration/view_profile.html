@@ -11,7 +11,13 @@
     <table>
         <tr>
             <td>Avatar:</td>
-            <td> {{ profile.avatar }} </td>
+            <td>
+                {% if profile.avatar is not "" %}
+                    {{ profile.avatar }}
+                {% else %}
+                    No avatar
+                {% endif %}
+            </td>
         </tr>
         <tr>
             <td>Name (first and last): </td>

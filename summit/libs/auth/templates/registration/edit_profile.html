@@ -3,11 +3,13 @@
 
 
 {% block primary %}
-    <h1 style="text-align: center">Edit Your profile</h1>
+    <h1 style="text-align: center">Edit Your Profile</h1>
 
     <form method="post">
         {% csrf_token %}
         {{ profile_form.as_ul }}
         <input type="submit" value="Update Profile" />
     </form>
+
+    <hr>
 {% endblock %}
