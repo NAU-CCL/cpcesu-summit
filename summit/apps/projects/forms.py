@@ -6,7 +6,7 @@ from .models import Project, File
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ['project_title', 'short_summary', 'status', 'partner',
+        fields = ['p_num', 'project_title', 'short_summary', 'status', 'partner',
                   'federal_agency', 'cesu_unit', 'description', 'budget',
                   'student_support', 'vet_support']
         widgets = {
