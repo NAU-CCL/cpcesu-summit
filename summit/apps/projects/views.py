@@ -1,6 +1,7 @@
 import csv
-from django.http import Http404
-from django.shortcuts import get_object_or_404, render
+from django.forms import inlineformset_factory
+from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, View
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -72,6 +73,8 @@ class ProjectDetail(DetailView):
         }
         ctx = super(ProjectDetail, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
+        ctx['files'] = File.objects.filter(project=self.object)
+        # ctx['history_data'] =
         return ctx
 
     def get_object(self, **kwargs):
@@ -127,33 +130,72 @@ class ProjectCreate(CreateView):
         return ctx
 
     def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        project_form = ProjectForm(request.POST)
-        project_file_form = ProjectFileForm(request.POST, request.FILES)
+        self.object = None
+        project_form = self.get_form()
+        project_file_form = ProjectFileForm(request.POST, request.FILES,
+                                            instance=self.object)
         files = request.FILES.getlist('file')
         if project_form.is_valid() and project_file_form.is_valid():
-            self.form_valid(project_form, project_file_form, files)
+            self.object = project_form.save()
+            for f in files:
+                project_file_instance = File(file=f, project=self.object)
+                project_file_instance.save()
+            super(ProjectCreate, self).form_valid(project_form)
+            return HttpResponseRedirect(self.get_success_url())
         else:
             ctx = self.get_context_data()
             return self.render_to_response(ctx)
-        return super(ProjectCreate, self).post(request)
-
-    def form_valid(self, project_form, project_file_form, files):
-        self.object = project_form.save()
-        for f in files:
-            project_file_instance = File(file=f, project=self.object)
-            project_file_instance.save()
-        return super(ProjectCreate, self).form_valid(project_form)
 
 
 class ProjectEdit(UpdateView):
-    template_name = 'apps/projects/project_form.html'
     model = Project
+    template_name = 'apps/projects/project_form.html'
     form_class = ProjectForm
 
     def get_object(self, **kwargs):
         pk_ = self.kwargs.get("id")
         return get_object_or_404(Project, pk=pk_)
+
+    def get_success_url(self):
+        return reverse('summit.apps.projects:project-detail', args=[str(self.object.id)])
+
+    def get_context_data(self, **kwargs):
+        context = {
+            'pagetitle': 'Edit Project',
+            'title': 'Edit Project',
+            'cssFiles': [
+                'libs/mdb/css/addons/datatables.min.css',
+                'css/apps/projects/dashboard.css'
+            ],
+            'jsFiles': [
+                'libs/mdb/js/addons/datatables.min.js',
+                'js/apps/projects/dashboard.js'
+            ],
+            'files': File.objects.filter(project=self.object),
+            'file_form': ProjectFileForm()
+        }
+        ctx = super(ProjectEdit, self).get_context_data(**kwargs)
+        ctx = {**ctx, **context}
+        return ctx
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        project_form = self.get_form()
+        project_file_form = ProjectFileForm(request.POST, request.FILES,
+                                            instance=self.object)
+        files = request.FILES.getlist('file')
+        if project_form.is_valid() and project_file_form.is_valid():
+            self.object = project_form.save()
+            for f in files:
+                project_file_instance = File(file=f, project=self.object)
+                project_file_instance.save()
+            super(ProjectEdit, self).form_valid(project_form)
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            ctx = self.get_context_data()
+            return self.render_to_response(ctx)
+        super(ProjectEdit, self).post(request)
+        return HttpResponseRedirect(self.get_success_url())
 
 
 def project_form_redirect(request, name):
@@ -268,8 +310,12 @@ def export_to_csv(request, id):
     response['Content-Disposition'] = 'attachment; filename="'+file_name+'.csv"'
 
     writer = csv.writer(response)
-    writer.writerow(['project_title', 'status', 'budget', 'student_support'])
+    writer.writerow(['project_title', 'status', 'budget', 'student_support', 'short_summary'])
 
-    writer.writerow([project.project_title, project.status, project.budget, project.student_support])
+    writer.writerow([project.project_title, project.status, project.budget, project.student_support, project.short_summary])
 
     return response
+
+
+def change_history(request, id):
+    return HttpResponseRedirect(reverse('admin:summit_projects_project_history', args=id))

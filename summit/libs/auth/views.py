@@ -76,15 +76,20 @@ def view_profile(request):
 def edit_profile(request):
     template_name = 'registration/edit_profile.html'
 
-    user_profile = UserProfile.objects.get(user=request.user)
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+    except ObjectDoesNotExist:
+        user_profile = None
 
     if request.method == "POST" and request.POST:
+        if user_profile is None:
+            user_profile = UserProfile(user=request.user)
+            user_profile.save()
         profile_form = ProfileForm(request.POST, request.FILES, instance=user_profile)
 
         if profile_form.is_valid():
             profile_form.save()
-
-        return HttpResponseRedirect('profile')
+            return HttpResponseRedirect('profile')
     elif user_profile is None:
         profile_form = ProfileForm()
     else:

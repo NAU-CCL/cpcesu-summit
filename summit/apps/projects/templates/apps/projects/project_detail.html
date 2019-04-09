@@ -3,35 +3,40 @@
 
 {% block primary %}
     <div class="card-header">
-        <a href="https://placeholder.com"><img src="https://via.placeholder.com/150"></a>
-        <br>
-        <h2>{{ object.project_title }}</h2><p>{{ object.short_summary }}</p>
-    </div>
+        <h2 align="center">{{ object.project_title }}</h2><p align="center">P-Number: {{ object.p_num }} </p>
+    </div><br>
 
-    <div class="card-body">
-        <h6> <b>Status: </b>{{ object.status }} </h6>
-        <h6> <b>Partner: </b>{{ object.partner }} </h6>
-        <h6> <b>Federal Agency: </b>{{ object.federal_agency }} </h6>
-        <h6> <b>Budget: </b>{{ object.budget }} </h6>
-        <h6> <b>Student Support: </b>{{ object.student_support }} </h6>
-{#        <h6><b>File(s): </b><a href=" {{ object.file.url }} " target="_blank"> {{ object.file.url }}</a></h6>#}
-        <br><h6> <b>Description: </b></h6>
-        <div class="card-text">
-            {{ object.description }}
+    <div class="row">
+        <div class="card col-sm-12">
+            <h6> <b>Partner: </b>{{ object.partner }} </h6>
+            <h6> <b>Federal Agency: </b>{{ object.federal_agency }} </h6>
+            <h6> <b>Budget: </b>{{ object.budget }} </h6>
+            <h6> <b>Student Support: </b>{{ object.student_support }} </h6>
+            <h6><b>File(s): </b>
+                {% for file in files %}
+                    <br><a href=" {{ file.file.url }} " target="_blank"> {{ file.file }}</a>
+                {% endfor %}
+            </h6>
+            <br><h6> <b>Description: </b></h6>
+            <div class="card-text">
+                {{ object.description }}
+            </div>
         </div>
-        <h6> <b>history: </b>{{ object.history}} </h6>
     </div>
     <br>
 
 <span>
         <a href="{% url 'summit.apps.projects:project-edit' id=object.id %}">
-            <button type="button" class="btn btn-light">Edit Project Info</button>
+            <button type="button" class="btn btn-light">Edit Project</button>
         </a>
         <a href="{% url 'summit.apps.projects:project-mods' id=object.id %}">
             <button type="button" class="btn btn-info">Add Modifications</button>
         </a>
         <a href="{% url 'summit.apps.projects:project-export-csv' id=object.id %}">
             <button type="button" class="btn btn-info">Export to csv</button>
+        </a>
+        <a href="{% url 'summit.apps.projects:project-change-history' id=object.id %}">
+            <button type="button" class="btn btn-info">View/Revert Project History</button>
         </a>
 </span>
 {% endblock %}
