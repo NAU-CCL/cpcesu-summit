@@ -1,14 +1,5 @@
-from config.links import get_name
-import datetime
-from decimal import Decimal
-from django.core.validators import MinValueValidator
-from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-#import datetime
 from django.utils import timezone
-import pytz
-from decimal import Decimal
-from django.contrib.auth.models import User
 from django.db import models
 from simple_history.models import HistoricalRecords
 
@@ -120,6 +111,7 @@ class Project(models.Model):
     final_report = models.BooleanField(verbose_name="Final Report", default=False)
     # TODO: If the sensitive field is checked then remove this field from the form. Splashes proj onto pub page
     perm_share = models.BooleanField(verbose_name="Permission to share", default=False)
+
     # Optional fields as follows:
     # TODO: If NPS is selected then this field should display
     tech_rep = models.CharField(max_length=500, help_text=_help_text['tech_rep'], blank=True,
@@ -135,6 +127,8 @@ class Project(models.Model):
 
     date = models.DateTimeField(default=timezone.now, blank=True)
     history = HistoricalRecords()
+
+    job_id = models.CharField(max_length=500, blank=True, null=True)
 
     def get_absolute_url(self):
         from django.urls import reverse

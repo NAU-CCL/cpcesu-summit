@@ -1,8 +1,6 @@
 # TODO: Circular import on reverse. Success of form should redirect to project_index
-from django.conf import settings
 from config.links import link, get_name
-from django.conf.urls import url, include
-from django.conf.urls.static import static
+from django.conf.urls import url
 
 from . import views
 
@@ -21,11 +19,12 @@ urlpatterns = [
         'app_regex': app_regex,
         'dropdown_id': app_name
     }),
-    url(r'^create', views.ProjectCreate.as_view(), name='project-create'),
+    url(r'^create/', views.ProjectCreate.as_view(), name='project-create'),
     url(r'^detail/(?P<id>[-\w]+)/$', views.ProjectDetail.as_view(), name='project-detail'),
     url(r'^edit/(?P<id>[-\w]+)/$', views.ProjectEdit.as_view(), name='project-edit'),
     url(r'^autofill/', views.ProjectAutofill.as_view(), name='project-autofill'),
-    url(r'^poll_state$', views.poll_state, name='poll_state'),
+    url(r'^progress/', views.ProjectProgress.as_view(), name='project-progress'),
+    url(r'^poll_state$', views.ProjectProgress, name='poll_state'),
     url(r'^mods/(?P<id>[-\w]+)/$', views.ProjectModifications.as_view(), name='project-mods'),
     url(r'^detail/download_csv/(?P<id>[-\w]+)/$', views.export_to_csv, name='project-export-csv'),
 ]

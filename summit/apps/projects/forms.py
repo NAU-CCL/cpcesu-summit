@@ -1,5 +1,5 @@
 from django import forms
-from .models import Project, File, ProjectFiles
+from .models import Project, File#, ProjectFiles
 
 
 class ProjectForm(forms.ModelForm):
@@ -12,12 +12,11 @@ class ProjectForm(forms.ModelForm):
             'project_title': forms.TextInput(attrs={'class': 'input', 'placeholder': 'Enter project title here...'}),
         }
 
-
 # Remove latter as it maybe redundant
-class ProjectFilesForm(forms.ModelForm):
-    class Meta:
-        model = ProjectFiles
-        fields = ['file']
+# class ProjectFilesForm(forms.ModelForm):
+#     class Meta:
+#         model = ProjectFiles
+#         fields = ['file']
 
 
 class ProjectFileForm(forms.ModelForm):

@@ -1,16 +1,17 @@
 import csv
-from django.http import HttpResponse, Http404, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect
-from django.core.urlresolvers import reverse
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.http import Http404
+from django.shortcuts import get_object_or_404, render
+from django.core.urlresolvers import reverse, reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, View
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse
+from django.core.files import File
 
 from celery.result import AsyncResult
 import json
 
-from .models import Project, Notification, ProjectFiles
-from .forms import ProjectForm, ProjectFilesForm
+from .models import Project, File
+from .forms import ProjectForm, ProjectFileForm
 from .tasks import read_pdf
 
 
@@ -28,7 +29,6 @@ class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             'name': self.kwargs['name'],
             'pagetitle': 'Projects List',
             'title': 'Projects List',
-            # 'bannerTemplate': 'fullscreen',
             'header': {
             },
             'cssFiles': [
@@ -57,25 +57,9 @@ class ProjectDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = {
-            # 'name': self.kwargs['name'],
             'pagetitle': 'Projects Details',
             'title': 'Projects Details',
-            # 'bannerTemplate': 'fullscreen',
             'header': {
-                # 'background': 'apps/core/imgs/default.jpg',
-                # 'heading1': 'Heading 1',
-                # 'heading2': 'Heading 2',
-                # 'buttons': [
-                #     {
-                #         'name': 'Button 1',
-                #         'link': '/#button1'
-                #     },
-                #     {
-                #         'name': 'External Button',
-                #         'link': 'https://www.google.com/',
-                #         'target': '_blank'
-                #     }
-                # ]
             },
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
@@ -88,7 +72,6 @@ class ProjectDetail(DetailView):
         }
         ctx = super(ProjectDetail, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
-        # ctx['history_data'] =
         return ctx
 
     def get_object(self, **kwargs):
@@ -96,28 +79,36 @@ class ProjectDetail(DetailView):
         return get_object_or_404(Project, pk=pk_)
 
 
-# class ProjectCreate(CreateView):
-#     template_name = 'apps/projects/project_form.html'
-#     model = Project
-#     form_class = ProjectForm
-
 class ProjectCreate(CreateView):
     model = Project
     template_name = 'apps/projects/project_form.html'
     form_class = ProjectForm
 
     def form_valid(self, form):
-        proj = form.save()
-        print(proj.project_title)
-        read_pdf.delay(proj.file.path)
+        project = form.save()
+        read_pdf.delay(project.file.path)
         return super(ProjectCreate, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('summit.apps.projects:project-detail', args=[str(self.object.id)])
 
+    def get(self, request, *args, **kwargs):
+        if 'job' in request.GET:
+            job_id = request.GET['job']
+            project = Project.objects.get(job_id=job_id)
+            form = self.form_class(instance=project)
+            #upload = File.objects.filter()[:1].get()
+            #print(str(upload.file.path))
+
+            return render(request, self.template_name, {'form': form,})#'file_path': upload.file.path})
+        else:
+            form = self.form_class
+            return render(request, self.template_name, {'form': form})
+
     def get_context_data(self, **kwargs):
+        print('over there 1')
         context = {
-            'name': self.kwargs['name'],
+            'name': 'Create',
             'pagetitle': 'Create Project',
             'title': 'Create Project',
             'cssFiles': [
@@ -191,17 +182,13 @@ def project_form_redirect(request, name):
     return render(request, template_name, context)
 
 
-class ProjectAutofill(CreateView):
+class ProjectAutofill(View):
+    form_class = ProjectFileForm
+    success_url = reverse_lazy('summit.apps.projects:project-create')
     template_name = 'apps/projects/autofill_form.html'
-    model = ProjectFiles
-    form_class = ProjectFilesForm
 
-    def form_valid(self, form):
-        upload = form.save()
-        job = read_pdf.delay(upload.file.path)
-        return HttpResponseRedirect(reverse('projects:project-autofill') + '?job=' + job.id)
-
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
+        form = self.form_class()
         if 'job' in request.GET:
             job_id = request.GET['job']
             job = AsyncResult(job_id)
@@ -210,93 +197,56 @@ class ProjectAutofill(CreateView):
                 'data': data,
                 'task_id': job_id,
             }
-            return render(request, "apps/projects/autofill_form.html", context)
+            return render(request, self.template_name, context)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = self.form_class(request.POST, request.FILES)
+        if form.is_valid():
+            upload = form.save()
+            job = read_pdf.delay(upload.file.path)
+            print(upload.file.path)
+            return HttpResponseRedirect(reverse('projects:project-progress') + '?job=' + job.id)
         else:
-            form = ProjectFilesForm()
+            form = self.form_class()
+            return render(request, self.template_name, {'form': form})
+
+
+class ProjectProgress(UpdateView):
+    template_name = 'apps/projects/progress.html'
+    model = ProjectCreate
+
+    def get(self, request, *args, **kwargs):
+        print('over here\n')
+        if 'job' in request.GET:
+            job_id = request.GET['job']
+            job = AsyncResult(job_id)
+            data = job.result or job.state
             context = {
-                'form': form,
+                'data': data,
+                'task_id': job_id,
+                'url': reverse('projects:project-create') + '?job=' + job_id,
             }
-            return render(request, "apps/projects/autofill_form.html", context)
+            return render(request, self.template_name, context)
+        return render(request, self.template_name)
 
-
-def poll_state(request):
-    """ A view to report the progress to the user """
-    data = 'Fail'
-    if request.is_ajax():
-        if 'task_id' in request.POST.keys() and request.POST['task_id']:
-            task_id = request.POST['task_id']
-            task = AsyncResult(task_id)
-            data = task.result or task.state
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            if 'task_id' in request.POST.keys() and request.POST['task_id']:
+                task_id = request.POST['task_id']
+                task = AsyncResult(task_id)
+                data = task.result or task.state
+            else:
+                data = 'No task_id in the request'
         else:
-            data = 'No task_id in the request'
-    else:
-        data = 'This is not an ajax request'
+            data = 'This is not an ajax request'
 
-    json_data = json.dumps(data)
-    return HttpResponse(json_data, content_type='application/json')
+        # if data == 'SUCCESS':
+        #     return HttpResponseRedirect(reverse('summit.apps.projects:project-create'))
 
-#
-# def autofill(request):
-#     form = ProjectFilesForm(request.POST)
-#
-#     if 'job' in request.GET:
-#         job_id = request.GET['job']
-#         job = AsyncResult(job_id)
-#         data = job.result or job.state
-#         context = {
-#             'data': data,
-#             'task_id': job_id,
-#         }
-#         return render(request, "apps/projects/autofill_form.html", context)
-#     elif request.method == 'POST' and form.is_valid():
-#         upload = form.save()
-#         job = read_pdf.delay(upload.file.path)
-#         return HttpResponseRedirect(reverse('/projects/autofill') + '?job=' + job.id)
-#     else:
-#         form = ProjectFilesForm()
-#         context = {
-#             'form': form,
-#         }
-#         return render(request, "apps/projects/autofill_form.html", context)
+        json_data = json.dumps(data)
+        return HttpResponse(json_data, content_type='application/json')
 
-
-"""
-class ProgressHandler:
-
-    Tracks progress for file uploads.
-    The http post request must contain a header or query parameter, 'X-Progress-ID'
-    which should contain a unique string to identify the upload to be tracked.
-    
-
-    def __init__(self, delay, request):
-        self.request = request
-        self.progress_id = None
-        self.delay = delay
-
-
-# A view to report back on upload progress:
-
-from django.core.cache import cache
-from django.http import HttpResponse, HttpResponseServerError
-
-
-def upload_progress(request):
-    
-    Return JSON object with information about the progress of an upload.
-    
-    progress_id = ''
-    if 'X-Progress-ID' in request.GET:
-        progress_id = request.GET['X-Progress-ID']
-    elif 'X-Progress-ID' in request.META:
-        progress_id = request.META['X-Progress-ID']
-    if progress_id:
-        from django.utils import simplejson
-        cache_key = "%s_%s" % (request.META['REMOTE_ADDR'], progress_id)
-        data = cache.get(cache_key)
-        return HttpResponse(simplejson.dumps(data))
-    else:
-        return HttpResponseServerError('Server Error: You must provide X-Progress-ID header or query param.')
-"""
 
 class ProjectModifications(UpdateView):
     template_name = 'apps/projects/project_options.html'
