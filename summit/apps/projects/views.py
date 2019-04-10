@@ -1,15 +1,14 @@
 import csv
-from django.forms import inlineformset_factory
 from django.http import HttpResponse, Http404, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.shortcuts import get_object_or_404
+from django.core.urlresolvers import reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
-from .models import Project, File
-from .forms import ProjectForm, ProjectFileForm
+from .models import Project, File, Location
+from .forms import ProjectForm, ProjectFileForm, LocationForm
 
 
 class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -53,6 +52,42 @@ class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             ]
         }
         ctx = super(ProjectListView, self).get_context_data(**kwargs)
+        ctx = {**ctx, **context}
+        return ctx
+
+    # TODO: integrate this get_obkect into context
+    def get_object(self, **kwargs):
+        pk_ = self.kwargs.get("id")
+        return get_object_or_404(Project, pk=pk_)
+
+
+class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    template_name = 'apps/projects/project_index.html'
+    model = Project
+    context_object_name = 'projects'
+
+    permission_required = 'summit_projects.add_project'
+    permission_denied_message = 'You do not have the correction permissions to access this page.'
+    raise_exception = False
+
+    def get_context_data(self, **kwargs):
+        context = {
+            'name': self.kwargs['name'],
+            'pagetitle': 'Your Dashboard',
+            'title': 'Your Dashboard',
+            'header': {
+
+            },
+            'cssFiles': [
+                'libs/mdb/css/addons/datatables.min.css',
+                'css/apps/projects/dashboard.css'
+            ],
+            'jsFiles': [
+                'libs/mdb/js/addons/datatables.min.js',
+                'js/apps/projects/dashboard.js'
+            ]
+        }
+        ctx = super(ProjectDashboardView, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
         return ctx
 
@@ -211,6 +246,140 @@ class ProjectModifications(UpdateView):
     def get_object(self, **kwargs):
         pk_ = self.kwargs.get("id")
         return get_object_or_404(Project, pk=pk_)
+
+
+#
+#
+# Location portion - single model to represent parks, states, etc. for Projects
+#
+#
+class LocationListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    template_name = 'apps/projects/location_list.html'
+    model = Location
+    context_object_name = 'locations'
+
+    permission_required = 'summit_projects.add_project'
+    permission_denied_message = 'You do not have the correction permissions to access this page.'
+    raise_exception = False
+
+    def get_context_data(self, **kwargs):
+        context = {
+            'name': self.kwargs['name'],
+            'pagetitle': 'Location List',
+            'title': 'Location List',
+            'header': {
+            },
+            'cssFiles': [
+                'libs/mdb/css/addons/datatables.min.css',
+                'css/apps/projects/dashboard.css'
+            ],
+            'jsFiles': [
+                'libs/mdb/js/addons/datatables.min.js',
+                'js/apps/projects/dashboard.js'
+            ]
+        }
+        ctx = super(LocationListView, self).get_context_data(**kwargs)
+        ctx = {**ctx, **context}
+        return ctx
+
+    # TODO: integrate this get_obkect into context
+    def get_object(self, **kwargs):
+        pk_ = self.kwargs.get("id")
+        return get_object_or_404(Project, pk=pk_)
+
+
+class LocationCreate(CreateView):
+    model = Location
+    template_name = 'apps/projects/location_form.html'
+    form_class = LocationForm
+
+    def get_context_data(self, **kwargs):
+        context = {
+            'name': self.kwargs['name'],
+            'pagetitle': 'Create Location',
+            'title': 'Create Location',
+            'cssFiles': [
+                'libs/mdb/css/addons/datatables.min.css',
+                'css/apps/projects/dashboard.css'
+            ],
+            'jsFiles': [
+                'libs/mdb/js/addons/datatables.min.js',
+                'js/apps/projects/dashboard.js'
+            ],
+            'form': self.get_form_class(),
+        }
+        ctx = super(LocationCreate, self).get_context_data(**kwargs)
+        ctx = {**ctx, **context}
+        return ctx
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        location_form = self.get_form()
+        if location_form.is_valid():
+            self.object = location_form.save()
+            super(LocationCreate, self).form_valid(location_form)
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            ctx = self.get_context_data()
+            return self.render_to_response(ctx)
+
+
+class LocationDetail(DetailView):
+    model = Location
+    template_name = 'apps/projects/location_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = {
+            'pagetitle': 'Location Details',
+            'title': 'Location Details',
+        }
+        ctx = super(LocationDetail, self).get_context_data(**kwargs)
+        ctx = {**ctx, **context}
+        return ctx
+
+    def get_object(self, **kwargs):
+        pk_ = self.kwargs.get("id")
+        return get_object_or_404(Location, pk=pk_)
+
+
+class LocationEdit(UpdateView):
+    model = Location
+    template_name = 'apps/projects/location_form.html'
+    form_class = LocationForm
+
+    def get_object(self, **kwargs):
+        pk_ = self.kwargs.get("id")
+        return get_object_or_404(Location, pk=pk_)
+
+    def get_success_url(self):
+        return reverse('summit.apps.projects:location-detail', args=[str(self.object.id)])
+
+    def get_context_data(self, **kwargs):
+        context = {
+            'pagetitle': 'Edit Location',
+            'title': 'Edit Location'
+        }
+        ctx = super(LocationEdit, self).get_context_data(**kwargs)
+        ctx = {**ctx, **context}
+        return ctx
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        location_form = self.get_form()
+
+        if location_form.is_valid():
+            self.object = location_form.save()
+            super(LocationEdit, self).form_valid(location_form)
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            ctx = self.get_context_data()
+            return self.render_to_response(ctx)
+
+#
+#
+# Other, non-view supporting functions
+#
+#
 
 
 def export_to_csv(request, id):

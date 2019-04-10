@@ -8,15 +8,20 @@ from . import views
 
 app_name = 'summit.apps.projects'
 app_regex = r'^projects/'
-project_index = get_name(app_name, 'Projects')
 urlpatterns = [
-    link(r'^$', views.ProjectListView.as_view(), name=project_index, link_args={
+    # Projects and Modifications
+
+    link(r'^dashboard/$', views.ProjectDashboardView.as_view(), name=get_name(app_name, "My Dashboard"), link_args={
+        'auth_required': True,
+        'app_regex': app_regex
+    }),
+    link(r'^$', views.ProjectListView.as_view(), name=get_name(app_name, "Your Projects"), link_args={
         'auth_required': True,
         'app_regex': app_regex,
         'dropdown_id': app_name,
-        'dropdown_name': 'Projects'
+        'dropdown_name': 'Projects and Locations'
     }),
-    link(r'^create', views.ProjectCreate.as_view(), name=get_name(app_name, 'Create Project'), link_args={
+    link(r'^create/$', views.ProjectCreate.as_view(), name=get_name(app_name, 'Create Project'), link_args={
         'auth_required': True,
         'app_regex': app_regex,
         'dropdown_id': app_name
@@ -25,5 +30,17 @@ urlpatterns = [
     url(r'^edit/(?P<id>[-\w]+)/$', views.ProjectEdit.as_view(), name='project-edit'),
     url(r'^mods/(?P<id>[-\w]+)/$', views.ProjectModifications.as_view(), name='project-mods'),
     url(r'^detail/download_csv/(?P<id>[-\w]+)/$', views.export_to_csv, name='project-export-csv'),
-    url('^detail/change_history/(?P<id>[-\w]+)/$', views.change_history, name='project-change-history'),
+    url(r'^detail/change_history/(?P<id>[-\w]+)/$', views.change_history, name='project-change-history'),
+
+    # Locations - States, Parks, etc. in one model/object
+    link(r'^locations/$', views.LocationListView.as_view(), name=get_name(app_name, "Manage Locations"), link_args={
+        'auth_required': True,
+        'app_regex': app_regex,
+        'dropdown_id': app_name
+    }),
+    url(r'^locations/create/$', views.LocationCreate.as_view(), name="location-create", kwargs={
+        "name": get_name(app_name, "Create Location")
+    }),
+    url(r'^locations/detail/(?P<id>[-\w]+)/$', views.LocationDetail.as_view(), name='location-detail'),
+    url(r'^locations/edit/(?P<id>[-\w]+)/$', views.LocationEdit.as_view(), name='location-edit'),
 ]

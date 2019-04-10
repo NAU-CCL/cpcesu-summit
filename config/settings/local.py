@@ -26,6 +26,14 @@ from .shared import(
     LOGIN_REDIRECT_URL,
     LOGOUT_REDIRECT_URL,
     AUTH_USER_MODEL,
+    CELERY_BROKER_URL,
+    CELERY_RESULT_BACKEND,
+    EMAIL_HOST,
+    EMAIL_PORT,
+    EMAIL_HOST_USER,
+    EMAIL_HOST_PASSWORD,
+    EMAIL_USE_TLS,
+    DEFAULT_FROM_EMAIL,
 )
 
 __all__ = [
@@ -55,6 +63,14 @@ __all__ = [
     'LOGIN_REDIRECT_URL',
     'LOGOUT_REDIRECT_URL',
     'AUTH_USER_MODEL',
+    'CELERY_BROKER_URL',
+    'CELERY_RESULT_BACKEND',
+    'EMAIL_HOST',
+    'EMAIL_PORT',
+    'EMAIL_HOST_USER',
+    'EMAIL_HOST_PASSWORD',
+    'EMAIL_USE_TLS',
+    'DEFAULT_FROM_EMAIL',
 ]
 
 MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
