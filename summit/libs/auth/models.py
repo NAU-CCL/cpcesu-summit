@@ -181,6 +181,8 @@ class UserProfile(AuditModel):
     fax_number = models.CharField(max_length=30, blank=True)
     email_address = models.EmailField(blank=True)
 
+    assigned_group = models.ForeignKey(UserGroup, blank=True, null=True, on_delete=models.CASCADE)
+
     def get_full_name(self):
         return self.first_name + " " + self.last_name + " (" + str(self.user) + ")"
 

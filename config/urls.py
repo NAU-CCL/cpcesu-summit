@@ -25,6 +25,7 @@ urlpatterns = [
     url('', include('summit.apps.core.urls')),
     url(r'^docs/', include('summit.apps.docs.urls')),
     url(r'^projects/', include('summit.apps.projects.urls')),
+    url(r'^accounts/', include('summit.libs.auth.urls2')),
 ]
 
 handler400 = 'summit.libs.views.error400'

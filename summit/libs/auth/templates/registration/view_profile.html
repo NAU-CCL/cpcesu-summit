@@ -6,7 +6,17 @@
     <h1 style="text-align: center">View Profile</h1>
 
     {% if has_profile %}
-    <a href="{% url 'summit.libs.auth:edit_profile' %}">Edit Profile</a>
+
+    {% if is_own %}
+    <a href="{% url 'summit.libs.auth:edit_profile' %}"
+       class="btn btn-primary btn-sm m-0 waves-effect">Edit Your Profile</a>
+    <a href="{% url 'password_change' %}"
+       class="btn btn-primary btn-sm m-0 waves-effect">Change Password</a>
+
+    {% elif can_edit %}
+    <a href="{% url 'summit.libs.auth:edit_profile_other' profile_id=profile.id %}"
+    class="btn btn-primary btn-sm m-0 waves-effect">Edit Profile</a>
+    {% endif %}
 
     <table>
         <tr>
@@ -37,7 +47,15 @@
         </tr>
         <tr>
             <td>Location and Address: </td>
-            <td>{{ profile.location }} <br/> {{ profile.address }}</td>
+            <td>{{ profile.location }} <br/> {{ profile.address|safe }}</td>
+        </tr>
+        <tr>
+            <td>Assigned Group:</td>
+            {% if profile.assigned_group and profile.assigned_group.id %}
+                <td>{{ profile.assigned_group }} <a href="{% url 'summit.libs.auth2:manage_group_other' group_id=profile.assigned_group.id %}" class="btn btn-primary btn-sm m-0 waves-effect">Manage Group</a></td>
+            {% else %}
+                <td>No Group</td>
+            {% endif %}
         </tr>
     </table>
 

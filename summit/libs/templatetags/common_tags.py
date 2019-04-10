@@ -20,7 +20,6 @@ def nav_links(context):
     nav_links_html[0] = '<ul class="navbar-nav mr-auto">'
     nav_links_html[1] = '<ul class="navbar-nav ml-auto">'
 
-    link_html = ''
     for index in range(len(nav_links_groups)):
         for link in nav_links_groups[index]:
             # Check auth
@@ -121,15 +120,3 @@ def create_link(link_dict, context, is_dropdown_item):
     link_str += '</li>'
 
     return link_str
-
-
-'''
-  <!-- Dropdown -->
-    <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
-      aria-expanded="false">Dropdown</a>
-    <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
-      <a class="dropdown-item" href="#">Action</a>
-      <a class="dropdown-item" href="#">Another action</a>
-      <a class="dropdown-item" href="#">Something else here</a>
-    </div>
-'''

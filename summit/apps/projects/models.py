@@ -36,6 +36,17 @@ def get_directory_path(instance, filename):
     return 'projects/{0}/{1}'.format(instance.project, filename)
 
 
+class Location(models.Model):
+    name = models.TextField(max_length=255, unique=True)
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('summit.apps.projects:location-detail', args=[str(self.id)])
+
+    def __str__(self):
+        return self.name
+
+
 class Project(models.Model):
 
     GRADUATE = 'GRAD'
@@ -86,7 +97,8 @@ class Project(models.Model):
                                        related_name='federal_agency', default=None)
     cesu_unit = models.ForeignKey(CESUnit, on_delete=models.CASCADE,
                                   related_name='cesu_unit', default=None, verbose_name="CESUnit")
-    location = models.CharField(max_length=500, help_text=_help_text['location'], blank=True)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE,
+                                  related_name='location', default=None, verbose_name="Location")
     fed_poc = models.CharField(max_length=500, help_text=_help_text['fed_poc'], blank=True,
                                verbose_name="Federal Point of Contact")
     pp_i = models.CharField(max_length=500, help_text=_help_text['pp_i'], blank=True,

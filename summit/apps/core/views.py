@@ -21,7 +21,7 @@ def index(request, name):
                 },
                 {
                     'name': 'Current Projects',
-                    'link': "summit.apps.projects:summit.apps.projects_Projects",
+                    'link': "summit.apps.projects:summit.apps.projects_Your Projects",
                     'uses_reverse': True
                     # 'target': '_blank'
                 }

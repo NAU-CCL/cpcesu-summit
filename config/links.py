@@ -70,12 +70,21 @@ def add_link(regex, name, link_args=None):
         new_link['link'] = link_args['link']
     else:
         href = str(regex)
-        href += '/' if href[-1] != '/' else ''
+
+        if href[-1] != '/' and href[-1] != '$':
+            href += '/'
+
         if href[0] == 'r':
             href = "/" + href[:1]
+        if href[-1] == '$':
+            href = href[:-1]
         href = href.strip('^$')
 
-        href = '/' + href if href[0] != '/' else href
+        if len(href) > 0 and href[0] != '/':
+            href = '/' + href
+        elif len(href) == 0:
+            href = '/'
+
         new_link['link'] = href
 
     # If specified, add the app_regex so that it isn't root

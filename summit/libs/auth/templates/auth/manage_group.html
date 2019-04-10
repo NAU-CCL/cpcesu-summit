@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block primary %}
+<h1 style="text-align: center">{{ group.name }}</h1>
+
+<p>{{ group.description }}</p>
+
+<p>Group Type: {{ group.type }}</p>
+
+<div>
+    <a href="{% url 'summit.libs.auth2:create_user_with_group' group_id=group.id %}" class="btn btn-primary btn-sm m-0 waves-effect">Create User</a>
+</div>
+
+<table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="th-sm">#</th>
+            <th class="th-sm">First Name</th>
+            <th class="th-sm">Last Name</th>
+            <th class="th-sm">Email</th>
+            <th class="th-sm">Group</th>
+            <th class="th-sm">Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for profile in query %}
+        <tr>
+            <th scope="row">{{ profile.id }}</th>
+            <td href="">{{ profile.first_name }}</td>
+            <td href="">{{ profile.last_name }}</td>
+            <td href="">{{ profile.email_address }}</td>
+            <td href="">{{ profile.assigned_group }}</td>
+            <td>
+                <a type="button" class="btn btn-outline-primary btn-sm m-0 waves-effect"
+                href="{% url 'summit.libs.auth:view_profile_other' profile_id=profile.id %}">
+                    View Profile
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
