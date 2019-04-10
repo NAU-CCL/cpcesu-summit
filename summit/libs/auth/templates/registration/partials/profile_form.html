@@ -1,0 +1,7 @@
+<form method="post">
+    {% csrf_token %}
+    {{ profile_form.as_ul }}
+    <input type="submit" value="Submit Profile" />
+</form>
+
+<hr>

@@ -1,0 +1,7 @@
+<form method="post">
+    {% csrf_token %}
+    {{ group_form.as_ul }}
+    <input type="submit" value="Submit Group" />
+</form>
+
+<hr>

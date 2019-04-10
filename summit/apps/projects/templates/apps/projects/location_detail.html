@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block primary %}
+    <div class="card-header">
+        <h2 align="center">{{ object.name }}</h2>
+    </div><br>
+    <br>
+
+<span>
+    <a href="{% url 'summit.apps.projects:summit.apps.projects_Manage Locations' %}">
+        <button type="button" class="btn btn-light">All Locations</button>
+    </a>
+    <a href="{% url 'summit.apps.projects:location-edit' id=object.id %}">
+        <button type="button" class="btn btn-info">Edit Location</button>
+    </a>
+</span>
+{% endblock %}
