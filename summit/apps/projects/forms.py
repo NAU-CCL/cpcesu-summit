@@ -1,11 +1,11 @@
 from django import forms
-from .models import Project, File
+from .models import Project, File#, ProjectFiles
 
 
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ['p_num', 'project_title', 'short_summary', 'status', 'partner',
+        fields = ['project_title', 'short_summary', 'status', 'partner',
                   'federal_agency', 'cesu_unit', 'description', 'budget',
                   'student_support', 'vet_support']
         widgets = {
