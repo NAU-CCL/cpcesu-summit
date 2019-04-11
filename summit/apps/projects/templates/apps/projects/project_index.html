@@ -15,24 +15,38 @@
     <table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
         <thead>
             <tr>
-              <th class="th-sm">#</th>
-              <th class="th-sm">Title</th>
-              <th class="th-sm">Status</th>
-              <th class="th-sm">Partner</th>
-                <th class="th-sm">Details</th>
+                <th class="th-sm">P-Num</th>
+                <th class="th-sm">Status</th>
+                <th class="th-sm">Title</th>
+                <th class="th-sm">Federal Agency</th>
+                <th class="th-sm">Partner</th>
+                <th class="th-sm">Type</th>
+                <th class="th-sm">Discipline</th>
+                <th class="th-sm">Fiscal Year</th>
+                <th class="th-sm">Budget</th>
+                <th class="th-sm">Edit/View Details</th>
             </tr>
         </thead>
         <tbody>
     {% for project in projects %}
             <tr>
-                <th scope="row">{{ project.id }}</th>
-                <td href="">{{ project.project_title }}</td>
-                <td>{{ project.status }}</td>
+                <th scope="row">{{ project.p_num }}</th>
+                <td >{{ project.status }}</td>
+                <td >{{ project.project_title }}</td>
+                <td>{{ project.federal_agency }}</td>
                 <td>{{ project.partner }}</td>
+                <td>{{ project.type }}</td>
+                <td>{{ project.discipline }}</td>
+                <td>{{ project.fiscal_year }}</td>
+                <td>{{ project.budget}}</td>
                 <td>
+                    <a type="button" class="btn btn-primary btn-sm m-0 waves-effect"
+                    href="{% url 'summit.apps.projects:project-edit' id=project.id %}">
+                        Edit
+                    </a>
                     <a type="button" class="btn btn-outline-primary btn-sm m-0 waves-effect"
                     href="{% url 'summit.apps.projects:project-detail' id=project.id %}">
-                        View More
+                        Details
                     </a>
                 </td>
             </tr>

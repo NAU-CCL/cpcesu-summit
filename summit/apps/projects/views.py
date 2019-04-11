@@ -146,7 +146,7 @@ class ProjectDetail(DetailView):
 
 class ProjectCreate(CreateView):
     model = Project
-    template_name = 'apps/projects/project_form.html'
+    template_name = 'apps/projects/project_create_form.html'
     form_class = ProjectForm
 
     def get_context_data(self, **kwargs):
@@ -189,7 +189,7 @@ class ProjectCreate(CreateView):
 
 class ProjectEdit(UpdateView):
     model = Project
-    template_name = 'apps/projects/project_form.html'
+    template_name = 'apps/projects/project_edit_form.html'
     form_class = ProjectForm
 
     def get_object(self, **kwargs):
