@@ -13,10 +13,25 @@
               <div class="card-body">
                   <div class="form-group">
                         {% csrf_token %}
-                        {{ form.non_field_errors }}
-                        {{ form.mod_num.label }}{{ form.mod_num }}<br>
-                        {{ form.mod_type.label }}{{ form.mod_type }}<br>
-                        {{ form.mod_desc.label }}{{ form.mod_desc }}
+
+                      <div class="col-sm-offset-2 col-sm-auto">
+                          <span class="text-danger sml">{{ form.mod_num.errors }}</span>
+                      </div>
+                      <label class="control-label col-sm-auto">{{ form.mod_num.label_tag }}</label>
+                      <div class="col-sm">{{ form.mod_num}}</div><br>
+
+                      <div class="col-sm-offset-2 col-sm-auto">
+                        <span class="text-danger sml">{{ form.mod_type.errors }}</span>
+                      </div>
+                      <label class="control-label col-sm-auto">{{ form.mod_type.label_tag }}</label>
+                      <div class="col-sm">{{ form.mod_type}}</div><br>
+
+                      <div class="col-sm-offset-2 col-sm-auto">
+                          <span class="text-danger sml">{{ form.mod_desc.errors }}</span>
+                      </div>
+                      <label class="control-label col-sm-auto">{{ form.mod_desc.label_tag }}</label>
+                      <div class="col-sm">{{ form.mod_desc}}</div><br>
+
                   </div>
               </div>
             </div>
