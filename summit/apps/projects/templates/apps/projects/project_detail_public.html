@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block primary %}
+    <h1>Public Project Details</h1>
+    <div class="card-header">
+        <h2 align="center">{{ object.project_title }}</h2><p align="center">P-Number: {{ object.p_num }} </p>
+    </div><br>
+
+    <div class="row">
+        <div class="card col-sm-12">
+            <h6> <b>Partner: </b>{{ object.partner }} </h6>
+            <h6> <b>Federal Agency: </b>{{ object.federal_agency }} </h6>
+            <h6> <b>Student Support: </b>{{ object.student_support }} </h6>
+            <br><h6> <b>Description: </b></h6>
+            <div class="card-text">
+                {{ object.description }}
+            </div>
+        </div>
+    </div>
+    <br>
+
+<span>
+        <a href="{% url 'summit.apps.projects:project-edit' id=object.id %}">
+            <button type="button" class="btn btn-light">Request Project Information</button>
+        </a>
+</span>
+{% endblock %}

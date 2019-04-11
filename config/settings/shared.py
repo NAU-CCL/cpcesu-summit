@@ -172,9 +172,4 @@ AUTH_USER_MODEL = 'summit_auth.User'
 CELERY_BROKER_URL = 'redis://localhost'
 CELERY_RESULT_BACKEND = 'redis'
 
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'noreply@remy.network'
-EMAIL_HOST_PASSWORD = 'axnqjwqztjxzjygs'
-EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'CPCESU Project Management System <cpcesu@nau.edu>'

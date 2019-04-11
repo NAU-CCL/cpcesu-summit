@@ -3,7 +3,7 @@
 
 
 {% block primary %}
-<h1 style="text-align: center">Groups and Users Directory</h1>
+<h1 style="text-align: center">Users Directory</h1>
 
 <div>
     <a href="{% url 'summit.libs.auth2:summit.libs.auth2_Create Group' %}" class="btn btn-primary btn-sm m-0 waves-effect">Create Group</a>
@@ -25,10 +25,10 @@
         {% for profile in query %}
         <tr>
             <th scope="row">{{ profile.id }}</th>
-            <td href="">{{ profile.first_name }}</td>
-            <td href="">{{ profile.last_name }}</td>
-            <td href="">{{ profile.email_address }}</td>
-            <td href="">{{ profile.assigned_group }}</td>
+            <td>{{ profile.first_name }}</td>
+            <td>{{ profile.last_name }}</td>
+            <td>{{ profile.email_address }}</td>
+            <td>{{ profile.assigned_group }}</td>
             <td>
                 <a class="btn btn-outline-primary btn-sm m-0 waves-effect"
                 href="{% url 'summit.libs.auth:view_profile_other' profile_id=profile.id %}">
