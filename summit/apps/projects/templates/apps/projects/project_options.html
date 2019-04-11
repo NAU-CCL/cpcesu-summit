@@ -2,18 +2,26 @@
 {% load static %}
 
 {% block primary %}
-<div class="card">
-  <div class="card-header">
-      <h3>Modifications/Options</h3>
-  </div>
-  <div class="card-body">
-    <h5 class="card-title">Fill out fields as necessary</h5>
-        <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.non_field_errors }}
-            {% include 'apps/projects/form-template.html'%}
-            <input class="btn btn-primary" type="submit" value="Submit">
-        </form>
-  </div>
-</div>
+<h1 align="left">Project Modifications</h1><br>
+<form action="" method="post" enctype="multipart/form-data">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="card">
+              <div class="card-header">
+                  <h3>Create Modifications</h3>
+              </div>
+              <div class="card-body">
+                  <div class="form-group">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        {{ form.mod_num.label }}{{ form.mod_num }}<br>
+                        {{ form.mod_type.label }}{{ form.mod_type }}<br>
+                        {{ form.mod_desc.label }}{{ form.mod_desc }}
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+    <input class="btn btn-primary" type="submit" value="Submit">
+</form>
 {% endblock %}

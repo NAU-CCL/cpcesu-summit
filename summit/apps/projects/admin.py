@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Project, Notification, File
+from .models import Project, Notification, File, Location
 from simple_history.admin import SimpleHistoryAdmin
 
 
@@ -18,4 +18,5 @@ class NotificationAdmin(admin.ModelAdmin):
 
 admin.site.register(Project, SimpleHistoryAdmin)
 admin.site.register(File)
+admin.site.register(Location)
 admin.site.register(Notification, NotificationAdmin)
