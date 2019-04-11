@@ -61,6 +61,42 @@ class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         return get_object_or_404(Project, pk=pk_)
 
 
+class ProjectPublicListView(ListView):
+    template_name = 'apps/projects/project_public.html'
+    model = Project
+    context_object_name = 'projects'
+
+    def get_queryset(self):
+        projects = Project.objects.exclude(status="DRAFT")
+        return projects
+
+    def get_context_data(self, **kwargs):
+        context = {
+            'name': self.kwargs['name'],
+            'pagetitle': 'Public Projects List',
+            'title': 'Public Projects List',
+            'header': {
+            },
+            'cssFiles': [
+                'libs/mdb/css/addons/datatables.min.css',
+                'css/apps/projects/dashboard.css'
+            ],
+            'jsFiles': [
+                'libs/mdb/js/addons/datatables.min.js',
+                'js/apps/projects/dashboard.js'
+            ],
+            'project_url': 'summit.apps.projects:project-detail-public'
+        }
+        ctx = super(ProjectPublicListView, self).get_context_data(**kwargs)
+        ctx = {**ctx, **context}
+        return ctx
+
+    # TODO: integrate this get_obkect into context
+    def get_object(self, **kwargs):
+        pk_ = self.kwargs.get("id")
+        return get_object_or_404(Project, pk=pk_)
+
+
 class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     template_name = 'apps/projects/project_index.html'
     model = Project
@@ -98,7 +134,7 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
 
 
 # TODO: Change context object name
-class ProjectDetail(DetailView):
+class ProjectDetail(LoginRequiredMixin, DetailView):
     model = Project
     template_name = 'apps/projects/project_detail.html'
 
@@ -144,6 +180,51 @@ class ProjectDetail(DetailView):
         return get_object_or_404(Project, pk=pk_)
 
 
+class ProjectPublicDetail(DetailView):
+    model = Project
+    template_name = 'apps/projects/project_detail_public.html'
+
+    def get_context_data(self, **kwargs):
+        context = {
+            # 'name': self.kwargs['name'],
+            'pagetitle': 'Projects Details',
+            'title': 'Projects Details',
+            # 'bannerTemplate': 'fullscreen',
+            'header': {
+                # 'background': 'apps/core/imgs/default.jpg',
+                # 'heading1': 'Heading 1',
+                # 'heading2': 'Heading 2',
+                # 'buttons': [
+                #     {
+                #         'name': 'Button 1',
+                #         'link': '/#button1'
+                #     },
+                #     {
+                #         'name': 'External Button',
+                #         'link': 'https://www.google.com/',
+                #         'target': '_blank'
+                #     }
+                # ]
+            },
+            'cssFiles': [
+                'libs/mdb/css/addons/datatables.min.css',
+                'css/apps/projects/dashboard.css'
+            ],
+            'jsFiles': [
+                'libs/mdb/js/addons/datatables.min.js',
+                'js/apps/projects/dashboard.js'
+            ]
+        }
+        ctx = super(ProjectPublicDetail, self).get_context_data(**kwargs)
+        ctx = {**ctx, **context}
+        # ctx['history_data'] =
+        return ctx
+
+    def get_object(self, **kwargs):
+        pk_ = self.kwargs.get("id")
+        return get_object_or_404(Project, pk=pk_)
+
+
 class ProjectCreate(CreateView):
     model = Project
     template_name = 'apps/projects/project_create_form.html'
@@ -171,19 +252,23 @@ class ProjectCreate(CreateView):
 
     def post(self, request, *args, **kwargs):
         self.object = None
-        project_form = self.get_form()
+        project_form = ProjectForm(request.POST, request.FILES, instance=self.object)
         project_file_form = ProjectFileForm(request.POST, request.FILES,
                                             instance=self.object)
         files = request.FILES.getlist('file')
-        if project_form.is_valid() and project_file_form.is_valid():
+        if project_form.is_valid():
             self.object = project_form.save()
-            for f in files:
-                project_file_instance = File(file=f, project=self.object)
-                project_file_instance.save()
+            if project_file_form.is_valid():
+                for f in files:
+                    project_file_instance = File(file=f, project=self.object)
+                    project_file_instance.save()
             super(ProjectCreate, self).form_valid(project_form)
             return HttpResponseRedirect(self.get_success_url())
         else:
+            print(project_form.errors)
             ctx = self.get_context_data()
+            ctx['form'] = project_form
+            ctx['file_form'] = project_file_form
             return self.render_to_response(ctx)
 
 

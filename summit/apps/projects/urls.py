@@ -26,6 +26,10 @@ urlpatterns = [
         'app_regex': app_regex,
         'dropdown_id': app_name
     }),
+    link(r'^public_projects/$', views.ProjectPublicListView.as_view(), name=get_name(app_name, 'Public Projects'), link_args={
+        'app_regex': app_regex
+    }),
+    url(r'^public-detail/(?P<id>[-\w]+)/$', views.ProjectPublicDetail.as_view(), name='project-detail-public'),
     url(r'^detail/(?P<id>[-\w]+)/$', views.ProjectDetail.as_view(), name='project-detail'),
     url(r'^edit/(?P<id>[-\w]+)/$', views.ProjectEdit.as_view(), name='project-edit'),
     url(r'^mods/(?P<id>[-\w]+)/$', views.ProjectModifications.as_view(), name='project-mods'),

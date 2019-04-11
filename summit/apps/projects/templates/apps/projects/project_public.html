@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block primary %}
+
+{% if pagetitle %}
+    <h1 style="text-align: center">{{ pagetitle }}</h1>
+{% else %}
+    <h1 style="text-align: center">Public Projects</h1>
+{% endif %}
+
+
+<p class="animated fadeIn text-muted">Project List</p>
+
+    <table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+              <th class="th-sm">#</th>
+              <th class="th-sm">Title</th>
+              <th class="th-sm">Status</th>
+              <th class="th-sm">Partner</th>
+                <th class="th-sm">Details</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for project in projects %}
+            <tr>
+                <th scope="row">{{ project.id }}</th>
+                <td href="">{{ project.project_title }}</td>
+                <td>{{ project.status }}</td>
+                <td>{{ project.partner }}</td>
+                <td>
+                    <a class="btn btn-outline-primary btn-sm m-0 waves-effect"
+                    href="{% url 'summit.apps.projects:project-detail-public' id=project.id %}">
+                        View More
+                    </a>
+                </td>
+            </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -64,6 +64,8 @@ def view_profile(request, profile_id=-1):
         has_profile = True
     except ObjectDoesNotExist:
         has_profile = False
+        is_own = False
+        can_edit = False
         profile_details = ""
 
     context = {
@@ -138,21 +140,71 @@ def edit_profile(request, profile_id=-1):
 def all_users(request, name):
     template_name = "auth/all_users.html"
 
-    profiles = UserProfile.objects.all()
+    profiles = UserProfile.objects.all().order_by('assigned_group', 'last_name', 'first_name')
 
     context = {
         'pageId': name,
-        'pagetitle': 'All Groups and Users',
-        'title': 'All Groups and Users',
+        'pagetitle': 'All Users',
+        'title': 'All Users',
         'cssFiles': [
             'libs/mdb/css/addons/datatables.min.css',
             'css/apps/projects/dashboard.css'
         ],
         'jsFiles': [
             'libs/mdb/js/addons/datatables.min.js',
-            'js/apps/projects/dashboard.js'
+            'js/libs/auth/no_sort_datatable.js'
         ],
         'query': profiles
+    }
+
+    return render(request, template_name, context)
+
+
+@login_required()
+#@permission_required()
+def all_groups(request, name):
+    template_name = "auth/all_groups.html"
+
+    cesus = CESUnit.objects.all()
+    feds = FederalAgency.objects.all()
+    partner = Partner.objects.all()
+
+    groups = dict()
+
+    for group in cesus:
+        groups[group.id] = {
+            "id": group.id,
+            "name": group.name,
+            "type": "CES Unit"
+        }
+
+    for group in feds:
+        groups[group.id] = {
+            "id": group.id,
+            "name": group.name,
+            "type": "Federal Agency"
+        }
+
+    for group in partner:
+        groups[group.id] = {
+            "id": group.id,
+            "name": group.name,
+            "type": "Partner"
+        }
+
+    context = {
+        'pageId': name,
+        'pagetitle': 'All Groups',
+        'title': 'All Groups',
+        'cssFiles': [
+            'libs/mdb/css/addons/datatables.min.css',
+            'css/apps/projects/dashboard.css'
+        ],
+        'jsFiles': [
+            'libs/mdb/js/addons/datatables.min.js',
+            'js/libs/auth/group_sort.js'
+        ],
+        'query': groups
     }
 
     return render(request, template_name, context)
@@ -164,24 +216,53 @@ def manage_group(request, name='summit.libs.auth.manage_group', group_id=-1):
 
     group_id = int(group_id)
     if group_id <= 0:
-        group_id = request.user.group.id
+        try:
+            profile = UserProfile.objects.get(user=request.user)
+            group_id = profile.assigned_group.id
+        except ObjectDoesNotExist:
+            return HttpResponseRedirect(reverse('summit.libs.auth2:summit.libs.auth2_All Groups'))
 
     group = get_object_or_404(UserGroup, id=group_id)
 
     if group is not None:
-        profiles = UserProfile.objects.filter(assigned_group=group)
+        profiles = UserProfile.objects.filter(assigned_group=group).order_by('last_name', 'first_name')
+
+    # Group Type
+    try:
+        is_cesu = CESUnit.objects.get(id=group.id)
+    except ObjectDoesNotExist:
+        is_cesu = False
+
+    try:
+        is_federal = FederalAgency.objects.get(id=group.id)
+    except ObjectDoesNotExist:
+        is_federal = False
+
+    try:
+        is_partner = Partner.objects.get(id=group.id)
+    except ObjectDoesNotExist:
+        is_partner = False
+
+    if is_cesu:
+        group.type = "CES Unit"
+    elif is_federal:
+        group.type = "Federal Agency"
+    elif is_partner:
+        group.type = "Partner"
+    else:
+        group.type = "Unknown Group Type"
 
     context = {
         'pageId': name,
-        'pagetitle': 'All Groups and Users',
-        'title': 'All Groups and Users',
+        'pagetitle': 'All Users in Group',
+        'title': 'All Users in Group',
         'cssFiles': [
             'libs/mdb/css/addons/datatables.min.css',
             'css/apps/projects/dashboard.css'
         ],
         'jsFiles': [
             'libs/mdb/js/addons/datatables.min.js',
-            'js/apps/projects/dashboard.js'
+            'js/libs/auth/no_sort_datatable.js'
         ],
         'query': profiles,
         'group': group
@@ -201,7 +282,7 @@ def create_profile(request, name="summit.libs.auth_Create User", group_id=0):
 
         if profile_form.is_valid():
             profile_form.save()
-            return HttpResponseRedirect(reverse('summit.libs.auth2:summit.libs.auth2_All Groups and Users'))
+            return HttpResponseRedirect(reverse('summit.libs.auth2:summit.libs.auth2_All Users'))
     elif group_id > 0:
         profile_form = ProfileForm(initial={'assigned_group': group_id})
     else:
@@ -233,19 +314,100 @@ def create_group(request, name):
         if group_form.is_valid():
             group = group_form.save()
 
-            if group_form.cleaned_data['group_type'] == 1:
-                cesu = CESUnit(group)
+            group_type = group_form['group_type'].value()
+
+            group_type = int(group_type)
+
+            if group_type == 1:
+                cesu = CESUnit.objects.create(pk=group.id, created_on=group.created_on, name=group.name, description=group.description, avatar=group.avatar)
                 cesu.save()
-            elif group_form.cleaned_data['group_type'] == 2:
-                federal = FederalAgency(group)
+            elif group_type == 2:
+                federal = FederalAgency.objects.create(pk=group.id, created_on=group.created_on, name=group.name, description=group.description, avatar=group.avatar)
                 federal.save()
-            elif group_form.cleaned_data['group_type'] == 3:
-                partner = Partner(group)
+            elif group_type == 3:
+                partner = Partner.objects.create(pk=group.id, created_on=group.created_on, name=group.name, description=group.description, avatar=group.avatar)
                 partner.save()
 
-            return HttpResponseRedirect(reverse('summit.libs.auth2:summit.libs.auth2_All Groups and Users'))
+            return HttpResponseRedirect(reverse('summit.libs.auth2:summit.libs.auth2_All Groups'))
     else:
         group_form = GroupForm()
+
+    context = {
+        'pageId': name,
+        'pagetitle': 'User Group',
+        'title': 'Create User Group',
+        'header': {
+            'background': 'apps/core/imgs/default.jpg'
+        },
+        'cssFiles': [
+            # 'css/apps/core/testing.css'
+        ],
+        'group_form': group_form
+    }
+
+    return render(request, template_name, context)
+
+
+@login_required()
+# @permission_required("summit_auth.edit_profile.self")
+def edit_group(request, name="summit.libs.auth2:summit.libs.auth2_edit_group", group_id=-1):
+    template_name = 'auth/edit_group.html'
+
+    group_id = int(group_id)
+    group = get_object_or_404(UserGroup, id=group_id)
+
+    if request.method == "POST" and request.POST:
+
+        group_form = GroupForm(request.POST, request.FILES, instance=group)
+
+        if group_form.is_valid():
+            group = group_form.instance
+
+            new_group_type = group_form['group_type'].value()
+
+            new_group_type = int(new_group_type)
+
+            # Group Type
+            try:
+                is_cesu = CESUnit.objects.get(id=group.id)
+            except ObjectDoesNotExist:
+                is_cesu = False
+
+            try:
+                is_federal = FederalAgency.objects.get(id=group.id)
+            except ObjectDoesNotExist:
+                is_federal = False
+
+            try:
+                is_partner = Partner.objects.get(id=group.id)
+            except ObjectDoesNotExist:
+                is_partner = False
+
+            if is_cesu:
+                is_cesu.delete()
+            elif is_federal:
+                is_federal.delete()
+            elif is_partner:
+                is_partner.delete()
+            else:
+                UserGroup.objects.get(id=group.id).delete()
+
+            if new_group_type == 1:
+                cesu = CESUnit.objects.create(pk=group.id, created_on=group.created_on, name=group.name,
+                                              description=group.description, avatar=group.avatar)
+                cesu.save()
+            elif new_group_type == 2:
+                federal = FederalAgency.objects.create(pk=group.id, created_on=group.created_on, name=group.name,
+                                                       description=group.description, avatar=group.avatar)
+                federal.save()
+            elif new_group_type == 3:
+                partner = Partner.objects.create(pk=group.id, created_on=group.created_on, name=group.name,
+                                                 description=group.description, avatar=group.avatar)
+                partner.save()
+
+            return HttpResponseRedirect(reverse('summit.libs.auth2:manage_group_other', kwargs={'group_id': group_id}))
+    else:
+        group_form = GroupForm(instance=group)
 
     context = {
         'pageId': name,

@@ -42,8 +42,8 @@ def nav_links(context):
 def create_link(link_dict, context, is_dropdown_item):
     link_str = ''
 
-    if 'auth_required' in link_dict:
-        print(link_dict)
+    # if 'auth_required' in link_dict:
+    #     print(link_dict)
 
     if 'auth_required' in link_dict and link_dict['auth_required'] and context['user'].is_authenticated() is False:
         return link_str

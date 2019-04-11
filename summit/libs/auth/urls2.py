@@ -9,11 +9,16 @@ from . import views
 app_name = 'summit.libs.auth2'
 app_regex = r'^accounts/'
 urlpatterns = [
-    link(r'^all_users/$', views.all_users, name=get_name(app_name, "All Groups and Users"), link_args={
+    link(r'^all_users/$', views.all_users, name=get_name(app_name, "All Users"), link_args={
         'auth_required': True,
         'app_regex': app_regex,
         'dropdown_id': app_name,
         'dropdown_name': 'Groups and Users'
+    }),
+    link(r'^all_groups/$', views.all_groups, name=get_name(app_name, "All Groups"), link_args={
+        'auth_required': True,
+        'app_regex': app_regex,
+        'dropdown_id': app_name,
     }),
     link(r'^create_group/$', views.create_group, name=get_name(app_name, "Create Group"), link_args={
         'auth_required': True,
@@ -32,5 +37,6 @@ urlpatterns = [
     }),
 
     url(r'^manage_group/(?P<group_id>[-\w]+)/$', views.manage_group, name='manage_group_other'),
+    url(r'^edit_group/(?P<group_id>[-\w]+)/$', views.edit_group, name='edit_group'),
     url(r'^create_user/(?P<group_id>[-\w]+)/$', views.create_profile, name='create_user_with_group')
 ]

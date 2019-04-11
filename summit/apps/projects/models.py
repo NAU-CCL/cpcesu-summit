@@ -39,7 +39,7 @@ _help_text = {
 
 
 def get_directory_path(instance, filename):
-    return 'projects/{0}/{1}'.format(instance.project, filename)
+    return 'projects/{0}/{1}'.format(instance.project.id, filename)
 
 
 class Location(models.Model):
@@ -195,10 +195,10 @@ class Project(models.Model):
                                  verbose_name="Location", blank=True)
     init_start_date = models.DateField(blank=True, default="2019-1-1",
                                        verbose_name="Project Initially received (YYYY/MM/DD)")
-    mod_desc = models.TextField(max_length=1000, blank=True)
+    mod_desc = models.TextField(max_length=1000, blank=True, null=True)
     mod_num = models.CharField(verbose_name="Modification #", max_length=500, help_text=_help_text['mod_num'],
-                               default=0)
-    mod_type = models.CharField(max_length=50, verbose_name="Modification Type", choices=MOD_TYPE, default=NONE)
+                               blank=True, null=True)
+    mod_type = models.CharField(max_length=50, verbose_name="Modification Type", choices=MOD_TYPE, default=NONE, null=True, blank=True)
     monitoring = models.BooleanField(default=False)
     notes = models.TextField(help_text=_help_text['notes'], blank=True)
     num_of_students = models.PositiveSmallIntegerField(blank=True, help_text=_help_text['num_of_students'],
@@ -208,7 +208,7 @@ class Project(models.Model):
     pp_i = models.ForeignKey(UserProfile, on_delete=models.CASCADE, help_text=_help_text['pp_i'], blank=True, verbose_name="Partner Principle Investigator", related_name='pp_i', default=None)
     project_manager = models.ForeignKey(UserProfile, on_delete=models.CASCADE,
                                         verbose_name="Project Manager", blank=True,
-                                        related_name='project_manager', default=None)
+                                        related_name='project_manager', default=None, null=True)
     project_title = models.CharField(max_length=500, unique=True, help_text=_help_text['project_title'])
     r_d = models.CharField(max_length=50, help_text=_help_text['r_d'], blank=True, verbose_name="Research & Development Type", choices=R_D_TYPE)
     sci_method = models.BooleanField(default=False)
@@ -216,7 +216,7 @@ class Project(models.Model):
     short_summary = models.CharField(max_length=500, help_text=_help_text['short_summary'], verbose_name="Short Description")
     src_of_funding = models.CharField(max_length=500, help_text=_help_text['src_of_funding'], blank=True, verbose_name="Source of Funding/Award Type", choices=SOURCE_OF_FUNDING, default=NONE)
     staff_member = models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="Staff Member", blank=True, related_name='staff_member', default=None)
-    status = models.CharField(max_length=5, choices=STATUS, default=DRAFTING)
+    status = models.CharField(max_length=20, choices=STATUS, default=DRAFTING)
     student_support = models.CharField(max_length=7, choices=STUDENT_SUPPORT, default=NONE)
     tech_rep = models.ForeignKey(UserProfile, help_text=_help_text['tech_rep'], blank=True, verbose_name="Agreements Tech Representative")
     tent_end_date = models.DateField(blank=True, default="2019-1-1", verbose_name="Tentative End Date (YYYY/MM/DD)")
@@ -253,7 +253,7 @@ class Project(models.Model):
 
 # TODO: Read file in 'chunks' ---> https://docs.djangoproject.com/en/1.11/topics/http/file-uploads/
 class File(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, to_field='project_title')
+    project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True)
     file = models.FileField(blank=True, upload_to=get_directory_path, verbose_name="Select File(s)")
 
     def __str__(self):

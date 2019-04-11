@@ -105,7 +105,7 @@
 
 
 
-{% if form.errors %}
+{% if form.non_field_errors %}
     <div class="alert alert-error">
         <ul>
             {% for error in form.non_field_errors %}
@@ -179,7 +179,7 @@
     {% endfor %}
 </div>
 
-{% if form.errors %}
+{% if form.non_field_errors %}
     <div class="alert alert-error">
         <ul>
             {% for error in form.non_field_errors %}

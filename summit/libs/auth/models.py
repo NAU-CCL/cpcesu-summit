@@ -119,7 +119,7 @@ class User(AbstractUser):
                                              "backend",
                                    verbose_name="Admin site access?")
 
-    group = models.ForeignKey(UserGroup, default=1, on_delete=models.CASCADE)
+    group = models.ForeignKey(UserGroup, null=True, blank=True, on_delete=models.SET_NULL)
 
     external_id = models.CharField(
         max_length=100,
@@ -167,7 +167,7 @@ class User(AbstractUser):
 
 
 class UserProfile(AuditModel):
-    user = models.OneToOneField(User, null=True, blank=True)
+    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.SET_NULL)
     avatar = models.ImageField(blank=True)
 
     first_name = models.CharField(default="", max_length=150)
