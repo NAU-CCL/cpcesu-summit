@@ -8,15 +8,15 @@ class ProjectForm(forms.ModelForm):
         model = Project
         fields = ['budget', 'cesu_unit', 'description', 'discipline', 'federal_agency', 'field_of_science',
                   'final_report', 'fiscal_year', 'init_start_date', 'location',
-                  'monitoring', 'notes', 'num_of_students','p_num', 'partner', 'pp_i', 'project_manager',
+                  'monitoring', 'notes', 'num_of_students', 'p_num', 'partner', 'pp_i', 'project_manager',
                   'project_title', 'r_d', 'sci_method', 'sensitive', 'short_summary', 'src_of_funding', 'staff_member',
                   'status', 'student_support', 'tech_rep', 'tent_end_date', 'tent_start_date', 'type', 'vet_support']
         widgets = {
             'project_title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter title here...'}),
             'p_num': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter P-Num here...'}),
             'short_summary': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Quick details...'}),
-            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Enter here...'}),
-            'notes': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Enter here...'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Enter Abstract here...'}),
+            'notes': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Enter any project notes here...'}),
             'status': forms.Select(attrs={'class': 'custom-select custom-select'}),
             'partner': forms.Select(attrs={'class': 'custom-select custom-select'}),
             'federal_agency': forms.Select(attrs={'class': 'custom-select custom-select'}),
@@ -37,6 +37,13 @@ class ProjectForm(forms.ModelForm):
             'field_of_science': forms.Select(attrs={'class': 'custom-select custom-select'}),
             'type': forms.Select(attrs={'class': 'custom-select custom-select'}),
             'sensitive': forms.CheckboxInput(attrs={'class': 'custom-control custom-checkbox'}),
+            'tent_start_date': forms.SelectDateWidget(years=list(range(1950, 3000)),
+                                                      empty_label=("Year", "Month", "Day"),),
+            'tent_end_date': forms.SelectDateWidget(years=list(range(1950, 3000)),
+                                                      empty_label=("Year", "Month", "Day"),),
+            'init_start_date': forms.SelectDateWidget(years=list(range(1950, 3000)),
+                                                      empty_label=("Year", "Month", "Day"),),
+
         }
 
 

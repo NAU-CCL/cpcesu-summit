@@ -46,7 +46,7 @@ class Project(models.Model):
     budget = models.DecimalField(max_digits=12, decimal_places=2, help_text=_help_text['budget'])
     cesu_unit = models.ForeignKey(CESUnit, on_delete=models.CASCADE,
                                   related_name='cesu_unit', default=None, verbose_name="CESUnit")
-    description = models.TextField(help_text=_help_text['description'], verbose_name="Abstract")
+    description = models.TextField(help_text=_help_text['description'], verbose_name="Abstract/Description")
     discipline = models.CharField(max_length=20, choices=DISCIPLINE,
                                   help_text=_help_text['discipline'], blank=False,
                                   default=DISCIPLINE[0])
@@ -62,7 +62,7 @@ class Project(models.Model):
                                  related_name='location', default=None,
                                  verbose_name="Location", blank=True)
     init_start_date = models.DateField(blank=True, default="2019-1-1",
-                                       verbose_name="Project Initially received (YYYY/MM/DD)")
+                                       verbose_name="Project Initially Received")
     monitoring = models.BooleanField(default=False)
     notes = models.TextField(help_text=_help_text['notes'], blank=True)
     num_of_students = models.PositiveSmallIntegerField(blank=True, help_text=_help_text['num_of_students'],
@@ -79,7 +79,9 @@ class Project(models.Model):
                            blank=True, verbose_name="Research & Development Type",
                            choices=R_D_TYPE)
     sci_method = models.BooleanField(default=False)
-    sensitive = models.BooleanField(default=False, help_text=_help_text['sensitive'])
+    sensitive = models.BooleanField(default=False, help_text=_help_text['sensitive'],
+                                    verbose_name="Sensitive information. By checking this box "
+                                                 "the public will not be allowed to view this project")
     short_summary = models.CharField(max_length=500, help_text=_help_text['short_summary'],
                                      verbose_name="Short Description")
     src_of_funding = models.CharField(max_length=500, help_text=_help_text['src_of_funding'],
@@ -88,13 +90,14 @@ class Project(models.Model):
     staff_member = models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="Staff Member",
                                      blank=True, related_name='staff_member', default=None)
     status = models.CharField(max_length=20, choices=STATUS, default=STATUS[0])
-    student_support = models.CharField(max_length=7, choices=STUDENT_SUPPORT, default=STUDENT_SUPPORT[0])
+    student_support = models.CharField(max_length=7, choices=STUDENT_SUPPORT, default=STUDENT_SUPPORT[0],
+                                       verbose_name="Student Support")
     tech_rep = models.ForeignKey(UserProfile, help_text=_help_text['tech_rep'], blank=True,
                                  verbose_name="Agreements Tech Representative")
     tent_end_date = models.DateField(blank=True, default="2019-1-1",
-                                     verbose_name="Tentative End Date (YYYY/MM/DD)")
+                                     verbose_name="Tentative End Date")
     tent_start_date = models.DateField(blank=True, default="2019-1-1",
-                                       verbose_name="Tentative Start Date (YYYY/MM/DD)")
+                                       verbose_name="Tentative Start Date")
     type = models.CharField(max_length=50, choices=TYPE, help_text=_help_text['type'],
                             blank=False, verbose_name="Project Type")
     vet_support = models.CharField(max_length=5, choices=VET_SUPPORT, default=VET_SUPPORT[0],
@@ -106,13 +109,13 @@ class Project(models.Model):
 
     funding = models.DecimalField(max_digits=12, decimal_places=2,
                                   help_text=_help_text['funding'], blank=True,default=0.00)
-    comm_start_date = models.DateField(blank=True, default="2019-1-1", verbose_name="Review Comments Sent (YYYY/MM/DD)")
+    comm_start_date = models.DateField(blank=True, default="2019-1-1", verbose_name="Review Comments Sent")
     task_agreement_start_date = models.DateField(blank=True, default="2019-1-1",
-                                                 verbose_name="Date Task Agreement Approved (YYYY/MM/DD)")
+                                                 verbose_name="Date Task Agreement Approved")
     # TODO: Make this automatic whenever they change the status to EXEC
-    exec_start_date = models.DateField(blank=True, default="2019-1-1",verbose_name="Date Executed (YYYY/MM/DD)")
-    actual_start = models.DateField(blank=True, default="2019-1-1", verbose_name="Actual Start Date (YYYY/MM/DD)")
-    actual_end = models.DateField(blank=True, default="2019-1-1", verbose_name="Actual Start Date (YYYY/MM/DD)")
+    exec_start_date = models.DateField(blank=True, default="2019-1-1",verbose_name="Date Executed")
+    actual_start = models.DateField(blank=True, default="2019-1-1", verbose_name="Actual Start Date")
+    actual_end = models.DateField(blank=True, default="2019-1-1", verbose_name="Actual Start Date")
     # TODO: If the sensitive field is checked then remove this field from the form. Splashes proj onto pub page
     perm_share = models.BooleanField(verbose_name="Permission to share", default=False)
     award_amt = models.DecimalField(max_digits=12, decimal_places=2, help_text=_help_text['award_amt'],
@@ -142,11 +145,11 @@ class Modification(models.Model):
     mod_type = models.CharField(max_length=50, verbose_name="Modification Type",
                                 choices=MOD_TYPE, default=MOD_TYPE[0], null=True, blank=True)
     mod_notes = models.TextField(blank=True, verbose_name="Modification Notes")
-    mod_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    mod_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0, blank=True)
     mod_approved = models.DateField(blank=True, default="2019-1-1",
-                                    verbose_name="Approved (YYYY/MM/DD)")
+                                    verbose_name="Approved)")
     mod_executed = models.DateField(blank=True, default="2019-1-1",
-                                    verbose_name="Executed (YYYY/MM/DD)")
+                                    verbose_name="Executed")
 
     def __str__(self):
         return str(self.mod_num)
@@ -158,7 +161,7 @@ class File(models.Model):
     file = models.FileField(blank=True, upload_to=get_directory_path, verbose_name="Select File(s)")
 
     def __str__(self):
-        return str(self.file)
+        return str.rsplit(str(self.file), sep='/', maxsplit=1)
 
 
 class Notification(models.Model):

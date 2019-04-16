@@ -2,10 +2,11 @@
 {% load static %}
 
 {% block primary %}
-<h1 align="left">{% block form_title %}{% endblock %}</h1><br>
+<h1 align="center">{% block form_title %}{% endblock %}</h1><br>
 <form action="" method="post" enctype="multipart/form-data">
     <div class="container-fluid">
         <div class="row">
+            <div class="col-6">
                 <div class="card">
                   <div class="card-header">
                       <h3>Basic Project Info</h3>
@@ -16,7 +17,8 @@
                             {% block basic_info %}{% endblock %}
                   </div>
                 </div>
-                <div class="col-sm-1"></div>
+            </div>
+            <div class="col-6">
                 <div class="card">
                   <div class="card-header">
                       <h3>Additional Details</h3>
@@ -27,6 +29,7 @@
                             {% block additional %}{% endblock %}
                   </div>
                 </div>
+            </div>
         </div><br>
         <div class="row">
             <div class="card col-md-12">
@@ -50,7 +53,10 @@
                 </div>
             </div>
         </div>
+
     </div>
+    {% block sensitive %}{% endblock %}
     <input class="btn btn-primary" type="submit" value="Submit">
+
 </form>
 {% endblock %}
