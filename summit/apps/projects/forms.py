@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Project, File, Location
+from .models import Project, File, Location, Modification
 
 
 class ProjectForm(forms.ModelForm):
@@ -12,7 +12,7 @@ class ProjectForm(forms.ModelForm):
                   'federal_agency', 'field_of_science', 'final_report', 'fiscal_year',
                   'init_start_date',
                   'location',
-                  'mod_desc', 'mod_num', 'mod_type', 'monitoring',
+                  'monitoring',
                   'notes', 'num_of_students',
                   'p_num', 'partner', 'pp_i', 'project_manager', 'project_title',
                   'r_d',
@@ -32,6 +32,13 @@ class ProjectFileForm(forms.ModelForm):
         widgets = {
             'file': forms.ClearableFileInput(attrs={'multiple': True}),
         }
+
+
+class ModificationForm(forms.ModelForm):
+    class Meta:
+        model = Modification
+        fields = ['mod_type', 'mod_num', 'mod_desc', 'mod_amount',
+                  'mod_approved', 'mod_executed', 'mod_notes']
 
 
 class LocationForm(forms.ModelForm):

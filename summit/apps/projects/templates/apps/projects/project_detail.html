@@ -1,36 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block primary %}
-    <div class="card-header">
-        <h2 align="center">{{ object.project_title }}</h2><p align="center">P-Number: {{ object.p_num }} </p>
-    </div><br>
 
-    <div class="row">
-        <div class="card col-sm-12">
-            <h6> <b>Partner: </b>{{ object.partner }} </h6>
-            <h6> <b>Federal Agency: </b>{{ object.federal_agency }} </h6>
-            <h6> <b>Budget: </b>{{ object.budget }} </h6>
-            <h6> <b>Student Support: </b>{{ object.student_support }} </h6>
-            <h6><b>File(s): </b>
-                {% for file in files %}
-                    <br><a href=" {{ file.file.url }} " target="_blank"> {{ file.file }}</a>
-                {% endfor %}
-            </h6>
-            <br><h6> <b>Description: </b></h6>
-            <div class="card-text">
-                {{ object.description }}
-            </div>
-        </div>
-    </div>
-    <br>
-
-<span>
+    <span>
         <a href="{% url 'summit.apps.projects:project-edit' id=object.id %}">
             <button type="button" class="btn btn-light">Edit Project</button>
-        </a>
-        <a href="{% url 'summit.apps.projects:project-mods' id=object.id %}">
-            <button type="button" class="btn btn-info">Add Modifications</button>
         </a>
         <a href="{% url 'summit.apps.projects:project-export-csv' id=object.id %}">
             <button type="button" class="btn btn-info">Export to csv</button>
@@ -38,5 +12,219 @@
         <a href="{% url 'summit.apps.projects:project-change-history' id=object.id %}">
             <button type="button" class="btn btn-info">View/Revert Project History</button>
         </a>
-</span>
+    </span>
+
+<div class="card">
+    <div class="row1">
+        <div class="card-header col-sm-12">
+            <h1 align="center" class="card-header">{{ object.project_title }}</h1>
+                <div class="card-body" >
+                    <b>P-Number:</b> {{ object.p_num }}<br>
+                    <b>Short Summary:</b><br>
+                    <div class="card-text">
+                        {{ object.short_summary}}
+                    </div>
+                </div>
+        </div>
+    </div><br>
+</div><br>
+
+<div class="card">
+<h3 class="card-header">Details</h3>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-4">
+                <h5> <u>General Information: </u></h5>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><b>Status:</b></td><td>{{ object.get_status_display }} </td>
+                        </tr>
+                        <tr>
+                            <td><b>Partner:</b></td><td>{{ object.partner}} </td>
+                        </tr>
+                        <tr>
+                            <td><b>Location:</b></td><td>{{ object.location }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>CESU Unit:</b></td><td>{{ object.cesu_unit}} </td>
+                        </tr>
+                        <tr>
+                            <td><b>Federal Agency:</b></td><td>{{ object.federal_agency}} </td>
+                        </tr>
+                        <tr>
+                            <td><b>Budget:</b></td><td>{{ object.budget}} </td>
+                        </tr>
+                        <tr>
+                            <td><b>Student Support:</b></td><td>{{ object.get_student_support_display}} </td>
+                        </tr>
+                        <tr>
+                            <td><b>Number of Students:</b></td><td>{{ object.num_of_students}} </td>
+                        </tr>
+                        <tr>
+                            <td><b>Vet Support:</b></td><td>{{ object.get_vet_support_display}} </td>
+                        </tr>
+                        <tr>
+                            <td><b>Discipline:</b></td><td>{{ object.get_discipline_display}} </td>
+                        </tr>
+                        <tr>
+                            <td><b>Type of Project:</b></td><td>{{ object.get_type_display}} </td>
+                        </tr>
+                        <tr>
+                            <td><b>Final Report:</b></td><td>{{ object.final_report }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-4">
+                <h5> <u>Important Dates: </u></h5>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td><b>Fiscal Year:</b></td><td>{{ object.fiscal_year}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Project Initialization:</b></td><td>{{ object.init_start_date}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Start Date:</b></td><td>{{ object.tent_start_date}} (Tentative)</td>
+                    </tr>
+                    <tr>
+                        <td><b>End Date:</b></td><td>{{ object.tent_end_date}} (Tentative)</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-4">
+                <h6><b>File(s): </b></h6>
+                {% for file in files %}
+                    <a href=" {{ file.file.url }} " target="_blank"> {{ file.file }}</a><br>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <br><h5> <u>R&D Details: </u></h5>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><b>Type:</b></td><td>{{ object.get_r_d_display }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Source of Funding:</b></td><td>{{ object.get_src_of_funding_display}}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Monitoring:</b></td><td>{{ object.monitoring }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Scientific Method:</b></td><td>{{ object.sci_method}}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Field of Science:</b><br></td><td>{{ object.get_field_of_science_display}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="col-sm-8">
+                <br><h5> <u>Description: </u></h5>
+                <div class="card-text">
+                    {{ object.description }}
+                </div>
+                <br><h5> <u>Notes: </u></h5>
+                <div class="card-text">
+                    {{ object.notes|default:"None" }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div><br>
+<div class="card">
+    <h3 class="card-header">Personal</h3>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-6">
+                <b>CESU Staff Member: </b>{{ object.staff_member.first_name }} {{ object.staff_member.last_name }}<br>
+                <div class="card-text">
+                    Phone: {{ object.staff_member.phone_number|default:"No Entry" }}<br>
+                    Email: {{ object.staff_member.email_address }}
+                </div><br><br><br>
+                <h6> <b>Partner Principal Investigator: </b>{{ object.pp_i.first_name }} {{ object.pp_i.last_name }}<br></h6>
+                <div class="card-text">
+                        Title: {{ object.pp_i.phone_number }}<br>
+                        Phone: {{ object.pp_i.phone_number }}<br>
+                        Email: {{ object.pp_i.email_address }}<br>
+                        Location: {{ object.pp_i.location }}
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <h6> <b>Project Manager: </b>{{ object.project_manager.first_name }} {{ object.project_manager.last_name }}</h6>
+                <div class="card-text">
+                        Title: {{ object.project_manager.phone_number }}<br>
+                        Phone: {{ object.project_manager.phone_number }}<br>
+                        Email: {{ object.project_manager.email_address }}<br>
+                        Location: {{ object.project_manager.location }}
+                </div><br>
+                <h6> <b>Technical Representative: </b>{{ object.tech_rep.first_name }} {{ object.tech_rep.last_name }}</h6>
+                <div class="card-text">
+                        Title: {{ object.tech_rep.phone_number }}<br>
+                        Phone: {{ object.tech_rep.phone_number }}<br>
+                        Email: {{ object.tech_rep.email_address }}<br>
+                        Location: {{ object.tech_rep.location }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div><br>
+
+<div class="card">
+    <h3 class="card-header">Modifications</h3>
+    <div class="card-body">
+        <div class="row">
+            <p class="card-subtitle">To view or edit modifications, click the 'Number'.</p>
+        </div>
+        <div class="row">
+            <a href="{% url 'summit.apps.projects:project-mods' id=object.id %}">
+                <button type="button" class="btn btn-info">Add Modifications</button>
+            </a>
+        </div>
+        <div class="row">
+            {% for mod in mods %}
+            <div class="col-sm-4">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><b>Number:</b></td>
+                            <td><u><a href="{% url 'summit.apps.projects:project-mods-edit' id=object.id mod_id=mod.mod_num %}">
+                                {{ mod.mod_num }}
+                            </a></u></td>
+                        </tr>
+                        <tr>
+                            <td><b>Type:</b></td><td>{{ mod.get_mod_type_display }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Amount:</b></td><td>{{ mod.mod_amount}}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Approved:</b></td><td>{{ mod.mod_approved }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Executed:</b></td><td>{{ mod.mod_executed }}</td>
+                        </tr><br>
+{#                        <tr>#}
+{#                            <td>#}
+{#                                <a href="{% url 'summit.apps.projects:project-mods-edit' id=object.id mod_id=mod.mod_num %}">#}
+{#                                    <button type="button" class="btn btn-outline-secondary btn-sm">View/Edit</button>#}
+{#                                </a>#}
+{#                            </td>#}
+{#                        </tr>#}
+                    </tbody>
+
+                </table>
+            </div>
+            <br>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 {% endblock %}
