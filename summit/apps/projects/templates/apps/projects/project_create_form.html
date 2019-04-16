@@ -69,7 +69,9 @@
         <span class="text-danger sml">{{ form.num_of_students.errors }}</span>
     </div>
     <label class="control-label col-sm-auto">{{ form.num_of_students.label_tag }}</label>
-    <div class="col-sm">{{ form.num_of_students }}</div><br>
+    <div class="col-sm">
+        {{ form.num_of_students }}
+    </div><br>
 
     <div class="control-label col-sm-auto">
         <span class="text-danger sml">{{ form.vet_support.errors }}</span>
@@ -88,12 +90,6 @@
     </div>
     <label class="control-label col-sm-auto">{{ form.staff_member.label_tag }}</label>
     <div class="col-sm">{{ form.staff_member }}</div><br>
-
-    <div class="control-label col-sm-auto">
-        <span class="text-danger sml">{{ form.sensitive.errors }}</span>
-    </div>
-    <label class="control-label col-sm-auto">{{ form.sensitive.label_tag }}</label>
-    <div class="col-sm">{{ form.sensitive }}</div><br>
 
     <div class="control-label col-sm-auto">
         <span class="text-danger sml">{{ form.discipline.errors }}</span>
@@ -173,10 +169,15 @@
     </div>
     <label class="control-label col-sm-auto">{{ file_form.file.label_tag }}</label>
     <div class="col-sm">{{ file_form.file }}</div><br>
-    Current Project Files:
     {% for file in files %}
         <br><a href=" {{ file.file.url }} " target="_blank"> {{ file.file }}</a><br>
     {% endfor %}
+
+    <div class="control-label col-sm-auto">
+        <span class="text-danger sml">{{ form.sensitive.errors }}</span>
+    </div>
+    <label class="control-label col-sm-auto">{{ form.sensitive.label_tag }}</label>
+    <div class="col-sm">{{ form.sensitive }}</div><br>
 </div>
 
 {% if form.non_field_errors %}
@@ -205,6 +206,12 @@
     <div class="col-sm">{{ form.src_of_funding }}</div><br>
 
     <div class="control-label col-sm-auto">
+        <span class="text-danger sml">{{ form.field_of_science.errors }}</span>
+    </div>
+    <label class="control-label col-sm-auto">{{ form.field_of_science.label_tag }}</label>
+    <div class="col-sm">{{ form.field_of_science }}</div><br>
+
+    <div class="control-label col-sm-auto">
         <span class="text-danger sml">{{ form.monitoring.errors }}</span>
     </div>
     <label class="control-label col-sm-auto">{{ form.monitoring.label_tag }}</label>
@@ -216,11 +223,6 @@
     <label class="control-label col-sm-auto">{{ form.sci_method.label_tag }}</label>
     <div class="col-sm">{{ form.sci_method }}</div><br>
 
-    <div class="control-label col-sm-auto">
-        <span class="text-danger sml">{{ form.field_of_science.errors }}</span>
-    </div>
-    <label class="control-label col-sm-auto">{{ form.field_of_science.label_tag }}</label>
-    <div class="col-sm">{{ form.field_of_science }}</div><br>
 {% endblock %}
 
 {% block final_details %}

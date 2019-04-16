@@ -53,7 +53,7 @@ class Project(models.Model):
     federal_agency = models.ForeignKey(FederalAgency, on_delete=models.CASCADE,
                                        related_name='federal_agency', default=None)
     field_of_science = models.CharField(max_length=500, help_text=_help_text['field_of_science'], blank=True,
-                                        verbose_name="Source of Funding/Award Type",
+                                        verbose_name="Field of Science",
                                         choices=FIELD_OF_SCIENCE, default=FIELD_OF_SCIENCE[0])
     final_report = models.BooleanField(verbose_name="Final Report", default=False)
     fiscal_year = models.PositiveSmallIntegerField(blank=True, default=2019,
