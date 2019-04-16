@@ -7,8 +7,8 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
-from .models import Project, File, Location
-from .forms import ProjectForm, ProjectFileForm, LocationForm
+from .models import Project, File, Location, Modification
+from .forms import ProjectForm, ProjectFileForm, LocationForm, ModificationForm
 
 
 class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -172,6 +172,7 @@ class ProjectDetail(LoginRequiredMixin, DetailView):
         ctx = super(ProjectDetail, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
         ctx['files'] = File.objects.filter(project=self.object)
+        ctx['mods'] = Modification.objects.filter(project=self.object)
         # ctx['history_data'] =
         return ctx
 
@@ -323,14 +324,93 @@ class ProjectEdit(UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class ProjectModifications(UpdateView):
+class ProjectModifications(CreateView):
     template_name = 'apps/projects/project_options.html'
-    model = Project
-    form_class = ProjectForm
+    model = Modification
+    form_class = ModificationForm
+
+    def get_success_url(self):
+        return reverse('summit.apps.projects:project-detail',
+                       args=[self.kwargs.get("id")])
+
+    def get_context_data(self, **kwargs):
+        context = {
+            'pagetitle': 'Project Modifications',
+            'title': 'Project Modifications',
+            'cssFiles': [
+                'libs/mdb/css/addons/datatables.min.css',
+                'css/apps/projects/dashboard.css'
+            ],
+            'jsFiles': [
+                'libs/mdb/js/addons/datatables.min.js',
+                'js/apps/projects/dashboard.js'
+            ],
+            'project': get_object_or_404(Project, pk=self.kwargs.get("id"))
+        }
+        ctx = super(ProjectModifications, self).get_context_data(**kwargs)
+        ctx = {**ctx, **context}
+        return ctx
+
+    def post(self, request, *args, **kwargs):
+            self.object = None
+            mod_form = self.get_form()
+            mod_form.instance.project = get_object_or_404(Project, pk=self.kwargs.get("id"))
+            if mod_form.is_valid():
+                self.object = mod_form
+                mod_form.instance.project = get_object_or_404(Project, pk=self.kwargs.get("id"))
+                super(ProjectModifications, self).form_valid(mod_form)
+                return HttpResponseRedirect(self.get_success_url())
+            else:
+                ctx = self.get_context_data()
+                ctx['form'] = mod_form
+                return self.render_to_response(ctx)
+
+
+class ProjectModEdit(UpdateView):
+    model = Modification
+    template_name = 'apps/projects/project_options.html'
+    form_class = ModificationForm
 
     def get_object(self, **kwargs):
-        pk_ = self.kwargs.get("id")
-        return get_object_or_404(Project, pk=pk_)
+        prj_ = get_object_or_404(Project, pk=self.kwargs.get("id"))
+        pk_ = self.kwargs.get("mod_id")
+        return Modification.objects.get(mod_num=pk_, project=prj_)
+
+    def get_success_url(self):
+        return reverse('summit.apps.projects:project-detail',
+                       args=[self.kwargs.get("id")])
+
+    def get_context_data(self, **kwargs):
+        context = {
+            'pagetitle': 'Project Modifications',
+            'title': 'Project Modifications',
+            'cssFiles': [
+                'libs/mdb/css/addons/datatables.min.css',
+                'css/apps/projects/dashboard.css'
+            ],
+            'jsFiles': [
+                'libs/mdb/js/addons/datatables.min.js',
+                'js/apps/projects/dashboard.js'
+            ],
+            'project': get_object_or_404(Project, pk=self.kwargs.get("id"))
+        }
+        ctx = super(ProjectModEdit, self).get_context_data(**kwargs)
+        ctx = {**ctx, **context}
+        return ctx
+
+    def post(self, request, *args, **kwargs):
+            self.object = self.get_object()
+            mod_form = self.get_form()
+            mod_form.instance.project = get_object_or_404(Project, pk=self.kwargs.get("id"))
+            if mod_form.is_valid():
+                self.object = mod_form
+                mod_form.instance.project = get_object_or_404(Project, pk=self.kwargs.get("id"))
+                super(ProjectModEdit, self).form_valid(mod_form)
+                return HttpResponseRedirect(self.get_success_url())
+            else:
+                ctx = self.get_context_data()
+                ctx['form'] = mod_form
+                return self.render_to_response(ctx)
 
 
 #

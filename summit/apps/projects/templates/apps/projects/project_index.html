@@ -31,12 +31,12 @@
     {% for project in projects %}
             <tr>
                 <th scope="row">{{ project.p_num }}</th>
-                <td >{{ project.status }}</td>
+                <td >{{ project.get_status_display }}</td>
                 <td >{{ project.project_title }}</td>
                 <td>{{ project.federal_agency }}</td>
                 <td>{{ project.partner }}</td>
-                <td>{{ project.type }}</td>
-                <td>{{ project.discipline }}</td>
+                <td>{{ project.get_type_display }}</td>
+                <td>{{ project.get_discipline_display }}</td>
                 <td>{{ project.fiscal_year }}</td>
                 <td>{{ project.budget}}</td>
                 <td>
