@@ -119,7 +119,7 @@ class User(AbstractUser):
                                              "backend",
                                    verbose_name="Admin site access?")
 
-    group = models.ForeignKey(UserGroup, default=1, on_delete=models.CASCADE)
+    group = models.ForeignKey(UserGroup, null=True, blank=True, on_delete=models.SET_NULL)
 
     external_id = models.CharField(
         max_length=100,
@@ -167,7 +167,7 @@ class User(AbstractUser):
 
 
 class UserProfile(AuditModel):
-    user = models.OneToOneField(User, null=True, blank=True)
+    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.SET_NULL)
     avatar = models.ImageField(blank=True)
 
     first_name = models.CharField(default="", max_length=150)
@@ -184,7 +184,7 @@ class UserProfile(AuditModel):
     assigned_group = models.ForeignKey(UserGroup, blank=True, null=True, on_delete=models.CASCADE)
 
     def get_full_name(self):
-        return self.first_name + " " + self.last_name + " (" + str(self.user) + ")"
+        return self.first_name + " " + self.last_name
 
     @staticmethod
     def detail_fields():

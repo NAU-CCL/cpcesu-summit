@@ -1,0 +1,376 @@
+{% extends 'apps/projects/form-template.html' %}
+{% block form_title %}Create Project Form{% endblock %}
+
+{% block basic_info %}
+
+<div class="form-group">
+    <table>
+        <tbody>
+        <tr>
+            <td>
+                <span class="text-danger sml">{{ form.p_num.errors }}</span>
+                <label class="control-label col-sm-auto"><b>{{ form.p_num.label_tag }}</b></label>
+            </td>
+            <td>
+                {{ form.p_num }}<br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="text-danger sml">{{ form.project_title.errors }}</span>
+                <label class="control-label col-sm-auto"><b>{{ form.project_title.label_tag }}</b></label>
+            </td>
+            <td>
+                {{ form.project_title }}<br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="text-danger sml">{{ form.status.errors }}</span>
+                <label class="control-label col-sm-auto"><b>{{ form.status.label_tag }}</b></label>
+            </td>
+            <td>
+                {{ form.status }}<br><br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="text-danger sml">{{ form.partner.errors }}</span>
+                <label class="control-label col-sm-auto"><b>{{ form.partner.label_tag }}</b></label>
+            </td>
+            <td>
+                {{ form.partner }}<br><br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="text-danger sml">{{ form.federal_agency.errors }}</span>
+                <label class="control-label col-sm-auto"><b>{{ form.federal_agency.label_tag }}</b></label>
+            </td>
+            <td>
+                {{ form.federal_agency }}<br><br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="text-danger sml">{{ form.pp_i.errors }}</span>
+                <label class="control-label col-sm-auto"><b>{{ form.pp_i.label_tag }}</b></label>
+            </td>
+            <td>
+                {{ form.pp_i }}<br><br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="text-danger sml">{{ form.project_manager.errors }}</span>
+                <label class="control-label col-sm-auto"><b>{{ form.project_manager.label_tag }}</b></label>
+            </td>
+            <td>
+                {{ form.project_manager }}<br><br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="text-danger sml">{{ form.tech_rep.errors }}</span>
+                <label class="control-label col-sm-auto"><b>{{ form.tech_rep.label_tag }}</b></label>
+            </td>
+            <td>
+                {{ form.tech_rep }}<br><br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="text-danger sml">{{ form.location.errors }}</span>
+                <label class="control-label col-sm-auto"><b>{{ form.location.label_tag }}</b></label>
+            </td>
+            <td>
+                {{ form.location }}<br><br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="text-danger sml">{{ form.student_support.errors }}</span>
+                <label class="control-label col-sm-auto"><b>{{ form.student_support.label_tag }}</b></label>
+            </td>
+            <td>
+                {{ form.student_support }}<br><br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="text-danger sml">{{ form.num_of_students.errors }}</span>
+                <label class="control-label col-sm-auto"><b>{{ form.num_of_students.label_tag }}</b></label>
+            </td>
+            <td>
+                {{ form.num_of_students }}<br><br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="text-danger sml">{{ form.vet_support.errors }}</span>
+                <label class="control-label col-sm-auto"><b>{{ form.vet_support.label_tag }}</b></label>
+            </td>
+            <td>
+                {{ form.vet_support }}<br><br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="text-danger sml">{{ form.cesu_unit.errors }}</span>
+                <label class="control-label col-sm-auto"><b>{{ form.cesu_unit.label_tag }}</b></label>
+            </td>
+            <td>
+                {{ form.cesu_unit }}<br><br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="text-danger sml">{{ form.staff_member.errors }}</span>
+                <label class="control-label col-sm-auto"><b>{{ form.staff_member.label_tag }}</b></label>
+            </td>
+            <td>
+                {{ form.staff_member }}<br><br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="text-danger sml">{{ form.discipline.errors }}</span>
+                <label class="control-label col-sm-auto"><b>{{ form.discipline.label_tag }}</b></label>
+            </td>
+            <td>
+                {{ form.discipline }}<br><br>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+{% if form.non_field_errors %}
+    <div class="alert alert-error">
+        <ul>
+            {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+{% endblock %}
+
+
+{% block additional %}
+
+<div class="form-group">
+    <table>
+        <tbody>
+            <tr>
+                <td>
+                    <span class="text-danger sml">{{ form.short_summary.errors }}</span>
+                    <label class="control-label col-sm-auto"><b>{{ form.short_summary.label_tag }}</b></label>
+                    {{ form.short_summary }}<br>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="text-danger sml">{{ form.description.errors }}</span>
+                    <label class="control-label col-sm-auto"><b>{{ form.description.label_tag }}</b></label>
+                    {{ form.description }}<br>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table>
+        <tbody>
+            <tr>
+                <td>
+                    <span class="text-danger sml">{{ form.budget.errors }}</span>
+                    <label class="control-label col-sm-auto"><b>{{ form.budget.label_tag }}</b></label>
+                </td>
+                <td>
+                    {{ form.budget }}<br>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="text-danger sml">{{ form.type.errors }}</span>
+                    <label class="control-label col-sm-auto"><b>{{ form.type.label_tag }}</b></label>
+                </td>
+                <td>
+                    {{ form.type }}<br><br>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="text-danger sml">{{ form.tent_start_date.errors }}</span>
+                    <label class="control-label col-sm-auto"><b>{{ form.tent_start_date.label_tag }}</b></label>
+                </td>
+                <td>
+                    {{ form.tent_start_date }}<br><br>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="text-danger sml">{{ form.tent_end_date.errors }}</span>
+                    <label class="control-label col-sm-auto"><b>{{ form.tent_end_date.label_tag }}</b></label>
+                </td>
+                <td>
+                    {{ form.tent_end_date }}<br><br>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="text-danger sml">{{ form.init_start_date.errors }}</span>
+                    <label class="control-label col-sm-auto"><b>{{ form.init_start_date.label_tag }}</b></label>
+                </td>
+                <td>
+                    {{ form.init_start_date }}<br><br>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="text-danger sml">{{ form.fiscal_year.errors }}</span>
+                    <label class="control-label col-sm-auto"><b>{{ form.fiscal_year.label_tag }}</b></label>
+                </td>
+                <td>
+                    {{ form.fiscal_year }}<br>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="text-danger sml">{{ file_form.file.errors }}</span>
+                    <label class="control-label col-sm-auto"><b>{{ file_form.file.label_tag }}</b></label>
+                </td>
+                <td>
+                    {{ file_form.file }}<br><br>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="control-label col-sm-auto"><b><u>Current Files</u></b><br></label>
+                    {% if files %}
+                        {% for file in files %}
+                            <br><a href=" {{ file.file.url }} " target="_blank"> {{ file.file }}</a><br>
+                        {% endfor %}
+                    {% else %}
+                    <br>No files have been added
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+{% if form.non_field_errors %}
+    <div class="alert alert-error">
+        <ul>
+            {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+{% endblock %}
+
+
+{% block rnd %}
+<div class="form-group">
+    <table>
+        <tbody>
+            <tr>
+                <td>
+                    <span class="text-danger sml">{{ form.r_d.errors }}</span>
+                    <label class="control-label col-sm-auto"><b>{{ form.r_d.label_tag }}</b></label>
+                </td>
+                <td>
+                    {{ form.r_d }}<br>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="text-danger sml">{{ form.src_of_funding.errors }}</span>
+                    <label class="control-label col-sm-auto"><b>{{ form.src_of_funding.label_tag }}</b></label>
+                </td>
+                <td>
+                    {{ form.src_of_funding }}<br>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="text-danger sml">{{ form.field_of_science.errors }}</span>
+                    <label class="control-label col-sm-auto"><b>{{ form.field_of_science.label_tag }}</b></label>
+                </td>
+                <td>
+                    {{ form.field_of_science }}<br>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="text-danger sml">{{ form.monitoring.errors }}</span>
+                    <label class="control-label col-sm-auto"><b>{{ form.monitoring.label_tag }}</b></label>
+                </td>
+                <td>
+                    {{ form.monitoring }}<br>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="text-danger sml">{{ form.sci_methoderrors }}</span>
+                    <label class="control-label col-sm-auto"><b>{{ form.sci_method.label_tag }}</b></label>
+                </td>
+                <td>
+                    {{ form.sci_method }}<br>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block final_details %}
+<div class="form-group">
+    <table>
+        <tbody>
+            <tr>
+                <td>
+                    <span class="text-danger sml">{{ form.notes.errors }}</span>
+                    <label class="control-label col-sm-auto"><b>{{ form.notes.label_tag }}</b></label>
+                    {{ form.notes }}<br>
+                </td>
+                <td>
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table>
+        <tbody>
+            <tr>
+                    <td>
+                        <span class="text-danger sml">{{ form.sensitve.errors }}</span>
+                        <label class="control-label col-sm-auto"><b>{{ form.sensitive.label_tag }}</b></label>
+                    </td>
+                    <td>
+                        {{ form.sensitive }}<br>
+                    </td>
+                </tr>
+            <tr>
+                <td>
+                    <span class="text-danger sml">{{ form.final_report.errors }}</span>
+                    <label class="control-label col-sm-auto"><b>Is this the Final Report?</b></label>
+                </td>
+                <td>
+                    {{ form.final_report }}<br>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+{% block sensitive %}
+
+{% endblock %}

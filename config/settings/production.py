@@ -28,11 +28,6 @@ from .shared import(
     AUTH_USER_MODEL,
     CELERY_BROKER_URL,
     CELERY_RESULT_BACKEND,
-    EMAIL_HOST,
-    EMAIL_PORT,
-    EMAIL_HOST_USER,
-    EMAIL_HOST_PASSWORD,
-    EMAIL_USE_TLS,
     DEFAULT_FROM_EMAIL,
 )
 
@@ -64,14 +59,18 @@ __all__ = [
     'AUTH_USER_MODEL',
     'CELERY_BROKER_URL',
     'CELERY_RESULT_BACKEND',
-    'EMAIL_HOST',
-    'EMAIL_PORT',
-    'EMAIL_HOST_USER',
-    'EMAIL_HOST_PASSWORD',
-    'EMAIL_USE_TLS',
     'DEFAULT_FROM_EMAIL',
 ]
 
 DEBUG = False
 # SECRET_KEY = env('SECRET_KEY')
 ALLOWED_HOSTS = ['*']
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = False
+
+

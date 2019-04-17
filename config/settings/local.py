@@ -28,11 +28,6 @@ from .shared import(
     AUTH_USER_MODEL,
     CELERY_BROKER_URL,
     CELERY_RESULT_BACKEND,
-    EMAIL_HOST,
-    EMAIL_PORT,
-    EMAIL_HOST_USER,
-    EMAIL_HOST_PASSWORD,
-    EMAIL_USE_TLS,
     DEFAULT_FROM_EMAIL,
 )
 
@@ -65,11 +60,6 @@ __all__ = [
     'AUTH_USER_MODEL',
     'CELERY_BROKER_URL',
     'CELERY_RESULT_BACKEND',
-    'EMAIL_HOST',
-    'EMAIL_PORT',
-    'EMAIL_HOST_USER',
-    'EMAIL_HOST_PASSWORD',
-    'EMAIL_USE_TLS',
     'DEFAULT_FROM_EMAIL',
 ]
 
@@ -78,3 +68,9 @@ MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
 DEBUG = True
 INTERNAL_IPS = ['127.0.0.1', 'localhost']
 INSTALLED_APPS = ['whitenoise.runserver_nostatic', *INSTALLED_APPS, 'debug_toolbar']
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'noreply@remy.network'
+EMAIL_HOST_PASSWORD = 'axnqjwqztjxzjygs'
+EMAIL_USE_TLS = True

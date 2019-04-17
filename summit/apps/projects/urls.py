@@ -25,13 +25,19 @@ urlpatterns = [
         'app_regex': app_regex,
         'dropdown_id': app_name
     }),
-    url(r'^create/', views.ProjectCreate.as_view(), name='project-create'),
+
+    #url(r'^autofill/', views.ProjectAutofill.as_view(), name='project-autofill'),
+    #url(r'^progress/', views.ProjectProgress.as_view(), name='project-progress'),
+    #url(r'^poll_state$', views.ProjectProgress, name='poll_state'),
+
+    link(r'^public_projects/$', views.ProjectPublicListView.as_view(), name=get_name(app_name, 'Public Projects'), link_args={
+        'app_regex': app_regex
+    }),
+    url(r'^public-detail/(?P<id>[-\w]+)/$', views.ProjectPublicDetail.as_view(), name='project-detail-public'),
     url(r'^detail/(?P<id>[-\w]+)/$', views.ProjectDetail.as_view(), name='project-detail'),
     url(r'^edit/(?P<id>[-\w]+)/$', views.ProjectEdit.as_view(), name='project-edit'),
-    url(r'^autofill/', views.ProjectAutofill.as_view(), name='project-autofill'),
-    url(r'^progress/', views.ProjectProgress.as_view(), name='project-progress'),
-    url(r'^poll_state$', views.ProjectProgress, name='poll_state'),
-    url(r'^mods/(?P<id>[-\w]+)/$', views.ProjectModifications.as_view(), name='project-mods'),
+    url(r'^mods/(?P<id>[-\w]+)/create/$', views.ProjectModifications.as_view(), name='project-mods'),
+    url(r'^mods/(?P<id>[-\w]+)/edit/(?P<mod_id>[-\w]+)$', views.ProjectModEdit.as_view(), name='project-mods-edit'),
     url(r'^detail/download_csv/(?P<id>[-\w]+)/$', views.export_to_csv, name='project-export-csv'),
     url(r'^detail/change_history/(?P<id>[-\w]+)/$', views.change_history, name='project-change-history'),
 
