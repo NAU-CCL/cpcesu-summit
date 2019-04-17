@@ -219,7 +219,7 @@ def manage_group(request, name='summit.libs.auth.manage_group', group_id=-1):
         try:
             profile = UserProfile.objects.get(user=request.user)
             group_id = profile.assigned_group.id
-        except ObjectDoesNotExist:
+        except (AttributeError, ObjectDoesNotExist) as e:
             return HttpResponseRedirect(reverse('summit.libs.auth2:summit.libs.auth2_All Groups'))
 
     group = get_object_or_404(UserGroup, id=group_id)
