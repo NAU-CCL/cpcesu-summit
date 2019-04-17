@@ -580,9 +580,21 @@ def export_to_csv(request, id):
     response['Content-Disposition'] = 'attachment; filename="'+file_name+'.csv"'
 
     writer = csv.writer(response)
-    writer.writerow(['project_title', 'status', 'budget', 'student_support', 'short_summary'])
+    writer.writerow(['Budget', 'CESUnit', 'Description', 'Discipline', 'Federal Agency', 'Field of Science',
+                     'Final Report ', 'Fiscal Year', 'Initial Start Date', 'Location',
+                     'Monitoring', 'Project Notes', 'Number of Students', 'P-Num', 'Partner', 'Principal Investigator (PI)',
+                     'Project Manager','Project Title', 'Research & Development', 'Scientific Method', 'Sensitive',
+                     'Short Summary', 'Source of Funding', 'Staff Member',
+                     'Status', 'Student Support', 'Technical Representative', 'Tentative End Date',
+                     'Tentative Start Date', 'Type of Project', 'Veteran/Youth Support'])
 
-    writer.writerow([project.project_title, project.status, project.budget, project.student_support, project.short_summary])
+    writer.writerow([project.budget, project.cesu_unit,project.description, project.discipline, project.federal_agency,
+                     project.field_of_science, project.final_report, project.fiscal_year, project.init_start_date,
+                     project.location, project.monitoring, project.notes, project.num_of_students, project.p_num,
+                     project.partner, project.pp_i, project.project_manager, project.project_title, project.r_d,
+                     project.sci_method, project.sensitive, project.short_summary, project.src_of_funding,
+                     project.staff_member, project.status, project.student_support, project.tech_rep, project.tent_end_date,
+                     project.tent_start_date, project.type, project.vet_support])
 
     return response
 
