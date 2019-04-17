@@ -11,7 +11,7 @@ app_regex = r'^projects/'
 urlpatterns = [
     # Projects and Modifications
 
-    link(r'^dashboard/$', views.ProjectDashboardView.as_view(), name=get_name(app_name, "My Dashboard"), link_args={
+    link(r'^dashboard/$', views.ProjectDashboardView.as_view(), name=get_name(app_name, "Your Dashboard"), link_args={
         'auth_required': True,
         'app_regex': app_regex
     }),
