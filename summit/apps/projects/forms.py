@@ -2,6 +2,7 @@ from django import forms
 
 from .models import Project, File, Location, Modification
 
+
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project

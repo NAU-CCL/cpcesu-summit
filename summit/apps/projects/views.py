@@ -222,13 +222,26 @@ class ProjectCreate(CreateView):
 
             return render(request, self.template_name, {'form': form,})#'file_path': upload.file.path})
         else:
-            form = self.form_class
-            return render(request, self.template_name, {'form': form})
+            context = {
+                'name': self.kwargs['name'],
+                'pagetitle': 'Create Project',
+                'title': 'Create Project',
+                'cssFiles': [
+                    'libs/mdb/css/addons/datatables.min.css',
+                    'css/apps/projects/dashboard.css'
+                ],
+                'jsFiles': [
+                    'libs/mdb/js/addons/datatables.min.js',
+                    'js/apps/projects/dashboard.js'
+                ],
+                'form': self.get_form_class(),
+                'file_form': ProjectFileForm()
+            }
+            return render(request, self.template_name, context)
 
     def get_context_data(self, **kwargs):
-        print('over there 1')
         context = {
-            'name': 'Create',
+            'name': self.kwargs['name'],
             'pagetitle': 'Create Project',
             'title': 'Create Project',
             'cssFiles': [
