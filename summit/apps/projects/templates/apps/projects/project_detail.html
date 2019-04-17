@@ -104,7 +104,7 @@
         </div>
         <div class="row">
             <div class="col-sm-4">
-                <br><h5> <u>R&D Details: </u></h5>
+                <br><h5> <u>R&amp;D Details: </u></h5>
                 <table>
                     <tbody>
                         <tr>
@@ -146,9 +146,11 @@
             <div class="col-sm-6">
                 <b>CESU Staff Member: </b>{{ object.staff_member.first_name }} {{ object.staff_member.last_name }}<br>
                 <div class="card-text">
-                    Phone: {{ object.staff_member.phone_number|default:"No Entry" }}<br>
-                    Email: {{ object.staff_member.email_address }}
-                </div><br><br><br>
+                    Title: {{ object.staff_member.phone_number }}<br>
+                    Phone: {{ object.staff_member.phone_number }}<br>
+                    Email: {{ object.staff_member.email_address }}<br>
+                    Location: {{ object.staff_member.location }}
+                </div><br>
                 <h6> <b>Partner Principal Investigator: </b>{{ object.pp_i.first_name }} {{ object.pp_i.last_name }}<br></h6>
                 <div class="card-text">
                         Title: {{ object.pp_i.phone_number }}<br>

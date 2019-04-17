@@ -1,6 +1,6 @@
 <form method="post">
     {% csrf_token %}
-    {{ profile_form.as_ul }}
+    {{ profile_form.as-table }}
     <input type="submit" value="Submit Profile" />
 </form>
 

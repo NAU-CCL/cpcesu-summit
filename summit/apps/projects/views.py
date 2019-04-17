@@ -1,10 +1,13 @@
 import csv
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+
+from summit.libs.auth.models import UserProfile, CESUnit
 
 
 from .models import Project, File, Location, Modification
@@ -107,6 +110,25 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
     raise_exception = False
 
     def get_context_data(self, **kwargs):
+        all_projects = self.get_queryset()
+
+        user = self.request.user
+        user_group = self.request.user.group
+
+        try:
+            profile = UserProfile.objects.get(user=user)
+        except ObjectDoesNotExist:
+            profile = None
+
+        try:
+            ces_unit = CESUnit.objects.get(id=user_group.id)
+        except (ObjectDoesNotExist, AttributeError) as e:
+            ces_unit = None
+
+        filtered_projects = all_projects.filter(cesu_unit=ces_unit, staff_member=profile)\
+                                | all_projects.filter(cesu_unit=None)\
+                                | all_projects.filter(staff_member=profile)
+
         context = {
             'name': self.kwargs['name'],
             'pagetitle': 'Your Dashboard',
@@ -121,7 +143,8 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
                 'js/apps/projects/dashboard.js'
-            ]
+            ],
+            'projects': filtered_projects
         }
         ctx = super(ProjectDashboardView, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}

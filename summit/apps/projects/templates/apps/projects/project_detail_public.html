@@ -7,22 +7,28 @@
         <h2 align="center">{{ object.project_title }}</h2><p align="center">P-Number: {{ object.p_num }} </p>
     </div><br>
 
+    <span>
+        <a href="{% url 'summit.apps.projects:project-detail-public' id=object.id %}">
+            <button type="button" class="btn btn-light">Request Project Information</button>
+        </a>
+    </span>
+
     <div class="row">
         <div class="card col-sm-12">
-            <h6> <b>Partner: </b>{{ object.partner }} </h6>
-            <h6> <b>Federal Agency: </b>{{ object.federal_agency }} </h6>
-            <h6> <b>Student Support: </b>{{ object.student_support }} </h6>
-            <br><h6> <b>Description: </b></h6>
-            <div class="card-text">
-                {{ object.description }}
-            </div>
+            <table>
+                <tbody>
+                    <tr>
+                        <td><b>Partner:</b></td><td>{{ object.partner }}</td> <td><b>Federal Agency:</b></td><td>{{ object.federal_agency }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Type:</b></td> <td>{{ object.type }}</td> <td><b>Student Support:</b></td><td>{{ object.student_support }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Description:</b></td><td colspan="3">{{ object.description }}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
     <br>
-
-<span>
-        <a href="{% url 'summit.apps.projects:project-edit' id=object.id %}">
-            <button type="button" class="btn btn-light">Request Project Information</button>
-        </a>
-</span>
 {% endblock %}
