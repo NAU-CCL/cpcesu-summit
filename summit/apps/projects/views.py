@@ -1,4 +1,5 @@
 import csv
+import datetime
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
@@ -9,9 +10,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 
 from summit.libs.auth.models import UserProfile, CESUnit
 
-
-from .models import Project, File, Location, Modification
-from .forms import ProjectForm, ProjectFileForm, LocationForm, ModificationForm
+from .models import Project, File, Location, Modification, ModFile
+from .forms import ProjectForm, ProjectFileForm, LocationForm, ModificationForm, ModificationFileForm
 
 
 class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -125,10 +125,12 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
         except (ObjectDoesNotExist, AttributeError) as e:
             ces_unit = None
 
-        filtered_projects = all_projects.filter(cesu_unit=ces_unit, staff_member=profile)\
-                                | all_projects.filter(cesu_unit=None)\
-                                | all_projects.filter(staff_member=profile)
+        user_filtered_projects = all_projects.filter(cesu_unit=ces_unit, staff_member=profile) \
+                                 | all_projects.filter(cesu_unit=None) \
+                                 | all_projects.filter(staff_member=profile)
 
+        start_date = datetime.datetime.now() + datetime.timedelta(-30)
+        recent_projects = all_projects.filter(date__range=[start_date, datetime.datetime.now()])
         context = {
             'name': self.kwargs['name'],
             'pagetitle': 'Your Dashboard',
@@ -144,7 +146,8 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
                 'libs/mdb/js/addons/datatables.min.js',
                 'js/apps/projects/dashboard.js'
             ],
-            'projects': filtered_projects
+            'projects': user_filtered_projects,
+            'recent_projects': recent_projects
         }
         ctx = super(ProjectDashboardView, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
@@ -253,6 +256,7 @@ class ProjectCreate(CreateView):
     model = Project
     template_name = 'apps/projects/project_create_form.html'
     form_class = ProjectForm
+    confirm_status = False
 
     def get_context_data(self, **kwargs):
         context = {
@@ -268,7 +272,8 @@ class ProjectCreate(CreateView):
                 'js/apps/projects/dashboard.js'
             ],
             'form': self.get_form_class(),
-            'file_form': ProjectFileForm()
+            'file_form': ProjectFileForm(),
+            'confirm_status': self.confirm_status
         }
         ctx = super(ProjectCreate, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
@@ -282,6 +287,8 @@ class ProjectCreate(CreateView):
         files = request.FILES.getlist('file')
         if project_form.is_valid():
             self.object = project_form.save()
+            if self.object.status != 'DRAFT':
+                self.confirm_status = True
             if project_file_form.is_valid():
                 for f in files:
                     project_file_instance = File(file=f, project=self.object)
@@ -300,6 +307,7 @@ class ProjectEdit(UpdateView):
     model = Project
     template_name = 'apps/projects/project_edit_form.html'
     form_class = ProjectForm
+    status = False
 
     def get_object(self, **kwargs):
         pk_ = self.kwargs.get("id")
@@ -348,7 +356,7 @@ class ProjectEdit(UpdateView):
 
 
 class ProjectModifications(CreateView):
-    template_name = 'apps/projects/project_options.html'
+    template_name = 'apps/projects/project_modifications.html'
     model = Modification
     form_class = ModificationForm
 
@@ -368,30 +376,40 @@ class ProjectModifications(CreateView):
                 'libs/mdb/js/addons/datatables.min.js',
                 'js/apps/projects/dashboard.js'
             ],
-            'project': get_object_or_404(Project, pk=self.kwargs.get("id"))
+            'project': get_object_or_404(Project, pk=self.kwargs.get("id")),
+            'files': ModFile.objects.filter(modification=self.object),
+            'file_form': ModificationFileForm()
         }
         ctx = super(ProjectModifications, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
         return ctx
 
     def post(self, request, *args, **kwargs):
-            self.object = None
-            mod_form = self.get_form()
-            mod_form.instance.project = get_object_or_404(Project, pk=self.kwargs.get("id"))
-            if mod_form.is_valid():
-                self.object = mod_form
-                mod_form.instance.project = get_object_or_404(Project, pk=self.kwargs.get("id"))
-                super(ProjectModifications, self).form_valid(mod_form)
-                return HttpResponseRedirect(self.get_success_url())
-            else:
-                ctx = self.get_context_data()
-                ctx['form'] = mod_form
-                return self.render_to_response(ctx)
+        self.object = None
+        mod_form = ModificationForm(request.POST, request.FILES, instance=self.object)
+        mod_form.instance.project = get_object_or_404(Project, pk=self.kwargs.get("id"))
+        mod_file_form = ModificationFileForm(request.POST, request.FILES,
+                                             instance=self.object)
+        files = request.FILES.getlist('file')
+        if mod_form.is_valid():
+            self.object = mod_form.save()
+            if mod_file_form.is_valid():
+                for f in files:
+                    mod_file_instance = ModFile(file=f, modification=self.object)
+                    mod_file_instance.save()
+            super(ProjectModifications, self).form_valid(mod_form)
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            print(mod_form.errors)
+            ctx = self.get_context_data()
+            ctx['form'] = mod_form
+            ctx['file_form'] = mod_file_form
+            return self.render_to_response(ctx)
 
 
 class ProjectModEdit(UpdateView):
     model = Modification
-    template_name = 'apps/projects/project_options.html'
+    template_name = 'apps/projects/project_modifications.html'
     form_class = ModificationForm
 
     def get_object(self, **kwargs):
@@ -415,7 +433,9 @@ class ProjectModEdit(UpdateView):
                 'libs/mdb/js/addons/datatables.min.js',
                 'js/apps/projects/dashboard.js'
             ],
-            'project': get_object_or_404(Project, pk=self.kwargs.get("id"))
+            'project': get_object_or_404(Project, pk=self.kwargs.get("id")),
+            'files': ModFile.objects.filter(modification=self.object),
+            'file_form': ModificationFileForm()
         }
         ctx = super(ProjectModEdit, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
@@ -423,16 +443,24 @@ class ProjectModEdit(UpdateView):
 
     def post(self, request, *args, **kwargs):
             self.object = self.get_object()
-            mod_form = self.get_form()
+            mod_form = ModificationForm(request.POST, request.FILES, instance=self.object)
             mod_form.instance.project = get_object_or_404(Project, pk=self.kwargs.get("id"))
+            mod_file_form = ModificationFileForm(request.POST, request.FILES,
+                                                 instance=self.object)
+            files = request.FILES.getlist('file')
             if mod_form.is_valid():
-                self.object = mod_form
-                mod_form.instance.project = get_object_or_404(Project, pk=self.kwargs.get("id"))
+                self.object = mod_form.save()
+                if mod_file_form.is_valid():
+                    for f in files:
+                        mod_file_instance = ModFile(file=f, modification=self.object)
+                        mod_file_instance.save()
                 super(ProjectModEdit, self).form_valid(mod_form)
                 return HttpResponseRedirect(self.get_success_url())
             else:
+                print(mod_form.errors)
                 ctx = self.get_context_data()
                 ctx['form'] = mod_form
+                ctx['file_form'] = mod_file_form
                 return self.render_to_response(ctx)
 
 

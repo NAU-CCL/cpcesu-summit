@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Project, File, Location, Modification
+from .models import Project, File, Location, Modification, ModFile
 
 
 class ProjectForm(forms.ModelForm):
@@ -61,6 +61,21 @@ class ModificationForm(forms.ModelForm):
         model = Modification
         fields = ['mod_type', 'mod_num', 'mod_desc', 'mod_amount',
                   'mod_approved', 'mod_executed', 'mod_notes']
+        widgets = {
+            'mod_approved': forms.SelectDateWidget(years=list(range(1950, 3000)),
+                                                   empty_label=("Year", "Month", "Day"), ),
+            'mod_executed': forms.SelectDateWidget(years=list(range(1950, 3000)),
+                                                   empty_label=("Year", "Month", "Day"), ),
+        }
+
+
+class ModificationFileForm(forms.ModelForm):
+    class Meta:
+        model = ModFile
+        fields = ['file']
+        widgets = {
+            'file': forms.ClearableFileInput(attrs={'multiple': True}),
+        }
 
 
 class LocationForm(forms.ModelForm):

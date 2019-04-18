@@ -17,7 +17,7 @@
                       <div class="col-sm-offset-2 col-sm-auto">
                           <span class="text-danger sml">{{ form.mod_num.errors }}</span>
                       </div>
-                      <label class="control-label col-sm-auto">{{ form.mod_num.label_tag }}</label>
+                      <label class="control-label col-sm-auto">{{ form.mod_num.label_tag }}<span style="color: red; ">(Required)</span></label>
                       <div class="col-sm">{{ form.mod_num}}</div><br>
 
                       <div class="col-sm-offset-2 col-sm-auto">
@@ -56,6 +56,32 @@
                       <label class="control-label col-sm-auto">{{ form.mod_notes.label_tag }}</label>
                       <div class="col-sm">{{ form.mod_notes}}</div><br>
 
+
+                      <table>
+                          <tbody>
+                          <tr>
+                              <td>
+                                  <span class="text-danger sml">{{ file_form.file.errors }}</span>
+                                  <label class="control-label col-sm-auto"><b>{{ file_form.file.label_tag }}</b></label>
+                              </td>
+                              <td>
+                                  {{ file_form.file }}<br><br>
+                              </td>
+                          </tr>
+                          <tr>
+                              <td>
+                                  <label class="control-label col-sm-auto"><b><u>Current Files</u></b><br></label>
+                                  {% if files %}
+                                      {% for file in files %}
+                                          <br><a href=" {{ file.file.url }} " target="_blank"> {{ file.file }}</a><br>
+                                      {% endfor %}
+                                  {% else %}
+                                      <br>No files have been added
+                                  {% endif %}
+                              </td>
+                          </tr>
+                          </tbody>
+                      </table>
 
                   </div>
               </div>

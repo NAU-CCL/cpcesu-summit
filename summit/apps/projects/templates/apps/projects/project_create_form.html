@@ -285,7 +285,7 @@
                     <label class="control-label col-sm-auto"><b>{{ form.r_d.label_tag }}</b></label>
                 </td>
                 <td>
-                    {{ form.r_d }}<br>
+                    {{ form.r_d }}<br><br>
                 </td>
             </tr>
             <tr>
@@ -294,7 +294,7 @@
                     <label class="control-label col-sm-auto"><b>{{ form.src_of_funding.label_tag }}</b></label>
                 </td>
                 <td>
-                    {{ form.src_of_funding }}<br>
+                    {{ form.src_of_funding }}<br><br>
                 </td>
             </tr>
             <tr>
@@ -303,7 +303,7 @@
                     <label class="control-label col-sm-auto"><b>{{ form.field_of_science.label_tag }}</b></label>
                 </td>
                 <td>
-                    {{ form.field_of_science }}<br>
+                    {{ form.field_of_science }}<br><br>
                 </td>
             </tr>
             <tr>
@@ -312,7 +312,7 @@
                     <label class="control-label col-sm-auto"><b>{{ form.monitoring.label_tag }}</b></label>
                 </td>
                 <td>
-                    {{ form.monitoring }}<br>
+                    {{ form.monitoring }}<br><br>
                 </td>
             </tr>
             <tr>
@@ -347,19 +347,29 @@
     </table>
     <table>
         <tbody>
+        <tr>
+            <td><p>By checking the 'Sensitive Information' box you will <b>NOT</b> allow the public to view any details
+                about this project.</p></td>
+        </tr>
+        </tbody>
+    </table>
+    <table>
+        <tbody>
             <tr>
-                    <td>
-                        <span class="text-danger sml">{{ form.sensitve.errors }}</span>
-                        <label class="control-label col-sm-auto"><b>{{ form.sensitive.label_tag }}</b></label>
-                    </td>
-                    <td>
-                        {{ form.sensitive }}<br>
-                    </td>
-                </tr>
+                <td>
+                    <span class="text-danger sml">{{ form.sensitve.errors }}</span>
+                    <label class="control-label col-sm-auto"><b>
+                        {{ form.sensitive.label_tag }}</b><br>
+                    </label>
+                </td>
+                <td>
+                    {{ form.sensitive }}<br>
+                </td>
+            </tr>
             <tr>
                 <td>
                     <span class="text-danger sml">{{ form.final_report.errors }}</span>
-                    <label class="control-label col-sm-auto"><b>Is this the Final Report?</b></label>
+                    <label class="control-label col-sm-auto"><b>Is this the Final Report?</b><br></label>
                 </td>
                 <td>
                     {{ form.final_report }}<br>
@@ -367,10 +377,17 @@
             </tr>
         </tbody>
     </table>
+
 </div>
 
 {% endblock %}
-
-{% block sensitive %}
-
+{{ confirm_status }}
+{% block submission %}
+    {% if confirm_status is False %}
+        <input class="btn btn-primary" type="submit" value="Submit">
+    {% else %}
+        <input class="btn btn-primary" type="submit" value="Submit" onclick="return confirm('If the status of this project is EXECUTED or CLOSED,\n' +
+     'make sure all fields are filled out properly.')">
+    {% endif %}
 {% endblock %}
+
