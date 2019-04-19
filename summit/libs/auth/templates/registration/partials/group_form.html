@@ -1,7 +1,28 @@
 <form method="post">
     {% csrf_token %}
-    {{ group_form.as_table }}
-    <input type="submit" value="Submit Group" />
+    <div class="row">
+        <div class="card col-sm-12">
+            <table>
+                <tbody>
+                    <tr>
+                        <td><b>Name:</b></td><td>{{ group_form.name }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Description:</b></td><td>{{ group_form.description}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Permissions:</b></td><td>{{ group_form.permissions}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Avatar:</b></td><td>{{ group_form.avatar}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Group Type:</b></td><td>{{ group_form.group_type}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+            <input type="submit" value="Submit Group" />
+        </div>
+    </div>
 </form>
-
-<hr>44
