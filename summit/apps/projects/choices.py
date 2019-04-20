@@ -77,6 +77,24 @@ class ProjectChoices:
     FUNDED_EXT = 'FUNDED_EXT'
     FUNDED_ADMIN = 'FUNDED_ADMIN'
     NO_COST_EXT_ADMIN = 'NO_COST_EXT_ADMIN'
+
+    #
+    # ES - Atmospheric Sciences,
+    # ES - Geological Sciences,
+    # ES – Oceanography,
+    # ES - Environmental Sciences NEC,
+    # LS - Biological (excl.Environmental)
+    # LS - Environmental Biology,
+    # LS - Agricultural Science,
+    # LS - Medical Science,
+    # LS - Life Science NEC
+    # ES_AS = 'ES_AS'
+    # ES_GS = 'ES_GS'
+    # ES_O = 'ES_O'
+    # ES_ES = 'ES_ES'
+    # LS_BI = 'LS_BI'
+    # LS_EB = 'ES_EB'
+
     STUDENT_SUPPORT = (
         (NONE, 'None'),
         (GRADUATE, 'Graduate'),

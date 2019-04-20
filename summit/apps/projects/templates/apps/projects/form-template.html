@@ -2,59 +2,89 @@
 {% load static %}
 
 {% block primary %}
-<h1 align="center">{% block form_title %}{% endblock %}</h1><br>
     <form action="" method="post" enctype="multipart/form-data" , name="form">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-6">
-                <div class="card">
-                  <div class="card-header">
-                      <h3>Basic Project Info</h3>
-                  </div>
-                  <div class="card-body">
-                            {% csrf_token %}
-                            {{ form.non_field_errors }}
-                            {% block basic_info %}{% endblock %}
-                  </div>
-                </div>
+        <div class="card">
+            <div class="card-header">
+                <h3>Create Project Form</h3>
             </div>
-            <div class="col-6">
-                <div class="card">
-                  <div class="card-header">
-                      <h3>Additional Details</h3>
-                  </div>
-                  <div class="card-body">
-                            {% csrf_token %}
-                            {{ form.non_field_errors }}
-                            {% block additional %}{% endblock %}
-                  </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-4">
+
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        {% block row1_col1 %}{% endblock %}
+
+                    </div>
+                    <div class="col-sm-4">
+
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        {% block row1_col2 %}{% endblock %}
+                    </div>
+                    <div class="col-sm-4">
+
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        {% block row1_col3 %}{% endblock %}
+                    </div>
                 </div>
-            </div>
-        </div><br>
-        <div class="row">
-            <div class="card col-md-12">
-                <div class="card-header">
-                    <h3>Research &amp; Development Details</h3>
+                <div class="row">
+                    <div class="col-sm-4">
+
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        {% block row2_col1 %}{% endblock %}
+
+                    </div>
+                    <div class="col-sm-4">
+
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        {% block row2_col2 %}{% endblock %}
+                    </div>
+                    <div class="col-sm-4">
+
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        {% block row2_col3 %}{% endblock %}
+                    </div>
                 </div>
-                <div class="card-body">
-                    {{ form.non_field_errors }}
-                    {% block rnd %}{% endblock %}
+                <div class="row">
+                    <div class="col-sm-4">
+
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        {% block row3_col1 %}{% endblock %}
+
+                    </div>
+                    <div class="col-sm-4">
+
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        {% block row3_col2 %}{% endblock %}
+                    </div>
+                    <div class="col-sm-4">
+
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        {% block row3_col3 %}{% endblock %}
+                    </div>
                 </div>
-            </div>
-        </div><br>
-        <div class="row">
-            <div class="card col-md-12">
-                <div class="card-header">
-                    <h3>Final Details</h3>
-                </div>
-                <div class="card-body">
-                    {{ form.non_field_errors }}
-                    {% block final_details%}{% endblock %}
-                </div>
+
             </div>
         </div>
-    </div>
         {% block submission %}{% endblock %}
 
+        {% if form.non_field_errors %}
+            <div class="alert alert-error">
+                <ul>
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
 </form>
 {% endblock %}
+

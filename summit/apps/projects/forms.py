@@ -6,11 +6,12 @@ from .models import Project, File, Location, Modification, ModFile
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ['budget', 'cesu_unit', 'description', 'discipline', 'federal_agency', 'field_of_science',
-                  'final_report', 'fiscal_year', 'init_start_date', 'location',
+        fields = ['budget', 'cesu_unit', 'description', 'discipline', 'exec_start_date',
+                  'federal_agency', 'field_of_science', 'final_report', 'fiscal_year', 'init_start_date', 'location',
                   'monitoring', 'notes', 'num_of_students', 'p_num', 'partner', 'pp_i', 'project_manager',
-                  'project_title', 'r_d', 'sci_method', 'sensitive', 'short_summary', 'src_of_funding', 'staff_member',
-                  'status', 'student_support', 'tech_rep', 'tent_end_date', 'tent_start_date', 'type', 'vet_support']
+                  'project_title', 'r_d', 'reviewed', 'sci_method', 'sensitive', 'short_summary', 'src_of_funding',
+                  'staff_member', 'status', 'student_support', 'tech_rep', 'tent_end_date', 'tent_start_date',
+                  'task_agreement_start_date', 'type', 'vet_support']
         widgets = {
             'project_title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter title here...'}),
             'p_num': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter P-Num here...'}),
@@ -43,6 +44,12 @@ class ProjectForm(forms.ModelForm):
                                                       empty_label=("Year", "Month", "Day"),),
             'init_start_date': forms.SelectDateWidget(years=list(range(1950, 3000)),
                                                       empty_label=("Year", "Month", "Day"),),
+            'exec_start_date': forms.SelectDateWidget(years=list(range(1950, 3000)),
+                                                      empty_label=("Year", "Month", "Day"), ),
+            'task_agreement_start_date': forms.SelectDateWidget(years=list(range(1950, 3000)),
+                                                                empty_label=("Year", "Month", "Day"), ),
+            'reviewed': forms.SelectDateWidget(years=list(range(1950, 3000)),
+                                               empty_label=("Year", "Month", "Day"), ),
 
         }
 
