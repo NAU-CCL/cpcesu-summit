@@ -47,11 +47,11 @@ class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             },
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
-                'css/apps/projects/dashboard.css'
+                'css/datatables/dashboard.css'
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/apps/projects/dashboard.js'
+                'js/datatables/dashboard.js'
             ]
         }
         ctx = super(ProjectListView, self).get_context_data(**kwargs)
@@ -82,11 +82,11 @@ class ProjectPublicListView(ListView):
             },
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
-                'css/apps/projects/dashboard.css'
+                'css/datatables/dashboard.css'
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/apps/projects/dashboard.js'
+                'js/datatables/dashboard.js'
             ],
             'project_url': 'summit.apps.projects:project-detail-public'
         }
@@ -125,12 +125,12 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
         except (ObjectDoesNotExist, AttributeError) as e:
             ces_unit = None
 
-        user_filtered_projects = all_projects.filter(cesu_unit=ces_unit, staff_member=profile) \
-                                 | all_projects.filter(cesu_unit=None) \
-                                 | all_projects.filter(staff_member=profile)
+        user_filtered_projects = all_projects.filter(cesu_unit=ces_unit, staff_member=profile, status="DRAFT") \
+                                 | all_projects.filter(cesu_unit=None, status="DRAFT") \
+                                 | all_projects.filter(staff_member=profile, status="DRAFT")
 
         start_date = datetime.datetime.now() + datetime.timedelta(-30)
-        recent_projects = all_projects.filter(date__range=[start_date, datetime.datetime.now()])
+        recent_projects = all_projects.filter(created_on__range=[start_date, datetime.datetime.now()])
         context = {
             'name': self.kwargs['name'],
             'pagetitle': 'Your Dashboard',
@@ -140,11 +140,11 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
             },
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
-                'css/apps/projects/dashboard.css'
+                'css/datatables/dashboard.css'
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/apps/projects/dashboard.js'
+                'js/datatables/dashboard.js'
             ],
             'projects': user_filtered_projects,
             'recent_projects': recent_projects
@@ -188,11 +188,11 @@ class ProjectDetail(LoginRequiredMixin, DetailView):
             },
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
-                'css/apps/projects/dashboard.css'
+                'css/datatables/dashboard.css'
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/apps/projects/dashboard.js'
+                'js/datatables/dashboard.js'
             ]
         }
         ctx = super(ProjectDetail, self).get_context_data(**kwargs)
@@ -235,11 +235,11 @@ class ProjectPublicDetail(DetailView):
             },
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
-                'css/apps/projects/dashboard.css'
+                'css/datatables/dashboard.css'
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/apps/projects/dashboard.js'
+                'js/datatables/dashboard.js'
             ]
         }
         ctx = super(ProjectPublicDetail, self).get_context_data(**kwargs)
@@ -265,11 +265,11 @@ class ProjectCreate(CreateView):
             'title': 'Create Project',
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
-                'css/apps/projects/dashboard.css'
+                'css/datatables/dashboard.css'
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/apps/projects/dashboard.js'
+                'js/datatables/dashboard.js'
             ],
             'form': self.get_form_class(),
             'file_form': ProjectFileForm(),
@@ -322,11 +322,11 @@ class ProjectEdit(UpdateView):
             'title': 'Edit Project',
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
-                'css/apps/projects/dashboard.css'
+                'css/datatables/dashboard.css'
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/apps/projects/dashboard.js'
+                'js/datatables/dashboard.js'
             ],
             'files': File.objects.filter(project=self.object),
             'file_form': ProjectFileForm()
@@ -370,11 +370,11 @@ class ProjectModifications(CreateView):
             'title': 'Project Modifications',
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
-                'css/apps/projects/dashboard.css'
+                'css/datatables/dashboard.css'
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/apps/projects/dashboard.js'
+                'js/datatables/dashboard.js'
             ],
             'project': get_object_or_404(Project, pk=self.kwargs.get("id")),
             'files': ModFile.objects.filter(modification=self.object),
@@ -427,11 +427,11 @@ class ProjectModEdit(UpdateView):
             'title': 'Project Modifications',
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
-                'css/apps/projects/dashboard.css'
+                'css/datatables/dashboard.css'
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/apps/projects/dashboard.js'
+                'js/datatables/dashboard.js'
             ],
             'project': get_object_or_404(Project, pk=self.kwargs.get("id")),
             'files': ModFile.objects.filter(modification=self.object),
@@ -487,11 +487,11 @@ class LocationListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             },
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
-                'css/apps/projects/dashboard.css'
+                'css/datatables/dashboard.css'
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/apps/projects/dashboard.js'
+                'js/datatables/dashboard.js'
             ]
         }
         ctx = super(LocationListView, self).get_context_data(**kwargs)
@@ -516,11 +516,11 @@ class LocationCreate(CreateView):
             'title': 'Create Location',
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
-                'css/apps/projects/dashboard.css'
+                'css/datatables/dashboard.css'
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/apps/projects/dashboard.js'
+                'js/datatables/dashboard.js'
             ],
             'form': self.get_form_class(),
         }

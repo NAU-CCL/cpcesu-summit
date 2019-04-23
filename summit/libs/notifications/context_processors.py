@@ -1,4 +1,4 @@
-from summit.apps.projects.models import Notification
+from summit.libs.notifications.models import Notification
 
 
 def notification_context_processor(request):

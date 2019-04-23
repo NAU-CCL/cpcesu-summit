@@ -1,6 +1,6 @@
 $(document).ready(function ()
     {
-        $('#dtBasicExample').DataTable({
+        $('.dtBasicExample').DataTable({
             'ordering': false
         });
     });

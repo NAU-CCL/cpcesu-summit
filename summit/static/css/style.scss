@@ -3,7 +3,7 @@ $statementFont: 'Raleway', sans-serif;
 $bodyFont: 'Roboto', sans-serif;
 
 $mobileRes: 320px;
-$tabletRes: 600px;
+$tabletRes: 576px;
 $miniDesktopRes: 960px;
 $wideDesktopRes: 1200px;
 $widrDesktopRes: 1600px;
@@ -40,3 +40,21 @@ $colorACMLightBlue: #00afec;
 // Assets
 
 // Views
+
+// Other Global SCSS
+.imgContainer{
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  justify-items: center;
+  width: 100%;
+
+  img{
+    max-width: 250px;
+    width: 75%;
+    @include maxResolutionCheck(767px){
+      display: none;
+    }
+  }
+}

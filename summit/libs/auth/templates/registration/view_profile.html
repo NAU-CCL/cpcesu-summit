@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'layouts/base.html' %}
 {% load static %}
 
 
@@ -66,4 +66,14 @@
         {% endif %}
     </div>
 </div>
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'registration/partials/side_nav.html' %}
+{% endblock %}
+
+{% block layout_wrapper %}
+    {% with layout='left'  %}
+        {{ block.super }}
+    {% endwith %}
 {% endblock %}

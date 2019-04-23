@@ -3,13 +3,14 @@
 
 
 {% block primary %}
-    <h1 style="text-align: center">Create/Edit Document</h1>
+<h1 style="text-align: center">Create new User Profile</h1>
 
-    <p>Form view for a new or existing document.</p>
+{% include 'registration/partials/profile_form.html'%}
+
 {% endblock %}
 
 {% block sidebar %}
-    {% include 'apps/docs/partials/side_nav.html' %}
+    {% include 'registration/partials/side_nav.html' %}
 {% endblock %}
 
 {% block layout_wrapper %}
