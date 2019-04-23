@@ -1,6 +1,6 @@
 $(document).ready(function ()
     {
-        $('#dtBasicExample').DataTable({
+        $('.dtBasicExample').DataTable({
             'order': [[2, "asc"], [1, 'asc']]
         });
     });

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'layouts/base.html' %}
 {% load static %}
 
 {% block primary %}
@@ -88,3 +88,12 @@
 </form>
 {% endblock %}
 
+{% block sidebar %}
+    {% include 'apps/projects/partials/side_nav.html' %}
+{% endblock %}
+
+{% block layout_wrapper %}
+    {% with layout='left'  %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}

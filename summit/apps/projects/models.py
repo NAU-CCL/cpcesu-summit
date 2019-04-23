@@ -1,14 +1,10 @@
 from . import choices
-from config.links import get_name
 import datetime
-from decimal import Decimal
-from django.core.validators import MinValueValidator
-from django.core.files.storage import FileSystemStorage
-from django.conf import settings
 from django.db import models
 from simple_history.models import HistoricalRecords
 
 from summit.libs.auth.models import Partner, FederalAgency, CESUnit, UserProfile
+from summit.libs.models import AuditModel
 
 # TODO: Create/Update help text for each field.
 _help_text = choices.ProjectChoices.help_text
@@ -33,7 +29,7 @@ class Location(models.Model):
         return self.name
 
 
-class Project(models.Model):
+class Project(AuditModel):
 
     DISCIPLINE = choices.ProjectChoices.DISCIPLINE
     FIELD_OF_SCIENCE = choices.ProjectChoices.FIELD_OF_SCIENCE
@@ -65,7 +61,7 @@ class Project(models.Model):
     final_report = models.BooleanField(verbose_name="Final Report", default=False, blank=True)
     fiscal_year = models.PositiveSmallIntegerField(blank=True, default=2019,
                                                    verbose_name="Fiscal Year")
-    location = models.ForeignKey(Location, on_delete=models.CASCADE,
+    location = models.ForeignKey(Location, on_delete=models.SET_NULL,
                                  related_name='location', default=None,
                                  verbose_name="Place", blank=True, null=True)
     init_start_date = models.DateField(blank=True, default="2019-1-1",
@@ -134,7 +130,6 @@ class Project(models.Model):
                                  verbose_name="Alternate Research Coordinator / CESU Representative")
     req_iacuc = models.BooleanField(verbose_name="Requires IACUC Review/ Concurrence", default=False, blank=True)
 
-    date = models.DateTimeField(default=datetime.datetime.now, blank=True)
     history = HistoricalRecords()
 
     def get_absolute_url(self):
@@ -180,21 +175,3 @@ class ModFile(models.Model):
 
     def __str__(self):
         return str.rsplit(str(self.file), sep='/', maxsplit=1)
-
-
-class Notification(models.Model):
-    TYPE_OPTIONS = (
-        ('CHECKUP', 'Checkup'),
-        ('NONE', 'None'),
-    )
-
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    type = models.CharField(max_length=10, choices=TYPE_OPTIONS, default='NONE')
-    description = models.TextField(help_text=_help_text['description'])
-    seen = models.BooleanField(default=False)
-
-    #def mark_seen(self):
-    #    self.seen = True
-
-    def __str__(self):
-        return self.description

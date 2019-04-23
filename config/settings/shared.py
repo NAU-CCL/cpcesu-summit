@@ -51,6 +51,7 @@ PROJ_APPS = [
     # Order alphabetically, first loading the libs over apps
     'summit.libs',
     'summit.libs.auth',
+    'summit.libs.notifications',
     'summit.apps.core',
     'summit.apps.docs',
     'summit.apps.projects'
@@ -101,7 +102,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'summit.libs.templates.context_processors.notification_context_processor',
+                'summit.libs.notifications.context_processors.notification_context_processor',
             ],
         },
     },
@@ -162,7 +163,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'data')
 APPEND_SLASH = True
 LOGIN_URL = '/accounts/login'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/projects/dashboard'
 LOGOUT_REDIRECT_URL = None
 AUTH_USER_MODEL = 'summit_auth.User'
 

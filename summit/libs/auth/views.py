@@ -13,7 +13,7 @@ def logged_out(request):
     template_name = 'registration/logged_out.html'
 
     context = {
-        'pageId': 'libs.auth.logged_out',
+        'name': 'libs.auth.logged_out',
         'pagetitle': 'Logged Out',
         'title': 'Successful Log Out',
         'bannerTemplate': 'fullscreen',
@@ -69,7 +69,7 @@ def view_profile(request, profile_id=-1):
         profile_details = ""
 
     context = {
-        'pageId': 'libs.auth.view_profile',
+        'name': 'libs.auth.view_profile',
         'pagetitle': 'Profile',
         'title': 'Your Profile',
         'header': {
@@ -119,7 +119,7 @@ def edit_profile(request, profile_id=-1):
         profile_form = ProfileForm(instance=user_profile)
 
     context = {
-        'pageId': 'libs.auth.edit_profile',
+        'name': 'libs.auth.edit_profile',
         'pagetitle': 'Profile',
         'title': 'Your Profile',
         'header': {
@@ -138,21 +138,23 @@ def edit_profile(request, profile_id=-1):
 @login_required()
 #@permission_required()
 def all_users(request, name):
-    template_name = "auth/all_users.html"
+    template_name = "registration/all_users.html"
 
     profiles = UserProfile.objects.all().order_by('assigned_group', 'last_name', 'first_name')
 
+    print(name)
+
     context = {
-        'pageId': name,
+        'name': name,
         'pagetitle': 'All Users',
         'title': 'All Users',
         'cssFiles': [
             'libs/mdb/css/addons/datatables.min.css',
-            'css/apps/projects/dashboard.css'
+            'css/datatables/dashboard.css'
         ],
         'jsFiles': [
             'libs/mdb/js/addons/datatables.min.js',
-            'js/libs/auth/no_sort_datatable.js'
+            'js/datatables/no_sort_datatable.js'
         ],
         'query': profiles
     }
@@ -163,7 +165,7 @@ def all_users(request, name):
 @login_required()
 #@permission_required()
 def all_groups(request, name):
-    template_name = "auth/all_groups.html"
+    template_name = "registration/all_groups.html"
 
     cesus = CESUnit.objects.all()
     feds = FederalAgency.objects.all()
@@ -193,12 +195,12 @@ def all_groups(request, name):
         }
 
     context = {
-        'pageId': name,
+        'name': name,
         'pagetitle': 'All Groups',
         'title': 'All Groups',
         'cssFiles': [
             'libs/mdb/css/addons/datatables.min.css',
-            'css/apps/projects/dashboard.css'
+            'css/datatables/dashboard.css'
         ],
         'jsFiles': [
             'libs/mdb/js/addons/datatables.min.js',
@@ -212,7 +214,7 @@ def all_groups(request, name):
 
 @login_required()
 def manage_group(request, name='summit.libs.auth.manage_group', group_id=-1):
-    template_name = "auth/manage_group.html"
+    template_name = "registration/manage_group.html"
 
     group_id = int(group_id)
     if group_id <= 0:
@@ -253,16 +255,16 @@ def manage_group(request, name='summit.libs.auth.manage_group', group_id=-1):
         group.type = "Unknown Group Type"
 
     context = {
-        'pageId': name,
+        'name': name,
         'pagetitle': 'All Users in Group',
         'title': 'All Users in Group',
         'cssFiles': [
             'libs/mdb/css/addons/datatables.min.css',
-            'css/apps/projects/dashboard.css'
+            'css/datatables/dashboard.css'
         ],
         'jsFiles': [
             'libs/mdb/js/addons/datatables.min.js',
-            'js/libs/auth/no_sort_datatable.js'
+            'js/datatables/no_sort_datatable.js'
         ],
         'query': profiles,
         'group': group
@@ -273,7 +275,7 @@ def manage_group(request, name='summit.libs.auth.manage_group', group_id=-1):
 
 @login_required()
 def create_profile(request, name="summit.libs.auth_Create User", group_id=0):
-    template_name = "auth/create_user.html"
+    template_name = "registration/create_user.html"
 
     group_id = int(group_id)
 
@@ -289,7 +291,7 @@ def create_profile(request, name="summit.libs.auth_Create User", group_id=0):
         profile_form = ProfileForm()
 
     context = {
-        'pageId': name,
+        'name': name,
         'pagetitle': 'Profile',
         'title': 'Create User Profile',
         'header': {
@@ -306,7 +308,7 @@ def create_profile(request, name="summit.libs.auth_Create User", group_id=0):
 
 @login_required()
 def create_group(request, name):
-    template_name = "auth/create_group.html"
+    template_name = "registration/create_group.html"
 
     if request.method == "POST" and request.POST:
         group_form = GroupForm(request.POST, request.FILES)
@@ -333,7 +335,7 @@ def create_group(request, name):
         group_form = GroupForm()
 
     context = {
-        'pageId': name,
+        'name': name,
         'pagetitle': 'User Group',
         'title': 'Create User Group',
         'header': {
@@ -351,7 +353,7 @@ def create_group(request, name):
 @login_required()
 # @permission_required("summit_auth.edit_profile.self")
 def edit_group(request, name="summit.libs.auth2:summit.libs.auth2_edit_group", group_id=-1):
-    template_name = 'auth/edit_group.html'
+    template_name = 'registration/edit_group.html'
 
     group_id = int(group_id)
     group = get_object_or_404(UserGroup, id=group_id)
@@ -410,7 +412,7 @@ def edit_group(request, name="summit.libs.auth2:summit.libs.auth2_edit_group", g
         group_form = GroupForm(instance=group)
 
     context = {
-        'pageId': name,
+        'name': name,
         'pagetitle': 'User Group',
         'title': 'Create User Group',
         'header': {

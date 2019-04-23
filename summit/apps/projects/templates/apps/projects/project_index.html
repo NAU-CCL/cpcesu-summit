@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'layouts/base.html' %}
 {% load static %}
 
 {% block primary %}
@@ -10,90 +10,100 @@
 {% endif %}
 
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-3">
-                Place holder
-            </div>
-            <div class="col-sm-9">
-                <h6><b>Your Projects</b></h6>
-                <p class="animated fadeIn text-muted">A table of all your projects that you have created</p>
-
-                <table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0"
-                       width="100%">
-                    <thead>
-                    <tr>
-                        <th class="th-sm">P-Num</th>
-                        <th class="th-sm">Status</th>
-                        <th class="th-sm">Title</th>
-                        <th class="th-sm">Federal Agency</th>
-                        <th class="th-sm">Partner</th>
-                        <th class="th-sm">Type</th>
-                        <th class="th-sm">Discipline</th>
-                        <th class="th-sm">Fiscal Year</th>
-                        <th class="th-sm">Budget</th>
-                        <th class="th-sm">View Details</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for project in recent_projects %}
-                        <tr>
-                            <th scope="row">{{ project.p_num }}</th>
-                            <td>{{ project.get_status_display }}</td>
-                            <td>{{ project.project_title }}</td>
-                            <td>{{ project.federal_agency }}</td>
-                            <td>{{ project.partner }}</td>
-                            <td>{{ project.get_type_display }}</td>
-                            <td>{{ project.get_discipline_display }}</td>
-                            <td>{{ project.fiscal_year }}</td>
-                            <td>{{ project.budget }}</td>
-                            <td>
-                                <a type="button" class="btn btn-outline-primary btn-sm m-0 waves-effect"
-                                   href="{% url 'summit.apps.projects:project-detail' id=project.id %}">
-                                    Details
-                                </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-
-                <h6><b>All Recent Projects</b></h6>
-                <p class="animated fadeIn text-muted">A table of all of the projects that have been created in the last
-                    30 days</p>
-
-                <table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0"
-                       width="100%">
-                    <thead>
-                    <tr>
-                        <th class="th-sm">P-Num</th>
-                        <th class="th-sm">Status</th>
-                        <th class="th-sm">Title</th>
-                        <th class="th-sm">Federal Agency</th>
-                        <th class="th-sm">Partner</th>
-                        <th class="th-sm">Staff</th>
-                        <th class="th-sm">View Details</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for project in projects %}
-                        <tr>
-                            <th scope="row">{{ project.p_num }}</th>
-                            <td>{{ project.get_status_display }}</td>
-                            <td>{{ project.project_title }}</td>
-                            <td>{{ project.federal_agency }}</td>
-                            <td>{{ project.partner }}</td>
-                            <td>{{ project.staff_member.first_name }} {{ project.staff_member.last_name }}</td>
-                            <td>
-                                <a type="button" class="btn btn-outline-primary btn-sm m-0 waves-effect"
-                                   href="{% url 'summit.apps.projects:project-detail' id=project.id %}">
-                                    Details
-                                </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+        <div>
+            <h5><b>Your Projects</b></h5>
+            <p class="animated fadeIn text-muted">A table of all your projects that you have created</p>
+            <button class="btn btn-primary m-0 waves-effect" style="float: right;">Export</button>
+            <br><br>
         </div>
+
+        <table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0" style="width:100%">
+            <thead>
+            <tr>
+                <th class="th-sm">P-Num</th>
+                <th class="th-sm">Status</th>
+                <th class="th-sm">Title</th>
+                <th class="th-sm">Federal Agency</th>
+                <th class="th-sm">Partner</th>
+                <th class="th-sm">Type</th>
+                <th class="th-sm">Discipline</th>
+                <th class="th-sm">Fiscal Year</th>
+                <th class="th-sm">Budget</th>
+                <th class="th-sm">View Details</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for project in projects %}
+                <tr>
+                    <th scope="row">{{ project.p_num }}</th>
+                    <td>{{ project.get_status_display }}</td>
+                    <td>{{ project.project_title }}</td>
+                    <td>{{ project.federal_agency }}</td>
+                    <td>{{ project.partner }}</td>
+                    <td>{{ project.get_type_display }}</td>
+                    <td>{{ project.get_discipline_display }}</td>
+                    <td>{{ project.fiscal_year }}</td>
+                    <td>{{ project.budget }}</td>
+                    <td>
+                        <a type="button" class="btn btn-outline-primary btn-sm m-0 waves-effect"
+                           href="{% url 'summit.apps.projects:project-detail' id=project.id %}">
+                            Details
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <br>
+
+        <div>
+            <h5><b>All Recent Projects</b></h5>
+            <p class="animated fadeIn text-muted">A table of all of the projects that have been created in the last 30 days</p>
+            <button class="btn btn-primary m-0 waves-effect" style="float: right;">Export</button>
+            <br><br>
+        </div>
+
+        <table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0"
+               style="width: 100%;">
+            <thead>
+            <tr>
+                <th class="th-sm">P-Num</th>
+                <th class="th-sm">Status</th>
+                <th class="th-sm">Title</th>
+                <th class="th-sm">Federal Agency</th>
+                <th class="th-sm">Partner</th>
+                <th class="th-sm">Staff</th>
+                <th class="th-sm">View Details</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for project in recent_projects %}
+                <tr>
+                    <th scope="row">{{ project.p_num }}</th>
+                    <td>{{ project.get_status_display }}</td>
+                    <td>{{ project.project_title }}</td>
+                    <td>{{ project.federal_agency }}</td>
+                    <td>{{ project.partner }}</td>
+                    <td>{{ project.staff_member.first_name }} {{ project.staff_member.last_name }}</td>
+                    <td>
+                        <a type="button" class="btn btn-outline-primary btn-sm m-0 waves-effect"
+                           href="{% url 'summit.apps.projects:project-detail' id=project.id %}">
+                            Details
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'apps/projects/partials/side_nav.html' %}
+{% endblock %}
+
+{% block layout_wrapper %}
+    {% with layout='left'  %}
+        {{ block.super }}
+    {% endwith %}
 {% endblock %}

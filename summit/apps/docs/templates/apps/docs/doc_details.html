@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'layouts/base.html' %}
 {% load static %}
 
 
@@ -6,4 +6,14 @@
     <h1 style="text-align: center">Document Details</h1>
 
     <p>Detail view of a specific document.</p>
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'apps/docs/partials/side_nav.html' %}
+{% endblock %}
+
+{% block layout_wrapper %}
+    {% with layout='left'  %}
+        {{ block.super }}
+    {% endwith %}
 {% endblock %}
