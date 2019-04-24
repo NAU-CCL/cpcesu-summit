@@ -109,6 +109,14 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
     permission_denied_message = 'You do not have the correction permissions to access this page.'
     raise_exception = False
 
+    def total_award_amount(self):
+        prj = self.get_object()
+        modifications = Modification.objects.filter(project=prj)
+        total_mod_amount = 0
+        for mod in modifications:
+            total_mod_amount += mod.mod_amount
+        return prj.budget + total_mod_amount
+
     def get_context_data(self, **kwargs):
         all_projects = self.get_queryset()
 
@@ -147,7 +155,8 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
                 'js/datatables/dashboard.js'
             ],
             'projects': user_filtered_projects,
-            'recent_projects': recent_projects
+            'recent_projects': recent_projects,
+            'total_award_amount': self.total_award_amount()
         }
         ctx = super(ProjectDashboardView, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
@@ -163,6 +172,14 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
 class ProjectDetail(LoginRequiredMixin, DetailView):
     model = Project
     template_name = 'apps/projects/project_detail.html'
+
+    def total_award_amount(self):
+        prj = self.get_object()
+        modifications = Modification.objects.filter(project=prj)
+        total_mod_amount = 0
+        for mod in modifications:
+            total_mod_amount += mod.mod_amount
+        return prj.budget + total_mod_amount
 
     def get_context_data(self, **kwargs):
         context = {
@@ -193,7 +210,10 @@ class ProjectDetail(LoginRequiredMixin, DetailView):
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
                 'js/datatables/dashboard.js'
-            ]
+            ],
+            'total_award_amount': self.total_award_amount()
+
+
         }
         ctx = super(ProjectDetail, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
@@ -301,6 +321,8 @@ class ProjectCreate(CreateView):
             ctx['form'] = project_form
             ctx['file_form'] = project_file_form
             return self.render_to_response(ctx)
+        super(ProjectCreate, self).post(request)
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class ProjectEdit(UpdateView):
@@ -312,6 +334,14 @@ class ProjectEdit(UpdateView):
     def get_object(self, **kwargs):
         pk_ = self.kwargs.get("id")
         return get_object_or_404(Project, pk=pk_)
+
+    def total_award_amount(self):
+        prj = self.get_object()
+        modifications = Modification.objects.filter(project=prj)
+        total_mod_amount = 0
+        for mod in modifications:
+            total_mod_amount += mod.mod_amount
+        return prj.budget + total_mod_amount
 
     def get_success_url(self):
         return reverse('summit.apps.projects:project-detail', args=[str(self.object.id)])
@@ -329,7 +359,9 @@ class ProjectEdit(UpdateView):
                 'js/datatables/dashboard.js'
             ],
             'files': File.objects.filter(project=self.object),
-            'file_form': ProjectFileForm()
+            'file_form': ProjectFileForm(),
+            'total_award_amount': self.total_award_amount()
+
         }
         ctx = super(ProjectEdit, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
