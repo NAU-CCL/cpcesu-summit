@@ -119,7 +119,6 @@ class Project(AuditModel):
     task_agreement_start_date = models.DateField(blank=True, default="2019-1-1",
                                                  verbose_name="Approved")
     # TODO: Make this automatic whenever they change the status to EXEC
-
     actual_start = models.DateField(blank=True, default="2019-1-1", verbose_name="Actual Start Date")
     actual_end = models.DateField(blank=True, default="2019-1-1", verbose_name="Actual Start Date")
     # TODO: If the sensitive field is checked then remove this field from the form. Splashes proj onto pub page
@@ -129,8 +128,6 @@ class Project(AuditModel):
     alt_coord = models.CharField(max_length=500, help_text=_help_text['alt_coord'], blank=True,
                                  verbose_name="Alternate Research Coordinator / CESU Representative")
     req_iacuc = models.BooleanField(verbose_name="Requires IACUC Review/ Concurrence", default=False, blank=True)
-
-    history = HistoricalRecords()
 
     def get_absolute_url(self):
         from django.urls import reverse
