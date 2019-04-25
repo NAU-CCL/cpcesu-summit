@@ -78,7 +78,7 @@ class ProjectChoices:
     FUNDED_ADMIN = 'FUNDED_ADMIN'
     NO_COST_EXT_ADMIN = 'NO_COST_EXT_ADMIN'
 
-    #
+    # Sub Fields for Field of Science
     # ES - Atmospheric Sciences,
     # ES - Geological Sciences,
     # ES – Oceanography,

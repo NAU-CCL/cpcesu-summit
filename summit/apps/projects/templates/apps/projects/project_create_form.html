@@ -11,7 +11,7 @@
         <tr>
             <td>
                 <span class="text-danger sml">{{ form.fiscal_year.errors }}</span>
-                <label class="control-label col-sm-auto"><b>{{ form.fiscal_year.label_tag }}</b></label>
+                <h6><label class="control-label col-sm-auto"><b>{{ form.fiscal_year.label_tag }}</b></label></h6>
             </td>
             <td>
                 {{ form.fiscal_year }}<br>
@@ -20,7 +20,7 @@
         <tr>
             <td>
                 <span class="text-danger sml">{{ form.federal_agency.errors }}</span>
-                <label class="control-label col-sm-auto"><b>{{ form.federal_agency.label_tag }}</b></label>
+                <h6><label class="control-label col-sm-auto"><b>{{ form.federal_agency.label_tag }}</b></label></h6>
             </td>
             <td>
                 {{ form.federal_agency }}<br><br>
@@ -29,7 +29,7 @@
         <tr>
             <td>
                 <span class="text-danger sml">{{ form.p_num.errors }}</span>
-                <label class="control-label col-sm-auto"><b>{{ form.p_num.label_tag }}</b></label>
+                <h6><label class="control-label col-sm-auto"><b>{{ form.p_num.label_tag }}</b></label></h6>
             </td>
             <td>
                 {{ form.p_num }}<br>
@@ -39,7 +39,7 @@
         <tr>
             <td>
                 <span class="text-danger sml">{{ form.partner.errors }}</span>
-                <label class="control-label col-sm-auto"><b>{{ form.partner.label_tag }}</b></label>
+                <h6><label class="control-label col-sm-auto"><b>{{ form.partner.label_tag }}</b></label></h6>
             </td>
             <td>
                 {{ form.partner }}<br><br>
@@ -48,7 +48,7 @@
         <tr>
             <td>
                 <span class="text-danger sml">{{ form.location.errors }}</span>
-                <label class="control-label col-sm-auto"><b>{{ form.location.label_tag }}</b></label>
+                <h6><label class="control-label col-sm-auto"><b>{{ form.location.label_tag }}</b></label></h6>
             </td>
             <td>
                 {{ form.location }}<br><br>
@@ -57,7 +57,7 @@
         <tr>
             <td>
                 <span class="text-danger sml">{{ form.project_title.errors }}</span>
-                <label class="control-label col-sm-auto"><b>{{ form.project_title.label_tag }}</b></label>
+                <h6><label class="control-label col-sm-auto"><b>{{ form.project_title.label_tag }}</b></label></h6>
             </td>
             <td>
                 {{ form.project_title }}<br>
@@ -66,7 +66,7 @@
         <tr>
             <td>
                 <span class="text-danger sml">{{ form.type.errors }}</span>
-                <label class="control-label col-sm-auto"><b>{{ form.type.label_tag }}</b></label>
+                <h6><label class="control-label col-sm-auto"><b>{{ form.type.label_tag }}</b></label></h6>
             </td>
             <td>
                 {{ form.type }}<br><br>
@@ -75,7 +75,7 @@
         <tr>
             <td>
                 <span class="text-danger sml">{{ form.discipline.errors }}</span>
-                <label class="control-label col-sm-auto"><b>{{ form.discipline.label_tag }}</b></label>
+                <h6><label class="control-label col-sm-auto"><b>{{ form.discipline.label_tag }}</b></label></h6>
             </td>
             <td>
                 {{ form.discipline }}<br><br>
@@ -84,7 +84,7 @@
         <tr>
             <td>
                 <span class="text-danger sml">{{ form.vet_support.errors }}</span>
-                <label class="control-label col-sm-auto"><b>{{ form.vet_support.label_tag }}</b></label>
+                <h6><label class="control-label col-sm-auto"><b>{{ form.vet_support.label_tag }}</b></label></h6>
             </td>
             <td>
                 {{ form.vet_support }}<br><br>
@@ -112,13 +112,13 @@
 {% endblock %}
 
 {% block row1_col3 %}
-    <h5><u>Administrative: </u></h5>
+    <h5><u>Administration: </u></h5>
 <div class="form-group">
     <table>
         <tr>
             <td>
                 <span class="text-danger sml">{{ form.status.errors }}</span>
-                <label class="control-label col-sm-auto"><b>{{ form.status.label_tag }}</b></label>
+                <h6><label class="control-label col-sm-auto"><b>{{ form.status.label_tag }}</b></label></h6>
             </td>
             <td>
                 {{ form.status }}<br><br>
@@ -127,9 +127,9 @@
         <tr>
             <td>
                 <span class="text-danger sml">{{ form.sensitve.errors }}</span>
-                <label class="control-label col-sm-auto"><b>
+                <h6><label class="control-label col-sm-auto"><b>
                     {{ form.sensitive.label_tag }}</b><br>
-                </label>
+                </label></h6>
             </td>
             <td>
                 {{ form.sensitive }}<br>
@@ -138,7 +138,7 @@
         <tr>
             <td>
                 <span class="text-danger sml">{{ form.final_report.errors }}</span>
-                <label class="control-label col-sm-auto"><b>Deliverable(s) Received?</b><br></label>
+                <h6><label class="control-label col-sm-auto"><b>Deliverable(s) Received?</b><br></label></h6>
             </td>
             <td>
                 {{ form.final_report }}<br>
@@ -212,7 +212,6 @@
         </tr>
         </tbody>
     </table>
-    ADD: Award amount (Total (initial + all $-mods))
 {% endblock %}
 
 {% block row2_col3 %}
