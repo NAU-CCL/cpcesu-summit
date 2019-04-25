@@ -5,9 +5,12 @@
     <form action="" method="post" enctype="multipart/form-data" , name="form">
         <div class="card">
             <div class="card-header">
-                <h3>Create Project Form</h3>
+                <h3>{{ form_title|default:'Create Project Form'}}</h3>
             </div>
             <div class="card-body">
+                <div class="row">
+                    {{ form.errors }}
+                </div>
                 <div class="row">
                     <div class="col-sm-4">
 
