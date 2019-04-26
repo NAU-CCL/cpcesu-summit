@@ -34,7 +34,7 @@ urlpatterns = [
     url(r'^edit/(?P<id>[-\w]+)/$', views.ProjectEdit.as_view(), name='project-edit'),
     url(r'^mods/(?P<id>[-\w]+)/create/$', views.ProjectModifications.as_view(), name='project-mods'),
     url(r'^mods/(?P<id>[-\w]+)/edit/(?P<mod_id>[-\w]+)$', views.ProjectModEdit.as_view(), name='project-mods-edit'),
-    url(r'^detail/download_csv/(?P<id>[-\w]+)/$', views.export_to_csv, name='project-export-csv'),
+    url(r'^export_csv/$', views.export_to_csv, name='project-export-csv'),
     url(r'^detail/change_history/(?P<id>[-\w]+)/$', views.change_history, name='project-change-history'),
 
     # Locations - States, Parks, etc. in one model/object
