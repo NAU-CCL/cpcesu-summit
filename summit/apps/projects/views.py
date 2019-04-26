@@ -1,7 +1,7 @@
 import csv
 import datetime
 from django.http import HttpResponse, Http404, HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
@@ -654,3 +654,20 @@ def export_to_csv(request):
 
 def change_history(request, id):
     return HttpResponseRedirect(reverse('admin:summit_projects_project_history', args=id))
+
+
+def project_autofill(request, name):
+    template_name = 'apps/projects/project_autofill.html'
+    context = {
+        'name': name,
+        'pagetitle': 'Autofill Project Form',
+        'title': 'Autofill Project Form',
+        'header': {
+        },
+        'cssFiles': [
+        ],
+        'jsFiles': [
+            'js/apps/projects/fileUpload.js'
+        ],
+    }
+    return render(request, template_name, context)

@@ -25,7 +25,9 @@
       </div>
 
       {% else %}
-      {% block content %}{{ content|safe|default:"No content"}}{% endblock %}
+      <div class="container-fluid">
+        {% block content %}{{ content|safe|default:"No content"}}{% endblock %}
+      </div>
       {% endif %}
     {% endblock layout_wrapper %}
 

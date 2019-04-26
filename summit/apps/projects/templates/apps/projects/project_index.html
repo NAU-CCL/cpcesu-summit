@@ -55,7 +55,7 @@
                         <td>{{ project.fiscal_year }}</td>
                         <td>{{ project.budget }}</td>
                         <td>
-                            <a type="button" class="btn btn-outline-primary btn-sm m-0 waves-effect"
+                            <a class="btn btn-outline-primary btn-sm m-0 waves-effect"
                                href="{% url 'summit.apps.projects:project-detail' id=project.id %}">
                                 Details
                             </a>
@@ -109,7 +109,7 @@
                         <td>{{ project.partner }}</td>
                         <td>{{ project.staff_member.first_name }} {{ project.staff_member.last_name }}</td>
                         <td>
-                            <a type="button" class="btn btn-outline-primary btn-sm m-0 waves-effect"
+                            <a class="btn btn-outline-primary btn-sm m-0 waves-effect"
                                href="{% url 'summit.apps.projects:project-detail' id=project.id %}">
                                 Details
                             </a>
