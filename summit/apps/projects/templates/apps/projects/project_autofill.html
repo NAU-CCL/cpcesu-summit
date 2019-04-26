@@ -1,0 +1,61 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="card">
+    <div class="card-header">
+        {% if pagetitle %}
+            <h1 style="text-align: center">{{ pagetitle }}</h1>
+        {% else %}
+            <h1 style="text-align: center">Autofill Project</h1>
+        {% endif %}
+        <p class="animated fadeIn text-muted">Create a new project using a PDF. Upload and the data will automatically import into the system. You will be able to verify the information before submission.</p>
+    </div>
+    <div class="card-body">
+        <style>
+/* layout.css Style */
+.upload-drop-zone {
+  height: 200px;
+  border-width: 2px;
+  margin-bottom: 20px;
+}
+
+/* skin.css Style*/
+.upload-drop-zone {
+  color: #ccc;
+  border-style: dashed;
+  border-color: #ccc;
+  line-height: 200px;
+  text-align: center
+}
+.upload-drop-zone.drop {
+  color: #222;
+  border-color: #222;
+}
+        </style>
+            <!-- Standar Form -->
+            <h4>Select files from your computer</h4>
+            <form action="" method="post" enctype="multipart/form-data" id="js-upload-form">
+                <div class="form-inline row">
+                    <div class="form-group">
+                        <input type="file" name="files[]" id="js-upload-files" multiple>
+                    </div>
+                <button type="submit" class="btn btn-sm btn-primary" id="js-upload-submit">Upload files</button>
+                </div>
+            </form>
+            <!-- Drop Zone -->
+            <h4>Or drag and drop files below</h4>
+            <div class="upload-drop-zone row" id="drop-zone">
+                Just drag and drop files here
+            </div>
+
+
+
+            <h4>Upload List</h4>
+            <ul class="fileList">
+                <li>None</li>
+            </ul>
+    </div>
+</div>
+{% endblock %}

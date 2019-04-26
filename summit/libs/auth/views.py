@@ -274,7 +274,7 @@ def manage_group(request, name='summit.libs.auth.manage_group', group_id=-1):
 
 
 @login_required()
-def create_profile(request, name="summit.libs.auth_Create User", group_id=0):
+def create_profile(request, name="summit.libs.auth_Create Contact", group_id=0):
     template_name = "registration/create_user.html"
 
     group_id = int(group_id)
@@ -284,7 +284,7 @@ def create_profile(request, name="summit.libs.auth_Create User", group_id=0):
 
         if profile_form.is_valid():
             profile_form.save()
-            return HttpResponseRedirect(reverse('summit.libs.auth2:summit.libs.auth2_All Users'))
+            return HttpResponseRedirect(reverse('summit.libs.auth2:summit.libs.auth2_All Contacts'))
     elif group_id > 0:
         profile_form = ProfileForm(initial={'assigned_group': group_id})
     else:
@@ -292,8 +292,8 @@ def create_profile(request, name="summit.libs.auth_Create User", group_id=0):
 
     context = {
         'name': name,
-        'pagetitle': 'Profile',
-        'title': 'Create User Profile',
+        'pagetitle': 'Contact',
+        'title': 'Create Contact',
         'header': {
             'background': 'apps/core/imgs/default.jpg'
         },
@@ -330,7 +330,7 @@ def create_group(request, name):
                 partner = Partner.objects.create(pk=group.id, created_on=group.created_on, name=group.name, description=group.description, avatar=group.avatar)
                 partner.save()
 
-            return HttpResponseRedirect(reverse('summit.libs.auth2:summit.libs.auth2_All Groups'))
+            return HttpResponseRedirect(reverse('summit.libs.auth2:summit.libs.auth2_All Orgs.'))
     else:
         group_form = GroupForm()
 
@@ -413,8 +413,8 @@ def edit_group(request, name="summit.libs.auth2:summit.libs.auth2_edit_group", g
 
     context = {
         'name': name,
-        'pagetitle': 'User Group',
-        'title': 'Create User Group',
+        'pagetitle': 'Organization',
+        'title': 'Create New Organization (Partner or CESU)',
         'header': {
             'background': 'apps/core/imgs/default.jpg'
         },

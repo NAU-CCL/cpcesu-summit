@@ -15,11 +15,16 @@ urlpatterns = [
         'auth_required': True,
         'app_regex': app_regex
     }),
-    link(r'^$', views.ProjectListView.as_view(), name=get_name(app_name, "Your Projects"), link_args={
+    link(r'^$', views.ProjectListView.as_view(), name=get_name(app_name, "All Projects"), link_args={
         'auth_required': True,
         'app_regex': app_regex,
         'dropdown_id': app_name,
-        'dropdown_name': 'Projects and Locations'
+        'dropdown_name': 'Projects'
+    }),
+    link(r'^autofill/$', views.project_autofill, name=get_name(app_name, 'Autofill Project'), link_args={
+        'auth_required': True,
+        'app_regex': app_regex,
+        'dropdown_id': app_name
     }),
     link(r'^create/$', views.ProjectCreate.as_view(), name=get_name(app_name, 'Create Project'), link_args={
         'auth_required': True,
@@ -27,7 +32,13 @@ urlpatterns = [
         'dropdown_id': app_name
     }),
     link(r'^public_projects/$', views.ProjectPublicListView.as_view(), name=get_name(app_name, 'Public Projects'), link_args={
-        'app_regex': app_regex
+        'auth_required': True,
+        'app_regex': app_regex,
+        'dropdown_id': app_name,
+    }),
+    link(r'^public_projects/$', views.ProjectPublicListView.as_view(), name=get_name(app_name, 'Public Projects'), link_args={
+        'auth_required': False,
+        'app_regex': app_regex,
     }),
     url(r'^public-detail/(?P<id>[-\w]+)/$', views.ProjectPublicDetail.as_view(), name='project-detail-public'),
     url(r'^detail/(?P<id>[-\w]+)/$', views.ProjectDetail.as_view(), name='project-detail'),

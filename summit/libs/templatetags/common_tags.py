@@ -33,8 +33,11 @@ def nav_links(context):
     nav_links_html[0] += '</ul>'
     nav_links_html[1] += '</ul>'
 
-    context['nav_links_left'] = nav_links_html[0]
-    context['nav_links_right'] = nav_links_html[1]
+    if len(nav_links_groups[0]) > 0:
+        context['nav_links_left'] = nav_links_html[0]
+
+    if len(nav_links_groups[1]) > 0:
+        context['nav_links_right'] = nav_links_html[1]
 
     return context
 
@@ -46,6 +49,10 @@ def create_link(link_dict, context, is_dropdown_item):
     #     print(link_dict)
 
     if 'auth_required' in link_dict and link_dict['auth_required'] and context['user'].is_authenticated() is False:
+        return link_str
+
+    if 'auth_required' in link_dict and link_dict['auth_required'] is False \
+            and context['user'].is_authenticated() is True:
         return link_str
 
     if 'auth_perms' in link_dict and link_dict['auth_perms'] \
@@ -66,15 +73,15 @@ def create_link(link_dict, context, is_dropdown_item):
         # Used to track number of links in dropdown
         link_count = 0
         for link in link_dict['links']:
-            link_str += '<a class="dropdown-item '
-
             if 'auth_required' in link and link['auth_required'] and context[
-                'user'].is_authenticated() is False:
+                    'user'].is_authenticated() is False:
                 continue
 
             if 'auth_perms' in link and link['auth_perms'] \
                     and context['user'].has_perms(link['auth_perms']) is False:
                 continue
+
+            link_str += '<a class="dropdown-item '
 
             if link['name'] == context['name']:
                 link_str += 'active '
