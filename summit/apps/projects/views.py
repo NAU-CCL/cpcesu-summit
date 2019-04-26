@@ -625,7 +625,7 @@ def export_to_csv(request):
                      'Principal Investigator (PI)',
                      'Project Manager', 'Project Title', 'Research & Development', 'Scientific Method', 'Sensitive',
                      'Short Summary', 'Source of Funding', 'Staff Member',
-                     'Status', 'Student Support', 'Technical Representative', 'Tentative End Date',
+                     'Status', 'Technical Representative', 'Tentative End Date',
                      'Tentative Start Date', 'Type of Project', 'Veteran/Youth Support'])
 
     if request.POST:
@@ -638,7 +638,7 @@ def export_to_csv(request):
             project = Project.objects.get(pk=project_id)
 
             if project is None:
-                return Http404("Project does not exist.")
+                continue
 
             writer.writerow(
                 [project.budget, project.cesu_unit, project.description, project.discipline, project.federal_agency,
@@ -646,7 +646,7 @@ def export_to_csv(request):
                  project.location, project.monitoring, project.notes, project.num_of_students, project.p_num,
                  project.partner, project.pp_i, project.project_manager, project.project_title, project.r_d,
                  project.sci_method, project.sensitive, project.short_summary, project.src_of_funding,
-                 project.staff_member, project.status, project.student_support, project.tech_rep, project.tent_end_date,
+                 project.staff_member, project.status, project.tech_rep, project.tent_end_date,
                  project.tent_start_date, project.type, project.vet_support])
 
     return response
