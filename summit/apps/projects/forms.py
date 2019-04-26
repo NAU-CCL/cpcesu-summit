@@ -10,7 +10,7 @@ class ProjectForm(forms.ModelForm):
                   'federal_agency', 'field_of_science', 'final_report', 'fiscal_year', 'init_start_date', 'location',
                   'monitoring', 'notes', 'num_of_students', 'p_num', 'partner', 'pp_i', 'project_manager',
                   'project_title', 'r_d', 'reviewed', 'sci_method', 'sensitive', 'short_summary', 'src_of_funding',
-                  'staff_member', 'status', 'student_support', 'tech_rep', 'tent_end_date', 'tent_start_date',
+                  'staff_member', 'status', 'tech_rep', 'tent_end_date', 'tent_start_date',
                   'task_agreement_start_date', 'type', 'vet_support']
         widgets = {
             'project_title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter title here...'}),
@@ -25,7 +25,7 @@ class ProjectForm(forms.ModelForm):
             'project_manager': forms.Select(attrs={'class': 'custom-select custom-select'}),
             'tech_rep': forms.Select(attrs={'class': 'custom-select custom-select'}),
             'location': forms.Select(attrs={'class': 'custom-select custom-select'}),
-            'student_support': forms.Select(attrs={'class': 'custom-select custom-select'}),
+
             'num_of_students': forms.NumberInput(attrs={'class': 'form-control'}),
             'budget': forms.NumberInput(attrs={'class': 'form-control'}),
             'fiscal_year': forms.NumberInput(attrs={'class': 'form-control'}),
