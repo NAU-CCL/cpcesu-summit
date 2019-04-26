@@ -96,8 +96,7 @@ class Project(AuditModel):
     staff_member = models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="Staff Member",
                                      blank=True, related_name='staff_member', default=None, null=True)
     status = models.CharField(max_length=20, choices=STATUS, default=STATUS[0], blank=True)
-    student_support = models.CharField(max_length=7, choices=STUDENT_SUPPORT, default=STUDENT_SUPPORT[0],
-                                       verbose_name="Student Support", blank=True)
+
     tech_rep = models.ForeignKey(UserProfile, help_text=_help_text['tech_rep'], blank=True,
                                  verbose_name="Agreements Tech Representative", null=True)
     tent_end_date = models.DateField(blank=True, default="2019-1-1",
