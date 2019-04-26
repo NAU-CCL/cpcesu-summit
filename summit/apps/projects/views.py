@@ -323,7 +323,7 @@ class ProjectEdit(UpdateView):
         total_mod_amount = 0
         for mod in modifications:
             total_mod_amount += mod.mod_amount
-        return prj.budget + total_mod_amount
+        return (prj.budget or 0) + total_mod_amount
 
     def get_success_url(self):
         return reverse('summit.apps.projects:project-detail', args=[str(self.object.id)])
