@@ -14,8 +14,8 @@
               name="export_form">
             {% csrf_token %}
             <div>
-                <h5><b>Your Projects</b></h5>
-                <p class="animated fadeIn text-muted">A table of all your projects that you have created</p>
+                <h5><b>{{ table1_header }}</b></h5>
+                <p class="animated fadeIn text-muted">{{ table1_desc }}</p>
             </div>
 
             <table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0"
@@ -66,14 +66,17 @@
             </table>
             <br>
 
-            <div>
-                <h5><b>All Recent Projects</b></h5>
-                <p class="animated fadeIn text-muted">A table of all of the projects that have been created in the last
-                    30 days</p>
-            </div>
         </form>
+        {% if not table2_disabled%}
         <form action="{% url 'summit.apps.projects:project-export-csv' %}" method="post" enctype="multipart/form-data"
               name="export_form">
+            {% csrf_token %}
+
+            <div>
+                <h5><b>{{ table2_header }}</b></h5>
+                <p class="animated fadeIn text-muted">{{ table2_desc }}</p>
+            </div>
+
             <table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0"
                    style="width: 100%;">
                 <thead>
@@ -116,6 +119,8 @@
                 </tbody>
             </table>
         </form>
+
+        {% endif %}
     </div>
 {% endblock %}
 

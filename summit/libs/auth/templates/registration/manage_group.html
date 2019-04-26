@@ -7,11 +7,11 @@
 
 <p>{{ group.description }}</p>
 
-<p>Group Type: {{ group.type }}</p>
+<p>Organization Type: {{ group.type }}</p>
 
 <div>
-    <a href="{% url 'summit.libs.auth2:create_user_with_group' group_id=group.id %}" class="btn btn-primary btn-sm m-0 waves-effect">Create User</a>
-    <a href="{% url 'summit.libs.auth2:edit_group' group_id=group.id %}" class="btn btn-primary btn-sm m-0 waves-effect">Edit Group</a>
+    <a href="{% url 'summit.libs.auth2:create_user_with_group' group_id=group.id %}" class="btn btn-primary btn-sm m-0 waves-effect">Create Contact</a>
+    <a href="{% url 'summit.libs.auth2:edit_group' group_id=group.id %}" class="btn btn-primary btn-sm m-0 waves-effect">Edit Organization</a>
 </div>
 
 <table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0" width="100%">
@@ -32,9 +32,9 @@
             <td>{{ profile.last_name }}</td>
             <td>{{ profile.email_address }}</td>
             <td>
-                <a type="button" class="btn btn-outline-primary btn-sm m-0 waves-effect"
+                <a class="btn btn-outline-primary btn-sm m-0 waves-effect"
                 href="{% url 'summit.libs.auth:view_profile_other' profile_id=profile.id %}">
-                    View Profile
+                    View Contact
                 </a>
             </td>
         </tr>

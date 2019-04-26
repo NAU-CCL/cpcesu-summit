@@ -26,24 +26,12 @@ class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = {
             'name': self.kwargs['name'],
-            'pagetitle': 'Projects List',
+            'pagetitle': 'All Projects List',
+            'table1_header': " ",
+            'table1_desc': "A table of every project in the system",
             'title': 'Projects List',
-            # 'bannerTemplate': 'fullscreen',
+            'bannerTemplate': 'none',
             'header': {
-                # 'background': 'apps/core/imgs/default.jpg',
-                # 'heading1': 'Heading 1',
-                # 'heading2': 'Heading 2',
-                # 'buttons': [
-                #     {
-                #         'name': 'Button 1',
-                #         'link': '/#button1'
-                #     },
-                #     {
-                #         'name': 'External Button',
-                #         'link': 'https://www.google.com/',
-                #         'target': '_blank'
-                #     }
-                # ]
             },
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
@@ -52,7 +40,8 @@ class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
                 'js/datatables/dashboard.js'
-            ]
+            ],
+            'table2_disabled': True
         }
         ctx = super(ProjectListView, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
@@ -109,14 +98,6 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
     permission_denied_message = 'You do not have the correction permissions to access this page.'
     raise_exception = False
 
-    def total_award_amount(self):
-        prj = self.get_object()
-        modifications = Modification.objects.filter(project=prj)
-        total_mod_amount = 0
-        for mod in modifications:
-            total_mod_amount += mod.mod_amount
-        return prj.budget + total_mod_amount
-
     def get_context_data(self, **kwargs):
         all_projects = self.get_queryset()
 
@@ -142,10 +123,13 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
         context = {
             'name': self.kwargs['name'],
             'pagetitle': 'Your Dashboard',
+            'table1_header': 'Your Assigned Projects',
+            'table1_desc': 'A table of all projects in the drafting stage, either assigned to you or unassigned.',
+            'table2_header': 'All Recent Projects',
+            'table2_desc': 'A table of all of the projects that have been created in the last 30 days',
             'title': 'Your Dashboard',
-            'header': {
-
-            },
+            'bannerTemplate': 'none',
+            'header': {},
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
                 'css/datatables/dashboard.css'
@@ -156,7 +140,6 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
             ],
             'projects': user_filtered_projects,
             'recent_projects': recent_projects,
-            'total_award_amount': self.total_award_amount()
         }
         ctx = super(ProjectDashboardView, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
@@ -212,7 +195,6 @@ class ProjectDetail(LoginRequiredMixin, DetailView):
                 'js/datatables/dashboard.js'
             ],
             'total_award_amount': self.total_award_amount()
-
 
         }
         ctx = super(ProjectDetail, self).get_context_data(**kwargs)
@@ -474,26 +456,26 @@ class ProjectModEdit(UpdateView):
         return ctx
 
     def post(self, request, *args, **kwargs):
-            self.object = self.get_object()
-            mod_form = ModificationForm(request.POST, request.FILES, instance=self.object)
-            mod_form.instance.project = get_object_or_404(Project, pk=self.kwargs.get("id"))
-            mod_file_form = ModificationFileForm(request.POST, request.FILES,
-                                                 instance=self.object)
-            files = request.FILES.getlist('file')
-            if mod_form.is_valid():
-                self.object = mod_form.save()
-                if mod_file_form.is_valid():
-                    for f in files:
-                        mod_file_instance = ModFile(file=f, modification=self.object)
-                        mod_file_instance.save()
-                super(ProjectModEdit, self).form_valid(mod_form)
-                return HttpResponseRedirect(self.get_success_url())
-            else:
-                print(mod_form.errors)
-                ctx = self.get_context_data()
-                ctx['form'] = mod_form
-                ctx['file_form'] = mod_file_form
-                return self.render_to_response(ctx)
+        self.object = self.get_object()
+        mod_form = ModificationForm(request.POST, request.FILES, instance=self.object)
+        mod_form.instance.project = get_object_or_404(Project, pk=self.kwargs.get("id"))
+        mod_file_form = ModificationFileForm(request.POST, request.FILES,
+                                             instance=self.object)
+        files = request.FILES.getlist('file')
+        if mod_form.is_valid():
+            self.object = mod_form.save()
+            if mod_file_form.is_valid():
+                for f in files:
+                    mod_file_instance = ModFile(file=f, modification=self.object)
+                    mod_file_instance.save()
+            super(ProjectModEdit, self).form_valid(mod_form)
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            print(mod_form.errors)
+            ctx = self.get_context_data()
+            ctx['form'] = mod_form
+            ctx['file_form'] = mod_file_form
+            return self.render_to_response(ctx)
 
 
 #
@@ -623,6 +605,7 @@ class LocationEdit(UpdateView):
             ctx = self.get_context_data()
             return self.render_to_response(ctx)
 
+
 #
 #
 # Other, non-view supporting functions
@@ -647,6 +630,9 @@ def export_to_csv(request):
 
     if request.POST:
         export_list = request.POST.getlist("export_list")
+
+        if len(export_list) <= 0:
+            return HttpResponse('')
 
         for project_id in export_list:
             project = Project.objects.get(pk=project_id)

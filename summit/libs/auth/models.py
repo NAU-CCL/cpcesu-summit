@@ -204,4 +204,4 @@ class UserProfile(AuditModel):
             ('view_profile.others', 'Can see other user profiles'),
             ('view_profile.self', 'Can see own profile'),
         )
-        verbose_name = "User Profile"
+        verbose_name = "Contact"

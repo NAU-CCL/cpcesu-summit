@@ -73,7 +73,7 @@ class Migration(migrations.Migration):
                 ('email_address', models.EmailField(blank=True, max_length=254)),
             ],
             options={
-                'verbose_name': 'User Profile',
+                'verbose_name': 'Contact',
                 'permissions': (('edit_profile.group', 'Can edit other user profiles of same user group'), ('edit_profile.self', 'Can edit own profile'), ('view_profile.others', 'Can see other user profiles'), ('view_profile.self', 'Can see own profile')),
             },
         ),

@@ -21,7 +21,7 @@ def index(request, name):
                 },
                 {
                     'name': 'Current Projects',
-                    'link': ("summit.apps.projects:summit.apps.projects_Your Projects" if request.user.is_authenticated
+                    'link': ("summit.apps.projects:summit.apps.projects_All Projects" if request.user.is_authenticated
                              else "summit.apps.projects:summit.apps.projects_Public Projects"),
                     'uses_reverse': True
                     # 'target': '_blank'
