@@ -273,7 +273,7 @@ class ProjectCreate(CreateView):
                 'libs/mdb/js/addons/datatables.min.js',
                 'js/datatables/dashboard.js'
             ],
-            'form': self.get_form_class(),
+            'form': self.get_form(),
             'file_form': ProjectFileForm(),
             'confirm_status': self.confirm_status
         }

@@ -1,7 +1,5 @@
 # Created by https://www.gitignore.io/api/vim,python,django,virtualenv
 
-### Custom ###
-summit/apps/projects/migrations/*.py
 
 ### Django ###
 *.log
