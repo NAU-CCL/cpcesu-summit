@@ -328,7 +328,7 @@ class ProjectEdit(UpdateView):
         else:
             ctx = self.get_context_data()
             return self.render_to_response(ctx)
-        super(ProjectEdit, self).post(request)
+            super(ProjectEdit, self).post(request)
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -361,9 +361,9 @@ def project_form_redirect(request, name):
 class ProjectAutofill(View):
     form_class = ProjectFileForm
     success_url = reverse_lazy('summit.apps.projects:project-create')
-    template_name = 'apps/projects/autofill_form.html'
+    template_name = 'apps/projects/project_autofill_form.html'
 
-    def get(self, request):
+    def get(self, request, name):
         form = self.form_class()
         if 'job' in request.GET:
             job_id = request.GET['job']
@@ -376,13 +376,33 @@ class ProjectAutofill(View):
             return render(request, self.template_name, context)
         return render(request, self.template_name, {'form': form})
 
-    def post(self, request):
+    # def get_context_data(self, **kwargs):
+    #     context = {
+    #         'name': self.kwargs['name'],
+    #         'pagetitle': 'Create Project',
+    #         'title': 'Create Project',
+    #         'cssFiles': [
+    #             'libs/mdb/css/addons/datatables.min.css',
+    #             'css/apps/projects/dashboard.css'
+    #         ],
+    #         'jsFiles': [
+    #             'libs/mdb/js/addons/datatables.min.js',
+    #             'js/apps/projects/dashboard.js'
+    #         ],
+    #         'form': self.form_class,
+    #         'file_form': ProjectFileForm()
+    #     }
+    #     ctx = super(ProjectAutofill, self).get_context_data(**kwargs)
+    #     ctx = {**ctx, **context}
+    #     return ctx
+
+    def post(self, request, name):
         form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
             upload = form.save()
             job = read_pdf.delay(upload.file.path)
             print(upload.file.path)
-            return HttpResponseRedirect(reverse('projects:project-progress') + '?job=' + job.id)
+            return HttpResponseRedirect(reverse('summit.apps.projects:project-progress') + '?job=' + job.id)
         else:
             form = self.form_class()
             return render(request, self.template_name, {'form': form})
@@ -401,7 +421,7 @@ class ProjectProgress(UpdateView):
             context = {
                 'data': data,
                 'task_id': job_id,
-                'url': reverse('projects:project-create') + '?job=' + job_id,
+                'url': reverse('summit.apps.projects:summit.apps.projects_Create Project') + '?job=' + job_id,
             }
             return render(request, self.template_name, context)
         return render(request, self.template_name)

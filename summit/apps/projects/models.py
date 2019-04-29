@@ -16,7 +16,10 @@ _help_text = choices.ProjectChoices.help_text
 
 
 def get_directory_path(instance, filename):
-    return 'projects/{0}/{1}'.format(instance.project.id, filename)
+    if instance.id is None:
+        return 'autofill/{0}'.format(filename)
+    else:
+        return 'projects/{0}/{1}'.format(instance.project.id, filename)
 
 
 class Location(models.Model):
@@ -183,14 +186,3 @@ class Notification(models.Model):
 
     def __str__(self):
         return self.description
-
-
-class ProjectFiles(models.Model):
-    def project_directory_path(self, filename):
-        return 'projects/{0}'.format(filename)
-
-    file = models.FileField(upload_to=project_directory_path,
-                            default=str(settings.MEDIA_ROOT))
-
-    def get_absolute_url(self):
-        return u'create'

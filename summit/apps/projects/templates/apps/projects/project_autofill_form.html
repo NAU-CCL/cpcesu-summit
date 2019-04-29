@@ -12,6 +12,16 @@
         <form class="form-horizontal" action="" id="autofill-form" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
+
+<!--            <label class="control-label col-sm-auto"><b><u>Current Files</u></b><br></label>-->
+<!--            {% if files %}-->
+<!--                {% for file in files %}-->
+<!--                    <br><a href=" {{ file.file.url }} " target="_blank"> {{ file.file }}</a><br>-->
+<!--                {% endfor %}-->
+<!--            {% else %}-->
+<!--            <br>No files have been added-->
+<!--            {% endif %}-->
+
             <input class="btn btn-primary" type="submit" value="Submit">
         </form>
 

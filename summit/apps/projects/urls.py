@@ -19,16 +19,20 @@ urlpatterns = [
         'dropdown_id': app_name,
         'dropdown_name': 'Projects and Locations'
     }),
-    link(r'^redirect', views.project_form_redirect, name=get_name(app_name, 'Create Project'), link_args={}),
-    link(r'^create/$', views.ProjectCreate.as_view(), name=get_name(app_name, 'Create Project'), link_args={
+
+    link(r'^create/', views.ProjectCreate.as_view(), name=get_name(app_name, 'Create Project'), link_args={
+        'auth_required': True,
+        'app_regex': app_regex,
+        'dropdown_id': app_name
+    }),
+    link(r'^autofill/$', views.ProjectAutofill.as_view(), name=get_name(app_name, 'Upload Project'), link_args={
         'auth_required': True,
         'app_regex': app_regex,
         'dropdown_id': app_name
     }),
 
-    #url(r'^autofill/', views.ProjectAutofill.as_view(), name='project-autofill'),
-    #url(r'^progress/', views.ProjectProgress.as_view(), name='project-progress'),
-    #url(r'^poll_state$', views.ProjectProgress, name='poll_state'),
+    url(r'^progress/', views.ProjectProgress.as_view(), name='project-progress'),
+    url(r'^poll_state$', views.ProjectProgress, name='poll_state'),
 
     link(r'^public_projects/$', views.ProjectPublicListView.as_view(), name=get_name(app_name, 'Public Projects'), link_args={
         'app_regex': app_regex
