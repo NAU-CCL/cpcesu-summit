@@ -273,7 +273,7 @@ class ProjectCreate(CreateView):
                 'libs/mdb/js/addons/datatables.min.js',
                 'js/datatables/dashboard.js'
             ],
-            'form': self.get_form_class(),
+            'form': self.get_form(),
             'file_form': ProjectFileForm(),
             'confirm_status': self.confirm_status
         }
@@ -329,7 +329,7 @@ class ProjectEdit(UpdateView):
         total_mod_amount = 0
         for mod in modifications:
             total_mod_amount += mod.mod_amount
-        return prj.budget + total_mod_amount
+        return (prj.budget or 0) + total_mod_amount
 
     def get_success_url(self):
         return reverse('summit.apps.projects:project-detail', args=[str(self.object.id)])
@@ -631,7 +631,7 @@ def export_to_csv(request):
                      'Principal Investigator (PI)',
                      'Project Manager', 'Project Title', 'Research & Development', 'Scientific Method', 'Sensitive',
                      'Short Summary', 'Source of Funding', 'Staff Member',
-                     'Status', 'Student Support', 'Technical Representative', 'Tentative End Date',
+                     'Status', 'Technical Representative', 'Tentative End Date',
                      'Tentative Start Date', 'Type of Project', 'Veteran/Youth Support'])
 
     if request.POST:
@@ -644,7 +644,7 @@ def export_to_csv(request):
             project = Project.objects.get(pk=project_id)
 
             if project is None:
-                return Http404("Project does not exist.")
+                continue
 
             writer.writerow(
                 [project.budget, project.cesu_unit, project.description, project.discipline, project.federal_agency,
@@ -652,7 +652,7 @@ def export_to_csv(request):
                  project.location, project.monitoring, project.notes, project.num_of_students, project.p_num,
                  project.partner, project.pp_i, project.project_manager, project.project_title, project.r_d,
                  project.sci_method, project.sensitive, project.short_summary, project.src_of_funding,
-                 project.staff_member, project.status, project.student_support, project.tech_rep, project.tent_end_date,
+                 project.staff_member, project.status, project.tech_rep, project.tent_end_date,
                  project.tent_start_date, project.type, project.youth_vets])
 
     return response
