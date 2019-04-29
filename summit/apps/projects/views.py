@@ -1,8 +1,12 @@
 import csv
+import datetime
 from django.http import HttpResponse, Http404, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect, render
+
+from django.shortcuts import get_object_or_404, render
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, View
+
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.files import File
@@ -10,9 +14,10 @@ from django.core.files import File
 from celery.result import AsyncResult
 import json
 
-from .models import Project, File, Location, Modification
-from .forms import ProjectForm, ProjectFileForm, LocationForm, ModificationForm
 from .tasks import read_pdf
+from summit.libs.auth.models import UserProfile, CESUnit
+from .models import Project, File, Location, Modification, ModFile
+from .forms import ProjectForm, ProjectFileForm, LocationForm, ModificationForm, ModificationFileForm
 
 
 class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -27,18 +32,22 @@ class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = {
             'name': self.kwargs['name'],
-            'pagetitle': 'Projects List',
+            'pagetitle': 'All Projects List',
+            'table1_header': " ",
+            'table1_desc': "A table of every project in the system",
             'title': 'Projects List',
+            'bannerTemplate': 'none',
             'header': {
             },
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
-                'css/apps/projects/dashboard.css'
+                'css/datatables/dashboard.css'
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/apps/projects/dashboard.js'
-            ]
+                'js/datatables/dashboard.js'
+            ],
+            'table2_disabled': True
         }
         ctx = super(ProjectListView, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
@@ -68,11 +77,11 @@ class ProjectPublicListView(ListView):
             },
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
-                'css/apps/projects/dashboard.css'
+                'css/datatables/dashboard.css'
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/apps/projects/dashboard.js'
+                'js/datatables/dashboard.js'
             ],
             'project_url': 'summit.apps.projects:project-detail-public'
         }
@@ -96,21 +105,47 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
     raise_exception = False
 
     def get_context_data(self, **kwargs):
+        all_projects = self.get_queryset()
+
+        user = self.request.user
+        user_group = self.request.user.group
+
+        try:
+            profile = UserProfile.objects.get(user=user)
+        except ObjectDoesNotExist:
+            profile = None
+
+        try:
+            ces_unit = CESUnit.objects.get(id=user_group.id)
+        except (ObjectDoesNotExist, AttributeError) as e:
+            ces_unit = None
+
+        user_filtered_projects = all_projects.filter(cesu_unit=ces_unit, staff_member=profile, status="DRAFT") \
+                                 | all_projects.filter(cesu_unit=None, status="DRAFT") \
+                                 | all_projects.filter(staff_member=profile, status="DRAFT")
+
+        start_date = datetime.datetime.now() + datetime.timedelta(-30)
+        recent_projects = all_projects.filter(created_on__range=[start_date, datetime.datetime.now()])
         context = {
             'name': self.kwargs['name'],
             'pagetitle': 'Your Dashboard',
+            'table1_header': 'Your Assigned Projects',
+            'table1_desc': 'A table of all projects in the drafting stage, either assigned to you or unassigned.',
+            'table2_header': 'All Recent Projects',
+            'table2_desc': 'A table of all of the projects that have been created in the last 30 days',
             'title': 'Your Dashboard',
-            'header': {
-
-            },
+            'bannerTemplate': 'none',
+            'header': {},
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
-                'css/apps/projects/dashboard.css'
+                'css/datatables/dashboard.css'
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/apps/projects/dashboard.js'
-            ]
+                'js/datatables/dashboard.js'
+            ],
+            'projects': user_filtered_projects,
+            'recent_projects': recent_projects,
         }
         ctx = super(ProjectDashboardView, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
@@ -127,6 +162,14 @@ class ProjectDetail(LoginRequiredMixin, DetailView):
     model = Project
     template_name = 'apps/projects/project_detail.html'
 
+    def total_award_amount(self):
+        prj = self.get_object()
+        modifications = Modification.objects.filter(project=prj)
+        total_mod_amount = 0
+        for mod in modifications:
+            total_mod_amount += mod.mod_amount
+        return (prj.budget or 0) + total_mod_amount
+
     def get_context_data(self, **kwargs):
         context = {
             'pagetitle': 'Projects Details',
@@ -135,12 +178,14 @@ class ProjectDetail(LoginRequiredMixin, DetailView):
             },
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
-                'css/apps/projects/dashboard.css'
+                'css/datatables/dashboard.css'
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/apps/projects/dashboard.js'
-            ]
+                'js/datatables/dashboard.js'
+            ],
+            'total_award_amount': self.total_award_amount()
+
         }
         ctx = super(ProjectDetail, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
@@ -182,11 +227,11 @@ class ProjectPublicDetail(DetailView):
             },
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
-                'css/apps/projects/dashboard.css'
+                'css/datatables/dashboard.css'
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/apps/projects/dashboard.js'
+                'js/datatables/dashboard.js'
             ]
         }
         ctx = super(ProjectPublicDetail, self).get_context_data(**kwargs)
@@ -203,6 +248,7 @@ class ProjectCreate(CreateView):
     model = Project
     template_name = 'apps/projects/project_create_form.html'
     form_class = ProjectForm
+    confirm_status = False
 
     def form_valid(self, form):
         project = form.save()
@@ -246,14 +292,15 @@ class ProjectCreate(CreateView):
             'title': 'Create Project',
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
-                'css/apps/projects/dashboard.css'
+                'css/datatables/dashboard.css'
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/apps/projects/dashboard.js'
+                'js/datatables/dashboard.js'
             ],
-            'form': self.get_form_class(),
-            'file_form': ProjectFileForm()
+            'form': self.get_form(),
+            'file_form': ProjectFileForm(),
+            'confirm_status': self.confirm_status
         }
         ctx = super(ProjectCreate, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
@@ -267,6 +314,8 @@ class ProjectCreate(CreateView):
         files = request.FILES.getlist('file')
         if project_form.is_valid():
             self.object = project_form.save()
+            if self.object.status != 'DRAFT':
+                self.confirm_status = True
             if project_file_form.is_valid():
                 for f in files:
                     project_file_instance = File(file=f, project=self.object)
@@ -279,16 +328,27 @@ class ProjectCreate(CreateView):
             ctx['form'] = project_form
             ctx['file_form'] = project_file_form
             return self.render_to_response(ctx)
+        super(ProjectCreate, self).post(request)
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class ProjectEdit(UpdateView):
     model = Project
     template_name = 'apps/projects/project_edit_form.html'
     form_class = ProjectForm
+    status = False
 
     def get_object(self, **kwargs):
         pk_ = self.kwargs.get("id")
         return get_object_or_404(Project, pk=pk_)
+
+    def total_award_amount(self):
+        prj = self.get_object()
+        modifications = Modification.objects.filter(project=prj)
+        total_mod_amount = 0
+        for mod in modifications:
+            total_mod_amount += mod.mod_amount
+        return (prj.budget or 0) + total_mod_amount
 
     def get_success_url(self):
         return reverse('summit.apps.projects:project-detail', args=[str(self.object.id)])
@@ -299,14 +359,16 @@ class ProjectEdit(UpdateView):
             'title': 'Edit Project',
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
-                'css/apps/projects/dashboard.css'
+                'css/datatables/dashboard.css'
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/apps/projects/dashboard.js'
+                'js/datatables/dashboard.js'
             ],
             'files': File.objects.filter(project=self.object),
-            'file_form': ProjectFileForm()
+            'file_form': ProjectFileForm(),
+            'total_award_amount': self.total_award_amount()
+
         }
         ctx = super(ProjectEdit, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
@@ -445,7 +507,7 @@ class ProjectProgress(UpdateView):
 
 
 class ProjectModifications(CreateView):
-    template_name = 'apps/projects/project_options.html'
+    template_name = 'apps/projects/project_modifications.html'
     model = Modification
     form_class = ModificationForm
 
@@ -459,36 +521,46 @@ class ProjectModifications(CreateView):
             'title': 'Project Modifications',
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
-                'css/apps/projects/dashboard.css'
+                'css/datatables/dashboard.css'
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/apps/projects/dashboard.js'
+                'js/datatables/dashboard.js'
             ],
-            'project': get_object_or_404(Project, pk=self.kwargs.get("id"))
+            'project': get_object_or_404(Project, pk=self.kwargs.get("id")),
+            'files': ModFile.objects.filter(modification=self.object),
+            'file_form': ModificationFileForm()
         }
         ctx = super(ProjectModifications, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
         return ctx
 
     def post(self, request, *args, **kwargs):
-            self.object = None
-            mod_form = self.get_form()
-            mod_form.instance.project = get_object_or_404(Project, pk=self.kwargs.get("id"))
-            if mod_form.is_valid():
-                self.object = mod_form
-                mod_form.instance.project = get_object_or_404(Project, pk=self.kwargs.get("id"))
-                super(ProjectModifications, self).form_valid(mod_form)
-                return HttpResponseRedirect(self.get_success_url())
-            else:
-                ctx = self.get_context_data()
-                ctx['form'] = mod_form
-                return self.render_to_response(ctx)
+        self.object = None
+        mod_form = ModificationForm(request.POST, request.FILES, instance=self.object)
+        mod_form.instance.project = get_object_or_404(Project, pk=self.kwargs.get("id"))
+        mod_file_form = ModificationFileForm(request.POST, request.FILES,
+                                             instance=self.object)
+        files = request.FILES.getlist('file')
+        if mod_form.is_valid():
+            self.object = mod_form.save()
+            if mod_file_form.is_valid():
+                for f in files:
+                    mod_file_instance = ModFile(file=f, modification=self.object)
+                    mod_file_instance.save()
+            super(ProjectModifications, self).form_valid(mod_form)
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            print(mod_form.errors)
+            ctx = self.get_context_data()
+            ctx['form'] = mod_form
+            ctx['file_form'] = mod_file_form
+            return self.render_to_response(ctx)
 
 
 class ProjectModEdit(UpdateView):
     model = Modification
-    template_name = 'apps/projects/project_options.html'
+    template_name = 'apps/projects/project_modifications.html'
     form_class = ModificationForm
 
     def get_object(self, **kwargs):
@@ -506,31 +578,41 @@ class ProjectModEdit(UpdateView):
             'title': 'Project Modifications',
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
-                'css/apps/projects/dashboard.css'
+                'css/datatables/dashboard.css'
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/apps/projects/dashboard.js'
+                'js/datatables/dashboard.js'
             ],
-            'project': get_object_or_404(Project, pk=self.kwargs.get("id"))
+            'project': get_object_or_404(Project, pk=self.kwargs.get("id")),
+            'files': ModFile.objects.filter(modification=self.object),
+            'file_form': ModificationFileForm()
         }
         ctx = super(ProjectModEdit, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
         return ctx
 
     def post(self, request, *args, **kwargs):
-            self.object = self.get_object()
-            mod_form = self.get_form()
-            mod_form.instance.project = get_object_or_404(Project, pk=self.kwargs.get("id"))
-            if mod_form.is_valid():
-                self.object = mod_form
-                mod_form.instance.project = get_object_or_404(Project, pk=self.kwargs.get("id"))
-                super(ProjectModEdit, self).form_valid(mod_form)
-                return HttpResponseRedirect(self.get_success_url())
-            else:
-                ctx = self.get_context_data()
-                ctx['form'] = mod_form
-                return self.render_to_response(ctx)
+        self.object = self.get_object()
+        mod_form = ModificationForm(request.POST, request.FILES, instance=self.object)
+        mod_form.instance.project = get_object_or_404(Project, pk=self.kwargs.get("id"))
+        mod_file_form = ModificationFileForm(request.POST, request.FILES,
+                                             instance=self.object)
+        files = request.FILES.getlist('file')
+        if mod_form.is_valid():
+            self.object = mod_form.save()
+            if mod_file_form.is_valid():
+                for f in files:
+                    mod_file_instance = ModFile(file=f, modification=self.object)
+                    mod_file_instance.save()
+            super(ProjectModEdit, self).form_valid(mod_form)
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            print(mod_form.errors)
+            ctx = self.get_context_data()
+            ctx['form'] = mod_form
+            ctx['file_form'] = mod_file_form
+            return self.render_to_response(ctx)
 
 
 #
@@ -556,11 +638,11 @@ class LocationListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             },
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
-                'css/apps/projects/dashboard.css'
+                'css/datatables/dashboard.css'
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/apps/projects/dashboard.js'
+                'js/datatables/dashboard.js'
             ]
         }
         ctx = super(LocationListView, self).get_context_data(**kwargs)
@@ -585,11 +667,11 @@ class LocationCreate(CreateView):
             'title': 'Create Location',
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
-                'css/apps/projects/dashboard.css'
+                'css/datatables/dashboard.css'
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/apps/projects/dashboard.js'
+                'js/datatables/dashboard.js'
             ],
             'form': self.get_form_class(),
         }
@@ -660,6 +742,7 @@ class LocationEdit(UpdateView):
             ctx = self.get_context_data()
             return self.render_to_response(ctx)
 
+
 #
 #
 # Other, non-view supporting functions
@@ -667,22 +750,61 @@ class LocationEdit(UpdateView):
 #
 
 
-def export_to_csv(request, id):
-    project = Project.objects.get(pk=id)
-    if project is None:
-        return Http404("Project does not exist.")
-    file_name = project.project_title
-
+def export_to_csv(request):
+    file_name = "multi_project_export"
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="'+file_name+'.csv"'
+    response['Content-Disposition'] = 'attachment; filename="' + file_name + '.csv"'
 
     writer = csv.writer(response)
-    writer.writerow(['project_title', 'status', 'budget', 'student_support', 'short_summary'])
+    writer.writerow(['Budget', 'CESUnit', 'Description', 'Discipline', 'Federal Agency', 'Field of Science',
+                     'Final Report ', 'Fiscal Year', 'Initial Start Date', 'Location',
+                     'Monitoring', 'Project Notes', 'Number of Students', 'P-Num', 'Partner',
+                     'Principal Investigator (PI)',
+                     'Project Manager', 'Project Title', 'Research & Development', 'Scientific Method', 'Sensitive',
+                     'Short Summary', 'Source of Funding', 'Staff Member',
+                     'Status', 'Technical Representative', 'Tentative End Date',
+                     'Tentative Start Date', 'Type of Project', 'Veteran/Youth Support'])
 
-    writer.writerow([project.project_title, project.status, project.budget, project.student_support, project.short_summary])
+    if request.POST:
+        export_list = request.POST.getlist("export_list")
+
+        if len(export_list) <= 0:
+            return HttpResponse('')
+
+        for project_id in export_list:
+            project = Project.objects.get(pk=project_id)
+
+            if project is None:
+                continue
+
+            writer.writerow(
+                [project.budget, project.cesu_unit, project.description, project.discipline, project.federal_agency,
+                 project.field_of_science, project.final_report, project.fiscal_year, project.init_start_date,
+                 project.location, project.monitoring, project.notes, project.num_of_students, project.p_num,
+                 project.partner, project.pp_i, project.project_manager, project.project_title, project.r_d,
+                 project.sci_method, project.sensitive, project.short_summary, project.src_of_funding,
+                 project.staff_member, project.status, project.tech_rep, project.tent_end_date,
+                 project.tent_start_date, project.type, project.vet_support])
 
     return response
 
 
 def change_history(request, id):
     return HttpResponseRedirect(reverse('admin:summit_projects_project_history', args=id))
+
+
+def project_autofill(request, name):
+    template_name = 'apps/projects/project_autofill.html'
+    context = {
+        'name': name,
+        'pagetitle': 'Autofill Project Form',
+        'title': 'Autofill Project Form',
+        'header': {
+        },
+        'cssFiles': [
+        ],
+        'jsFiles': [
+            'js/apps/projects/fileUpload.js'
+        ],
+    }
+    return render(request, template_name, context)

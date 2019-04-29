@@ -1,0 +1,38 @@
+{% load static %}
+
+<html>
+  <head>
+    {% include 'partials/head.html'%}
+  </head>
+  <body>
+    {% include 'partials/header.html' %}
+
+    {# Layouts (single primary div vs. dual sidebar/primary divs) #}
+
+    {% block layout_wrapper %}
+      {% if layout %}
+      <div class="container-fluid">
+        <div class="row">
+          {% if layout == 'left' %}
+            <div class="{{ sidebar_class|default:'col-md-3 col-lg-2' }}" >
+              {% block sidebar %}{% endblock %}
+            </div>
+            <div class="{{ main_class|default:'col-md-9 col-lg-10' }}">
+              {% block primary %}{{ primary|safe|default:"No content"}}{% endblock %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      {% else %}
+      <div class="container-fluid">
+        {% block content %}{{ content|safe|default:"No content"}}{% endblock %}
+      </div>
+      {% endif %}
+    {% endblock layout_wrapper %}
+
+    <footer>
+      {% include 'partials/footer.html' %}
+    </footer>
+  </body>
+</html>

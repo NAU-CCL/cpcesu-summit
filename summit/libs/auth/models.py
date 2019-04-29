@@ -184,7 +184,10 @@ class UserProfile(AuditModel):
     assigned_group = models.ForeignKey(UserGroup, blank=True, null=True, on_delete=models.CASCADE)
 
     def get_full_name(self):
-        return self.first_name + " " + self.last_name
+        if self.user is not None:
+            return self.first_name + " " + self.last_name + " (" + str(self.user) + ")"
+        else:
+            return self.first_name + " " + self.last_name
 
     @staticmethod
     def detail_fields():
@@ -201,4 +204,4 @@ class UserProfile(AuditModel):
             ('view_profile.others', 'Can see other user profiles'),
             ('view_profile.self', 'Can see own profile'),
         )
-        verbose_name = "User Profile"
+        verbose_name = "Contact"

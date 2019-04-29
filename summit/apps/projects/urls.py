@@ -9,15 +9,20 @@ app_regex = r'^projects/'
 urlpatterns = [
     # Projects and Modifications
 
-    link(r'^dashboard/$', views.ProjectDashboardView.as_view(), name=get_name(app_name, "My Dashboard"), link_args={
+    link(r'^dashboard/$', views.ProjectDashboardView.as_view(), name=get_name(app_name, "Your Dashboard"), link_args={
         'auth_required': True,
         'app_regex': app_regex
     }),
-    link(r'^$', views.ProjectListView.as_view(), name=get_name(app_name, "Your Projects"), link_args={
+    link(r'^$', views.ProjectListView.as_view(), name=get_name(app_name, "All Projects"), link_args={
         'auth_required': True,
         'app_regex': app_regex,
         'dropdown_id': app_name,
-        'dropdown_name': 'Projects and Locations'
+        'dropdown_name': 'Projects'
+    }),
+    link(r'^autofill/$', views.project_autofill, name=get_name(app_name, 'Autofill Project'), link_args={
+        'auth_required': True,
+        'app_regex': app_regex,
+        'dropdown_id': app_name
     }),
 
     link(r'^create/', views.ProjectCreate.as_view(), name=get_name(app_name, 'Create Project'), link_args={
@@ -35,14 +40,20 @@ urlpatterns = [
     url(r'^poll_state$', views.ProjectProgress, name='poll_state'),
 
     link(r'^public_projects/$', views.ProjectPublicListView.as_view(), name=get_name(app_name, 'Public Projects'), link_args={
-        'app_regex': app_regex
+        'auth_required': True,
+        'app_regex': app_regex,
+        'dropdown_id': app_name,
+    }),
+    link(r'^public_projects/$', views.ProjectPublicListView.as_view(), name=get_name(app_name, 'Public Projects'), link_args={
+        'auth_required': False,
+        'app_regex': app_regex,
     }),
     url(r'^public-detail/(?P<id>[-\w]+)/$', views.ProjectPublicDetail.as_view(), name='project-detail-public'),
     url(r'^detail/(?P<id>[-\w]+)/$', views.ProjectDetail.as_view(), name='project-detail'),
     url(r'^edit/(?P<id>[-\w]+)/$', views.ProjectEdit.as_view(), name='project-edit'),
     url(r'^mods/(?P<id>[-\w]+)/create/$', views.ProjectModifications.as_view(), name='project-mods'),
     url(r'^mods/(?P<id>[-\w]+)/edit/(?P<mod_id>[-\w]+)$', views.ProjectModEdit.as_view(), name='project-mods-edit'),
-    url(r'^detail/download_csv/(?P<id>[-\w]+)/$', views.export_to_csv, name='project-export-csv'),
+    url(r'^export_csv/$', views.export_to_csv, name='project-export-csv'),
     url(r'^detail/change_history/(?P<id>[-\w]+)/$', views.change_history, name='project-change-history'),
 
     # Locations - States, Parks, etc. in one model/object

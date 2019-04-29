@@ -1,0 +1,45 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+
+{% block primary %}
+<h1 style="text-align: center">Groups Directory</h1>
+
+<div>
+    <a href="{% url 'summit.libs.auth2:summit.libs.auth2_Create Org.' %}" class="btn btn-primary btn-sm m-0 waves-effect">Create Organization</a>
+    <a href="{% url 'summit.libs.auth2:summit.libs.auth2_Create Contact' %}" class="btn btn-primary btn-sm m-0 waves-effect">Create Contact</a>
+</div>
+
+<table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="th-sm">#</th>
+            <th class="th-sm">Group</th>
+            <th class="th-sm">Type</th>
+            <th class="th-sm">Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, group in query.items %}
+        <tr>
+            <th scope="row">{{ group.id }}</th>
+            <td>{{ group.name }}</td>
+            <td>{{ group.type }}</td>
+            <td>
+                <a href="{% url 'summit.libs.auth2:manage_group_other' group_id=group.id %}" class="btn btn-outline-primary btn-sm m-0 waves-effect">Manage Org.</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'registration/partials/side_nav.html' %}
+{% endblock %}
+
+{% block layout_wrapper %}
+    {% with layout='left'  %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}

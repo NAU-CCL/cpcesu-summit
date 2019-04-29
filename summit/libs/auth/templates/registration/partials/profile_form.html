@@ -1,7 +1,45 @@
 <form method="post">
     {% csrf_token %}
-    {{ profile_form.as_ul }}
-    <input type="submit" value="Submit Profile" />
+    <div class="row">
+        <div class="card col-sm-12">
+            <table>
+                <tbody>
+                    <tr>
+                        <td><b>First Name:</b></td><td>{{ profile_form.first_name }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Last Name:</b></td><td>{{ profile_form.last_name }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Avatar:</b></td><td>{{ profile_form.avatar }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Department:</b></td><td>{{ profile_form.department }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Location:</b></td><td>{{ profile_form.location }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Address:</b></td><td>{{ profile_form.address }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Phone Number:</b></td><td>{{ profile_form.phone_number }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Fax Phone:</b></td><td>{{ profile_form.fax_number }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Email Address:</b></td><td>{{ profile_form.email_address }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Assigned Organization:</b></td><td>{{ profile_form.assigned_group }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+            <input type="submit" value="Submit Contact" />
+        </div>
+    </div>
 </form>
 
 <hr>

@@ -9,28 +9,28 @@ from . import views
 app_name = 'summit.libs.auth2'
 app_regex = r'^accounts/'
 urlpatterns = [
-    link(r'^all_users/$', views.all_users, name=get_name(app_name, "All Users"), link_args={
+    link(r'^all_users/$', views.all_users, name=get_name(app_name, "All Contacts"), link_args={
         'auth_required': True,
         'app_regex': app_regex,
         'dropdown_id': app_name,
-        'dropdown_name': 'Groups and Users'
+        'dropdown_name': 'Personnel'
     }),
-    link(r'^all_groups/$', views.all_groups, name=get_name(app_name, "All Groups"), link_args={
-        'auth_required': True,
-        'app_regex': app_regex,
-        'dropdown_id': app_name,
-    }),
-    link(r'^create_group/$', views.create_group, name=get_name(app_name, "Create Group"), link_args={
+    link(r'^all_groups/$', views.all_groups, name=get_name(app_name, "All Orgs."), link_args={
         'auth_required': True,
         'app_regex': app_regex,
         'dropdown_id': app_name,
     }),
-    link(r'^create_user/$', views.create_profile, name=get_name(app_name, "Create User"), link_args={
+    link(r'^create_group/$', views.create_group, name=get_name(app_name, "Create Org."), link_args={
         'auth_required': True,
         'app_regex': app_regex,
         'dropdown_id': app_name,
     }),
-    link(r'^manage_group/$', views.manage_group, name=get_name(app_name, "Manage My Group"), link_args={
+    link(r'^create_user/$', views.create_profile, name=get_name(app_name, "Create Contact"), link_args={
+        'auth_required': True,
+        'app_regex': app_regex,
+        'dropdown_id': app_name,
+    }),
+    link(r'^manage_group/$', views.manage_group, name=get_name(app_name, "Manage My Org."), link_args={
         'auth_required': True,
         'app_regex': app_regex,
         'dropdown_id': app_name,

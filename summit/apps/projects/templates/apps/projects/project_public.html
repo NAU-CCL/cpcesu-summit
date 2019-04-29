@@ -1,7 +1,7 @@
-{% extends 'base.html' %}
+{% extends 'layouts/base.html' %}
 {% load static %}
 
-{% block primary %}
+{% block content %}
 
 {% if pagetitle %}
     <h1 style="text-align: center">{{ pagetitle }}</h1>
@@ -10,25 +10,34 @@
 {% endif %}
 
 
-<p class="animated fadeIn text-muted">Project List</p>
+<p class="animated fadeIn text-muted">List for publicly viewable projects that are currently active or are formally
+    completed and are archived.</p>
 
-    <table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+    <table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0" width="100%">
         <thead>
             <tr>
-              <th class="th-sm">#</th>
-              <th class="th-sm">Title</th>
-              <th class="th-sm">Status</th>
-              <th class="th-sm">Partner</th>
+                <th class="th-sm">Award Number</th>
+                <th class="th-sm">Title</th>
+                <th class="th-sm">Status</th>
+                <th class="th-sm">Federal Agency</th>
+                <th class="th-sm">Non-Gov't Partner</th>
+                <th class="th-sm">Start Date</th>
+                <th class="th-sm">End Date</th>
+                <th class="th-sm">Total Funds</th>
                 <th class="th-sm">Details</th>
             </tr>
         </thead>
         <tbody>
     {% for project in projects %}
             <tr>
-                <th scope="row">{{ project.id }}</th>
+                <th scope="row">{{ project.p_num }}</th>
                 <td href="">{{ project.project_title }}</td>
-                <td>{{ project.status }}</td>
+                <td>{{ project.get_status_display }}</td>
+                <td>{{ project.federal_agency}}</td>
                 <td>{{ project.partner }}</td>
+                <td>{{ project.tent_start_date }}</td>
+                <td>{{ project.tent_end_date}}</td>
+                <td>${{ project.budget}}</td>
                 <td>
                     <a class="btn btn-outline-primary btn-sm m-0 waves-effect"
                     href="{% url 'summit.apps.projects:project-detail-public' id=project.id %}">
