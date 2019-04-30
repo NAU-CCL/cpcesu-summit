@@ -18,4 +18,4 @@ class GroupForm(ModelForm):
 
     class Meta:
         model = UserGroup
-        fields = ['name', 'description', 'permissions', 'avatar']
+        fields = ['name', 'description', 'avatar']

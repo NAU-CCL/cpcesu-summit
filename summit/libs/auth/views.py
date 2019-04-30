@@ -70,11 +70,9 @@ def view_profile(request, profile_id=-1):
 
     context = {
         'name': 'libs.auth.view_profile',
-        'pagetitle': 'Profile',
-        'title': 'Your Profile',
-        'header': {
-            'background': 'apps/core/imgs/default.jpg'
-        },
+        'pagetitle': 'Contact',
+        'title': 'Your Contact',
+        'bannerTemplate': 'none',
         'cssFiles': [
             # 'css/apps/core/testing.css'
         ],
@@ -120,11 +118,9 @@ def edit_profile(request, profile_id=-1):
 
     context = {
         'name': 'libs.auth.edit_profile',
-        'pagetitle': 'Profile',
-        'title': 'Your Profile',
-        'header': {
-            'background': 'apps/core/imgs/default.jpg'
-        },
+        'pagetitle': 'Contact',
+        'title': 'Your Contact',
+        'bannerTemplate': 'none',
         'cssFiles': [
             # 'css/apps/core/testing.css'
         ],
@@ -146,8 +142,9 @@ def all_users(request, name):
 
     context = {
         'name': name,
-        'pagetitle': 'All Users',
-        'title': 'All Users',
+        'pagetitle': 'All Contacts',
+        'title': 'All Contacts',
+        'bannerTemplate': 'none',
         'cssFiles': [
             'libs/mdb/css/addons/datatables.min.css',
             'css/datatables/dashboard.css'
@@ -196,8 +193,9 @@ def all_groups(request, name):
 
     context = {
         'name': name,
-        'pagetitle': 'All Groups',
-        'title': 'All Groups',
+        'pagetitle': 'All Organizations',
+        'title': 'All Organizations',
+        'bannerTemplate': 'none',
         'cssFiles': [
             'libs/mdb/css/addons/datatables.min.css',
             'css/datatables/dashboard.css'
@@ -256,8 +254,9 @@ def manage_group(request, name='summit.libs.auth.manage_group', group_id=-1):
 
     context = {
         'name': name,
-        'pagetitle': 'All Users in Group',
-        'title': 'All Users in Group',
+        'pagetitle': 'All Users in Organization',
+        'title': 'All Users in Organization',
+        'bannerTemplate': 'none',
         'cssFiles': [
             'libs/mdb/css/addons/datatables.min.css',
             'css/datatables/dashboard.css'
@@ -294,9 +293,7 @@ def create_profile(request, name="summit.libs.auth_Create Contact", group_id=0):
         'name': name,
         'pagetitle': 'Contact',
         'title': 'Create Contact',
-        'header': {
-            'background': 'apps/core/imgs/default.jpg'
-        },
+        'bannerTemplate': 'none',
         'cssFiles': [
             # 'css/apps/core/testing.css'
         ],
@@ -336,11 +333,9 @@ def create_group(request, name):
 
     context = {
         'name': name,
-        'pagetitle': 'User Group',
-        'title': 'Create User Group',
-        'header': {
-            'background': 'apps/core/imgs/default.jpg'
-        },
+        'pagetitle': 'Create Organization',
+        'title': 'Create Organization',
+        'bannerTemplate': 'none',
         'cssFiles': [
             # 'css/apps/core/testing.css'
         ],
@@ -415,9 +410,7 @@ def edit_group(request, name="summit.libs.auth2:summit.libs.auth2_edit_group", g
         'name': name,
         'pagetitle': 'Organization',
         'title': 'Create New Organization (Partner or CESU)',
-        'header': {
-            'background': 'apps/core/imgs/default.jpg'
-        },
+        'bannerTemplate': 'none',
         'cssFiles': [
             # 'css/apps/core/testing.css'
         ],

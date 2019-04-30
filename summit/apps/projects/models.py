@@ -149,10 +149,9 @@ class Modification(models.Model):
                                 choices=MOD_TYPE, default=MOD_TYPE[0], null=True, blank=True)
     mod_notes = models.TextField(blank=True, verbose_name="Modification Notes")
     mod_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0, blank=True)
-    mod_approved = models.DateField(blank=True, default="2019-1-1",
-                                    verbose_name="Approved)")
-    mod_executed = models.DateField(blank=True, default="2019-1-1",
-                                    verbose_name="Executed")
+    mod_approved = models.DateField(blank=True, null=True, verbose_name="Approved")
+    mod_executed = models.DateField(blank=True, null=True, verbose_name="Executed")
+    mod_extension = models.DateField(blank=True, null=True, verbose_name="Extension")
 
     def __str__(self):
         return str(self.mod_num)
