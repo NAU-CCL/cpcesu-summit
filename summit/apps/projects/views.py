@@ -394,36 +394,52 @@ class ProjectEdit(UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-def project_form_redirect(request, name):
-    template_name = 'apps/projects/project_form_redirection.html'
+# def project_form_redirect(request, name):
+#     template_name = 'apps/projects/project_form_redirection.html'
+#
+#     context = {
+#         'name': name,
+#         'pagetitle': 'not Home',
+#         'title': 'Form rediceiction, autofill or manual',
+#         'bannerTemplate': 'fullscreen',
+#         'header': {
+#             'heading1': 'Project Creation Redirection',
+#             'heading2': '',
+#             'buttons': [
+#                 {
+#                     'name': 'Autofill',
+#                     'link': '/projects/autofill'
+#                 },
+#                 {
+#                     'name': 'Manual',
+#                     'link': '/projects/create',
+#                 }
+#             ]
+#         },
+#     }
+#     return render(request, template_name, context)
 
-    context = {
-        'name': name,
-        'pagetitle': 'not Home',
-        'title': 'Form rediceiction, autofill or manual',
-        'bannerTemplate': 'fullscreen',
-        'header': {
-            'heading1': 'Project Creation Redirection',
-            'heading2': '',
-            'buttons': [
-                {
-                    'name': 'Autofill',
-                    'link': '/projects/autofill'
-                },
-                {
-                    'name': 'Manual',
-                    'link': '/projects/create',
-                }
-            ]
-        },
-    }
-    return render(request, template_name, context)
-
+# def project_autofill(request, name):
+#     template_name = 'apps/projects/project_autofill.html'
+#     context = {
+#         'name': name,
+#         'pagetitle': 'Autofill Project Form',
+#         'title': 'Autofill Project Form',
+#         'header': {
+#         },
+#         'cssFiles': [
+#         ],
+#         'jsFiles': [
+#             'js/apps/projects/fileUpload.js'
+#         ],
+#     }
+#     return render(request, template_name, context)
 
 class ProjectAutofill(View):
     form_class = ProjectFileForm
     success_url = reverse_lazy('summit.apps.projects:project-create')
     template_name = 'apps/projects/project_autofill_form.html'
+    #template_name = 'apps/projects/project_autofill.html'
 
     def get(self, request, name):
         form = self.form_class()
@@ -436,7 +452,22 @@ class ProjectAutofill(View):
                 'task_id': job_id,
             }
             return render(request, self.template_name, context)
-        return render(request, self.template_name, {'form': form})
+        else:
+            # context = {
+            #     'name': name,
+            #     'pagetitle': 'Autofill Project Form',
+            #     'title': 'Autofill Project Form',
+            #     'header': {
+            #     },
+            #     'cssFiles': [
+            #     ],
+            #     'jsFiles': [
+            #         'js/apps/projects/fileUpload.js'
+            #     ],
+            # }
+            # return render(request, self.template_name, context)
+
+            return render(request, self.template_name, {'form': form})
 
     # def get_context_data(self, **kwargs):
     #     context = {
@@ -453,6 +484,23 @@ class ProjectAutofill(View):
     #         ],
     #         'form': self.form_class,
     #         'file_form': ProjectFileForm()
+    #     }
+    #     ctx = super(ProjectAutofill, self).get_context_data(**kwargs)
+    #     ctx = {**ctx, **context}
+    #     return ctx
+
+    # def get_context_data(self, **kwargs):
+    #     context = {
+    #         #'name': name,
+    #         'pagetitle': 'Autofill Project Form',
+    #         'title': 'Autofill Project Form',
+    #         'header': {
+    #         },
+    #         'cssFiles': [
+    #         ],
+    #         'jsFiles': [
+    #             'js/apps/projects/fileUpload.js'
+    #         ],
     #     }
     #     ctx = super(ProjectAutofill, self).get_context_data(**kwargs)
     #     ctx = {**ctx, **context}
@@ -793,18 +841,4 @@ def change_history(request, id):
     return HttpResponseRedirect(reverse('admin:summit_projects_project_history', args=id))
 
 
-def project_autofill(request, name):
-    template_name = 'apps/projects/project_autofill.html'
-    context = {
-        'name': name,
-        'pagetitle': 'Autofill Project Form',
-        'title': 'Autofill Project Form',
-        'header': {
-        },
-        'cssFiles': [
-        ],
-        'jsFiles': [
-            'js/apps/projects/fileUpload.js'
-        ],
-    }
-    return render(request, template_name, context)
+
