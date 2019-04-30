@@ -848,23 +848,3 @@ def export_to_csv(request):
 
 def change_history(request, id):
     return HttpResponseRedirect(reverse('admin:summit_projects_project_history', args=id))
-
-
-<<<<<<< HEAD
-
-=======
-def project_autofill(request, name):
-    template_name = 'apps/projects/project_autofill.html'
-    context = {
-        'name': name,
-        'pagetitle': 'Autofill Project Form',
-        'title': 'Autofill Project Form',
-        'bannerTemplate': 'none',
-        'cssFiles': [
-        ],
-        'jsFiles': [
-            'js/apps/projects/fileUpload.js'
-        ],
-    }
-    return render(request, template_name, context)
->>>>>>> 3f7e2b3ef059306d1cb14c7313deb62780c5f9c9
