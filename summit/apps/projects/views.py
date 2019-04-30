@@ -169,7 +169,7 @@ class ProjectDetail(LoginRequiredMixin, DetailView):
             # 'name': self.kwargs['name'],
             'pagetitle': 'Projects Details',
             'title': 'Projects Details',
-            # 'bannerTemplate': 'fullscreen',
+            'bannerTemplate': 'none',
             'header': {
                 # 'background': 'apps/core/imgs/default.jpg',
                 # 'heading1': 'Heading 1',
@@ -265,6 +265,7 @@ class ProjectCreate(CreateView):
             'name': self.kwargs['name'],
             'pagetitle': 'Create Project',
             'title': 'Create Project',
+            'bannerTemplate': 'none',
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
                 'css/datatables/dashboard.css'
@@ -332,6 +333,7 @@ class ProjectEdit(UpdateView):
         context = {
             'pagetitle': 'Edit Project',
             'title': 'Edit Project',
+            'bannerTemplate': 'none',
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
                 'css/datatables/dashboard.css'
@@ -662,8 +664,7 @@ def project_autofill(request, name):
         'name': name,
         'pagetitle': 'Autofill Project Form',
         'title': 'Autofill Project Form',
-        'header': {
-        },
+        'bannerTemplate': 'none',
         'cssFiles': [
         ],
         'jsFiles': [

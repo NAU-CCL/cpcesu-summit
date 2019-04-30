@@ -67,12 +67,14 @@ class ModificationForm(forms.ModelForm):
     class Meta:
         model = Modification
         fields = ['mod_type', 'mod_num', 'mod_desc', 'mod_amount',
-                  'mod_approved', 'mod_executed', 'mod_notes']
+                  'mod_approved', 'mod_executed', 'mod_notes', 'mod_extension']
         widgets = {
             'mod_approved': forms.SelectDateWidget(years=list(range(1950, 3000)),
                                                    empty_label=("Year", "Month", "Day"), ),
             'mod_executed': forms.SelectDateWidget(years=list(range(1950, 3000)),
                                                    empty_label=("Year", "Month", "Day"), ),
+            'mod_extension': forms.SelectDateWidget(years=list(range(1950, 3000)),
+                                                    empty_label=("Year", "Month", "Day"), ),
         }
 
 

@@ -193,6 +193,16 @@
                 {{ form.pp_i }}<br><br>
             </td>
         </tr>
+
+        <tr>
+            <td>
+                <span class="text-danger sml">{{ form.staff_member.errors }}</span>
+                <label class="control-label col-sm-auto"><b>{{ form.staff_member.label_tag }}</b></label>
+            </td>
+            <td>
+                {{ form.staff_member }}<br><br>
+            </td>
+        </tr>
         </tbody>
     </table>
 {% endblock %}
@@ -290,7 +300,10 @@
                 {{ form.tent_end_date }}<br><br>
             </td>
         </tr>
-        Extension (via mod)
+        <tr>
+            <td>TO UPDATE:</td>
+            <td>Extension (via mod)</td>
+        </tr>
         </tbody>
     </table>
 {% endblock %}
