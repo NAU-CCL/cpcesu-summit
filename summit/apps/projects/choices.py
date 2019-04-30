@@ -78,6 +78,18 @@ class ProjectChoices:
     FUNDED_ADMIN = 'FUNDED_ADMIN'
     NO_COST_EXT_ADMIN = 'NO_COST_EXT_ADMIN'
 
+    IMRO = 'IMRO'
+    WASO = 'WASO'
+    AKRO = 'AKRO'
+    MWRO = 'MWRO'
+    NERO = 'NERO'
+    NCRO = 'NCRO'
+    PWRO = 'PWRO'
+    SERO = 'SERO'
+
+    YES = 'YES'
+    NO = 'NO'
+
     # Sub Fields for Field of Science
     # ES - Atmospheric Sciences,
     # ES - Geological Sciences,
@@ -88,13 +100,28 @@ class ProjectChoices:
     # LS - Agricultural Science,
     # LS - Medical Science,
     # LS - Life Science NEC
-    # ES_AS = 'ES_AS'
-    # ES_GS = 'ES_GS'
-    # ES_O = 'ES_O'
-    # ES_ES = 'ES_ES'
-    # LS_BI = 'LS_BI'
-    # LS_EB = 'ES_EB'
+    ES_AS = 'ES_AS'
+    ES_GS = 'ES_GS'
+    ES_O = 'ES_O'
+    ES_ES = 'ES_ES'
+    LS_BI = 'LS_BI'
+    LS_EB = 'ES_EB'
+    LS_AS = 'LS_AS'
+    LS_MS = 'LS_MS'
+    LS_LS = 'LS_LS'
 
+    # Sub fields for Field of Science
+    FIELD_OF_SCIENCE_SUB = (
+        (ES_AS, 'ES - Atmospheric Sciences'),
+        (ES_GS, 'ES - Geological Sciences'),
+        (ES_O, 'ES – Oceanography'),
+        (ES_ES, 'ES - Environmental Sciences NEC'),
+        (LS_BI, 'LS - Biological (excl.Environmental)'),
+        (LS_EB, 'LS - Environmental Biology'),
+        (LS_AS, 'LS - Agricultural Science'),
+        (LS_MS, 'LS - Medical Science'),
+        (LS_LS, 'LS - Life Science NEC')
+    )
     STUDENT_SUPPORT = (
         (NONE, 'None'),
         (GRADUATE, 'Graduate'),
@@ -162,4 +189,18 @@ class ProjectChoices:
         (FUNDED_EXT, 'Funded & Time Extension'),
         (FUNDED_ADMIN, 'Funded & Administrative'),
         (NO_COST_EXT_ADMIN, 'No-cost Time Extension & Administrative')
+    )
+    AWARD_OFFICE = (
+        (IMRO, 'IMRO'),
+        (WASO, 'WASO'),
+        (AKRO, 'AKRO'),
+        (MWRO, 'MWRO'),
+        (NERO, 'NERO'),
+        (NCRO, 'NCRO'),
+        (PWRO, 'PWRO'),
+        (SERO, 'SERO')
+    )
+    YOUTH_VETS = (
+        (NO, 'NO'),
+        (YES, 'YES')
     )

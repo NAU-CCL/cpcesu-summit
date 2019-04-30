@@ -5,7 +5,6 @@
 
 <div class="form-group">
     <h5><u>General Information: </u></h5>
-
     <table>
         <tbody>
         <tr>
@@ -35,7 +34,15 @@
                 {{ form.p_num }}<br>
             </td>
         </tr>
-        {#            Awarding office#}
+        <tr>
+            <td>
+                <span class="text-danger sml">{{ form.award_office.errors }}</span>
+                <h6><label class="control-label col-sm-auto"><b>{{ form.award_office.label_tag }}</b></label></h6>
+            </td>
+            <td>
+                {{ form.award_office }}<br><br>
+            </td>
+        </tr>
         <tr>
             <td>
                 <span class="text-danger sml">{{ form.partner.errors }}</span>
@@ -83,11 +90,11 @@
         </tr>
         <tr>
             <td>
-                <span class="text-danger sml">{{ form.vet_support.errors }}</span>
-                <h6><label class="control-label col-sm-auto"><b>{{ form.vet_support.label_tag }}</b></label></h6>
+                <span class="text-danger sml">{{ form.youth_vets.errors }}</span>
+                <h6><label class="control-label col-sm-auto"><b>{{ form.youth_vets.label_tag }}</b></label></h6>
             </td>
             <td>
-                {{ form.vet_support }}<br><br>
+                {{ form.youth_vets }}<br><br>
             </td>
         </tr>
         </tbody>
@@ -225,11 +232,7 @@
 
 {% block row2_col3 %}
     <h5><u>Modifications: </u></h5>
-    <table>
-        <tbody>
-
-        </tbody>
-    </table>
+    <p>To create modifications, submit project and add them via the 'Project Details' page.</p>
 {% endblock %}
 
 {% block row3_col1 %}
@@ -335,9 +338,17 @@
                 {{ form.field_of_science }}<br><br>
             </td>
         </tr>
+        <tr>
+            <td>
+                <span class="text-danger sml">{{ form.field_of_science_sub.errors }}</span>
+                <label class="control-label col-sm-auto"><b>{{ form.field_of_science_sub.label_tag }}</b></label>
+            </td>
+            <td>
+                {{ form.field_of_science_sub }}<br><br>
+            </td>
+        </tr>
         </tbody>
     </table>
-    ADD: Subfield for each Field of Science
 {% endblock %}
 
 {% block row3_col3 %}

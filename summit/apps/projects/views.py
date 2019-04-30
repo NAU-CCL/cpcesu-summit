@@ -281,6 +281,12 @@ class ProjectCreate(CreateView):
         ctx = {**ctx, **context}
         return ctx
 
+    def get_object(self, **kwargs):
+        pk_ = self.kwargs.get("id")
+        project = get_object_or_404(Project, pk=pk_)
+        print(kwargs)
+        return project
+
     def post(self, request, *args, **kwargs):
         self.object = None
         project_form = ProjectForm(request.POST, request.FILES, instance=self.object)
@@ -647,7 +653,7 @@ def export_to_csv(request):
                  project.partner, project.pp_i, project.project_manager, project.project_title, project.r_d,
                  project.sci_method, project.sensitive, project.short_summary, project.src_of_funding,
                  project.staff_member, project.status, project.tech_rep, project.tent_end_date,
-                 project.tent_start_date, project.type, project.vet_support])
+                 project.tent_start_date, project.type, project.youth_vets])
 
     return response
 

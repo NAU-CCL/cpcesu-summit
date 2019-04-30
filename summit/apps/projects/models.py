@@ -30,21 +30,21 @@ class Location(models.Model):
 
 
 class Project(AuditModel):
-
+    AWARD_OFFICE = choices.ProjectChoices.AWARD_OFFICE
     DISCIPLINE = choices.ProjectChoices.DISCIPLINE
     FIELD_OF_SCIENCE = choices.ProjectChoices.FIELD_OF_SCIENCE
+    FIELD_OF_SCIENCE_SUB = choices.ProjectChoices.FIELD_OF_SCIENCE_SUB
     MOD_TYPE = choices.ProjectChoices.MOD_TYPE
     R_D_TYPE = choices.ProjectChoices.R_D_TYPE
     SOURCE_OF_FUNDING = choices.ProjectChoices.SOURCE_OF_FUNDING
     STATUS = choices.ProjectChoices.STATUS
     STUDENT_SUPPORT = choices.ProjectChoices.STUDENT_SUPPORT
     TYPE = choices.ProjectChoices.TYPE
-    VET_SUPPORT = choices.ProjectChoices.VET_SUPPORT
 
     # Fields to be required: (Tentative)
-    # TODO: Replace this as the unique field for a project
+    award_office = models.CharField(choices=AWARD_OFFICE, max_length=10, blank=True, null=True)
     budget = models.DecimalField(max_digits=12, decimal_places=2, help_text=_help_text['budget'], blank=True, null=True,
-                                 verbose_name="Initial")
+                                 verbose_name="Initial", default=0)
     cesu_unit = models.ForeignKey(CESUnit, on_delete=models.CASCADE,
                                   related_name='cesu_unit', default=None, verbose_name="CESUnit", blank=True, null=True)
     description = models.TextField(help_text=_help_text['description'], verbose_name="Abstract/Description", blank=True)
@@ -105,8 +105,6 @@ class Project(AuditModel):
                                        verbose_name="Tentative Start Date")
     type = models.CharField(max_length=50, choices=TYPE, help_text=_help_text['type'],
                             blank=True, verbose_name="Project Type")
-    vet_support = models.CharField(max_length=5, choices=VET_SUPPORT, default=VET_SUPPORT[0],
-                                   verbose_name="Youth/Veteran", blank=True)
 
 # Fields that follow have not been added to the project create/edit forms
     fed_poc = models.CharField(max_length=500, help_text=_help_text['fed_poc'], blank=True,
@@ -127,6 +125,10 @@ class Project(AuditModel):
     alt_coord = models.CharField(max_length=500, help_text=_help_text['alt_coord'], blank=True,
                                  verbose_name="Alternate Research Coordinator / CESU Representative")
     req_iacuc = models.BooleanField(verbose_name="Requires IACUC Review/ Concurrence", default=False, blank=True)
+    youth_vets = models.CharField(choices=AWARD_OFFICE, max_length=500, blank=True, null=True)
+    field_of_science_sub = models.CharField(choices=FIELD_OF_SCIENCE_SUB, max_length=100,
+                                            blank=True, null=True, verbose_name="Sub-Fields (Field of Science)",
+                                            default=FIELD_OF_SCIENCE_SUB[0])
 
     def get_absolute_url(self):
         from django.urls import reverse
