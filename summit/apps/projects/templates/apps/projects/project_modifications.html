@@ -48,7 +48,14 @@
                           <span class="text-danger sml">{{ form.mod_executed.errors }}</span>
                       </div>
                       <label class="control-label col-sm-auto">{{ form.mod_executed.label_tag }}</label>
-                      <div class="col-sm">{{ form.mod_executed}}</div><br>
+                      <div class="col-sm">{{ form.mod_executed}}</div>
+
+                      <div class="col-sm-offset-2 col-sm-auto">
+                          <span class="text-danger sml">{{ form.mod_extension.errors }}</span>
+                      </div>
+                      <label class="control-label col-sm-auto">{{ form.mod_extension.label_tag }}</label>
+                      <div class="col-sm">{{ form.mod_extension}}</div><br>
+
 
                       <div class="col-sm-offset-2 col-sm-auto">
                           <span class="text-danger sml">{{ form.mod_notes.errors }}</span>

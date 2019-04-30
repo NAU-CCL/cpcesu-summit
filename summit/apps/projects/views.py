@@ -174,6 +174,7 @@ class ProjectDetail(LoginRequiredMixin, DetailView):
         context = {
             'pagetitle': 'Projects Details',
             'title': 'Projects Details',
+            'bannerTemplate': 'none',
             'header': {
             },
             'cssFiles': [
@@ -290,6 +291,7 @@ class ProjectCreate(CreateView):
             'name': self.kwargs['name'],
             'pagetitle': 'Create Project',
             'title': 'Create Project',
+            'bannerTemplate': 'none',
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
                 'css/datatables/dashboard.css'
@@ -305,6 +307,12 @@ class ProjectCreate(CreateView):
         ctx = super(ProjectCreate, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
         return ctx
+
+    def get_object(self, **kwargs):
+        pk_ = self.kwargs.get("id")
+        project = get_object_or_404(Project, pk=pk_)
+        print(kwargs)
+        return project
 
     def post(self, request, *args, **kwargs):
         self.object = None
@@ -357,6 +365,7 @@ class ProjectEdit(UpdateView):
         context = {
             'pagetitle': 'Edit Project',
             'title': 'Edit Project',
+            'bannerTemplate': 'none',
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
                 'css/datatables/dashboard.css'
@@ -832,7 +841,7 @@ def export_to_csv(request):
                  project.partner, project.pp_i, project.project_manager, project.project_title, project.r_d,
                  project.sci_method, project.sensitive, project.short_summary, project.src_of_funding,
                  project.staff_member, project.status, project.tech_rep, project.tent_end_date,
-                 project.tent_start_date, project.type, project.vet_support])
+                 project.tent_start_date, project.type, project.youth_vets])
 
     return response
 
@@ -841,4 +850,21 @@ def change_history(request, id):
     return HttpResponseRedirect(reverse('admin:summit_projects_project_history', args=id))
 
 
+<<<<<<< HEAD
 
+=======
+def project_autofill(request, name):
+    template_name = 'apps/projects/project_autofill.html'
+    context = {
+        'name': name,
+        'pagetitle': 'Autofill Project Form',
+        'title': 'Autofill Project Form',
+        'bannerTemplate': 'none',
+        'cssFiles': [
+        ],
+        'jsFiles': [
+            'js/apps/projects/fileUpload.js'
+        ],
+    }
+    return render(request, template_name, context)
+>>>>>>> 3f7e2b3ef059306d1cb14c7313deb62780c5f9c9

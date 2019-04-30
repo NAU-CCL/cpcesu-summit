@@ -5,19 +5,16 @@
             <table>
                 <tbody>
                     <tr>
-                        <td><b>Name:</b></td><td>{{ group_form.name }}</td>
+                        <td><b>{{ group_form.name.label}}:</b></td><td>{{ group_form.name }}</td>
                     </tr>
                     <tr>
-                        <td><b>Description:</b></td><td>{{ group_form.description}}</td>
+                        <td><b>{{group_form.description.label}}:</b></td><td>{{ group_form.description}}</td>
                     </tr>
                     <tr>
-                        <td><b>Permissions:</b></td><td>{{ group_form.permissions}}</td>
+                        <td><b>{{group_form.avatar.label}}:</b></td><td>{{ group_form.avatar}}</td>
                     </tr>
                     <tr>
-                        <td><b>Avatar:</b></td><td>{{ group_form.avatar}}</td>
-                    </tr>
-                    <tr>
-                        <td><b>Group Type:</b></td><td>{{ group_form.group_type}}</td>
+                        <td><b>Org. Type:</b></td><td>{{ group_form.group_type}}</td>
                     </tr>
                 </tbody>
             </table>
