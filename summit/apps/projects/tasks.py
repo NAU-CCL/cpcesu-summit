@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.db.models import F, ExpressionWrapper, DateTimeField
 from .ocr import collect_data
 from celery.utils.log import get_task_logger
+from . import choices
 
 
 app = Celery('mysite',
@@ -42,26 +43,34 @@ def test(arg):
 @app.task(bind=True)
 def read_pdf(self, filename):
     current_task.update_state(state='PROGRESS',
-                              meta={'process_percent': 33})
+                              meta={'process_percent': 0})
 
-    logger.info('HEREHREHRE request id: {0}'.format(self.request.id))
-    print(self.request.id)
     data = collect_data(filename)
 
-    logger.info('HEREHREHRE request id: {0}'.format(self.request.id))
-    print(self.request.id)
     current_task.update_state(state='PROGRESS',
-                              meta={'process_percent': 66})
+                              meta={'process_percent': 90})
 
-    logger.info('HEREHREHRE request id: {0}'.format(self.request.id))
+    # May need to create cesu object or search somehow
+    budget = data['aw_total'].replace('$', '')
+    budget = budget.replace(',', '')
+    budget = budget.split('.')[0]
+    budget = int(budget)
+    tent_start_date = datetime.strptime(data['effective_date'], '%m/%d/%Y')
+    tent_end_date = datetime.strptime(data['completion_date'], '%m/%d/%Y')
+
+    current_task.update_state(state='PROGRESS',
+                              meta={'process_percent': 95})
+
+    STATUS = choices.ProjectChoices.STATUS
+    print(STATUS)
+
+    logger.info('Request id: {0}'.format(self.request.id))
     print(self.request.id)
-
-    #may need to create cesu object or search somehow
 
     new_project = Project(
-        # budget=100,
-        # cesu_unit_id=1,
-        # description='this',
+        budget=budget,
+        # cesu_unit_id=,
+        # description=,
         # discipline='',
         # exec_start_date=,
         # federal_agency=NULL,
@@ -71,13 +80,13 @@ def read_pdf(self, filename):
         # location=,
         # init_start_date=,
         # monitoring=,
-        # notes=,
+        notes=data['purpose'],
         # num_of_students=,
-        # p_num=,
+        p_num=data['agreement_number'],
         # partner=,
         # pp_i=,
         # project_manager=,
-        # project_title=,
+        project_title=data['project_title'],
         # r_d=,
         # reviewed=,
         # sci_method=,
@@ -85,22 +94,18 @@ def read_pdf(self, filename):
         # short_summary=,
         # src_of_funding=,
         # staff_member=,
-        # status=,
+        status=STATUS[1],
         # tech_rep=,
-        # tent_end_date=,
-        # tent_start_date=,
+        tent_end_date=tent_end_date,
+        tent_start_date=tent_start_date,
         # type=,
         # vet_support=,
-        # project_title=data.get('project_title'),
         # short_summary=data.get('purpose'),
-        # job_id=str(self.request.id),
+        job_id=str(self.request.id),
     )
 
     new_project.save(force_insert=True)
 
-    logger.info('HEREHREHRE request id: {0}'.format(self.request.id))
-    print(self.request.id)
-
     new_project.save()
-    current_task.update_state(state='PROGRESS',
+    current_task.update_state(state='COMPLETE',
                               meta={'process_percent': 100})

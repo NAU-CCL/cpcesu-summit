@@ -57,7 +57,7 @@ class Project(AuditModel):
     cesu_unit = models.ForeignKey(CESUnit, on_delete=models.CASCADE,
                                   related_name='cesu_unit', default=None, verbose_name="CESUnit", blank=True, null=True)
     description = models.TextField(help_text=_help_text['description'], verbose_name="Abstract/Description", blank=True)
-    discipline = models.CharField(max_length=20, choices=DISCIPLINE,
+    discipline = models.CharField(max_length=21, choices=DISCIPLINE,
                                   help_text=_help_text['discipline'], blank=True,
                                   default=DISCIPLINE[0])
     exec_start_date = models.DateField(blank=True, default="2019-1-1", verbose_name="Executed")
@@ -104,7 +104,7 @@ class Project(AuditModel):
                                       choices=SOURCE_OF_FUNDING, default=SOURCE_OF_FUNDING[0])
     staff_member = models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="Staff Member",
                                      blank=True, related_name='staff_member', default=None, null=True)
-    status = models.CharField(max_length=20, choices=STATUS, default=STATUS[0], blank=True)
+    status = models.CharField(max_length=50, choices=STATUS, default=STATUS[0], blank=True)
 
     tech_rep = models.ForeignKey(UserProfile, help_text=_help_text['tech_rep'], blank=True,
                                  verbose_name="Agreements Tech Representative", null=True)
