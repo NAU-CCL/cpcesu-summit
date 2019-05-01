@@ -189,8 +189,10 @@ def collect_data(filename):
     current_task.update_state(state='PROGRESS',
                               meta={'process_percent': 85})
 
-    os.remove('test-0.png')
-    os.remove('test.png')
+    try:
+        os.remove('test-0.png')
+    except FileNotFoundError:
+        print('test.png not found\n')
 
     return pdf_field_text
 
