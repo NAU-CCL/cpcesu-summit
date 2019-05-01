@@ -1,7 +1,24 @@
 from django.conf.urls import url
 
-from importlib import import_module
-from django.utils import six
+
+class DjangoLink:
+    def __init__(self, ident, app_name, app_regex, regex, view_obj, display_name, link_args):
+        self.ident = ident
+        self.regex = regex
+        self.view_obj = view_obj
+        self.link_args = link_args
+
+        self.link_args['app_name'] = app_name
+        self.link_args['app_regex'] = app_regex
+        self.link_args['label'] = display_name
+
+
+class DjangoURL:
+    def __init__(self, ident, regex, view_obj, app_name):
+        self.ident = ident
+        self.regex = regex
+        self.view_obj = view_obj
+        self.app_name = app_name
 
 
 # Nav links
@@ -13,6 +30,10 @@ links = [
 
 def get_name(app_name, name):
     return app_name + "_" + name
+
+
+def app_link(link_obj):
+    return link(link_obj.regex, link_obj.view_obj, link_obj.ident, link_args=link_obj.link_args)
 
 
 def link(regex, view, name, kwargs=None, link_args=None):
@@ -134,3 +155,7 @@ def add_link(regex, name, link_args=None):
 
 def get():
     return links
+
+
+def url_wrapper(url_obj):
+    return url(url_obj.regex, url_obj.view_obj, None, url_obj.ident)

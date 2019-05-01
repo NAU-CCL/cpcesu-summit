@@ -1,7 +1,21 @@
 from config import links
 from django import template
 
+from django.urls import reverse
+
+from summit.libs.auth.vars import app_name as auth_app_name, AppLinks as AuthAppLinks
+
 register = template.Library()
+
+app_links = {
+    auth_app_name: AuthAppLinks
+}
+
+
+@register.simple_tag()
+def get_url_from_app_link(app_name, link_ident):
+    app_link = getattr(app_links[app_name], link_ident)
+    return reverse(app_link.app_name + ":" + app_link.ident)
 
 
 @register.inclusion_tag('partials/nav_links.html', takes_context=True)

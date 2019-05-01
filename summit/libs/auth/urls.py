@@ -1,13 +1,14 @@
-from django.conf.urls import url
+# Primary URLs loaded in to the nav bar first
+from config.links import url_wrapper
 
-from . import views
+from . import vars
 
-app_name = 'summit.libs.auth'
-app_regex = r'^accounts/'
+app_name = vars.app_name
+app_regex = vars.app_regex
 urlpatterns = [
-    url(r'^logged_out/$', views.logged_out),
-    url(r'^edit_profile/(?P<profile_id>[-\w]+)/$', views.edit_profile, name='edit_profile_other'),
-    url(r'^edit_profile/$', views.edit_profile, name='edit_profile'),
-    url(r'^profile/$', views.view_profile, name='view_profile'),
-    url(r'^profile/(?P<profile_id>[-\w]+)/$', views.view_profile, name='view_profile_other'),
+    url_wrapper(vars.AppLinks.logged_out),
+    url_wrapper(vars.AppLinks.edit_contact),
+    url_wrapper(vars.AppLinks.edit_my_contact),
+    url_wrapper(vars.AppLinks.view_my_contact),
+    url_wrapper(vars.AppLinks.view_contact)
 ]

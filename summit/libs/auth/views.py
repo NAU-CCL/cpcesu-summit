@@ -42,9 +42,9 @@ def logged_out(request):
 
 
 @login_required()
-@permission_required("summit_auth.view_profile.self")
-def view_profile(request, profile_id=-1):
-    template_name = 'registration/view_profile.html'
+# @permission_required("summit_auth.view_profile.self")
+def view_contact(request, profile_id=-1):
+    template_name = 'registration/view_contact.html'
 
     try:
         profile_id = int(profile_id)
@@ -87,8 +87,8 @@ def view_profile(request, profile_id=-1):
 
 @login_required()
 @permission_required("summit_auth.edit_profile.self")
-def edit_profile(request, profile_id=-1):
-    template_name = 'registration/edit_profile.html'
+def edit_contact(request, profile_id=-1):
+    template_name = 'registration/edit_contact.html'
 
     try:
         profile_id = int(profile_id)
@@ -133,8 +133,8 @@ def edit_profile(request, profile_id=-1):
 
 @login_required()
 #@permission_required()
-def all_users(request, name):
-    template_name = "registration/all_users.html"
+def all_contacts(request, name):
+    template_name = "registration/all_contacts.html"
 
     profiles = UserProfile.objects.all().order_by('assigned_group', 'last_name', 'first_name')
 
@@ -161,8 +161,8 @@ def all_users(request, name):
 
 @login_required()
 #@permission_required()
-def all_groups(request, name):
-    template_name = "registration/all_groups.html"
+def all_organizations(request, name):
+    template_name = "registration/all_organizations.html"
 
     cesus = CESUnit.objects.all()
     feds = FederalAgency.objects.all()
@@ -211,8 +211,8 @@ def all_groups(request, name):
 
 
 @login_required()
-def manage_group(request, name='summit.libs.auth.manage_group', group_id=-1):
-    template_name = "registration/manage_group.html"
+def manage_organization(request, name='summit.libs.auth.manage_organization', group_id=-1):
+    template_name = "registration/manage_organization.html"
 
     group_id = int(group_id)
     if group_id <= 0:
@@ -273,8 +273,8 @@ def manage_group(request, name='summit.libs.auth.manage_group', group_id=-1):
 
 
 @login_required()
-def create_profile(request, name="summit.libs.auth_Create Contact", group_id=0):
-    template_name = "registration/create_user.html"
+def create_contact(request, name="summit.libs.auth_Create Contact", group_id=0):
+    template_name = "registration/create_contact.html"
 
     group_id = int(group_id)
 
@@ -304,8 +304,8 @@ def create_profile(request, name="summit.libs.auth_Create Contact", group_id=0):
 
 
 @login_required()
-def create_group(request, name):
-    template_name = "registration/create_group.html"
+def create_organization(request, name):
+    template_name = "registration/create_organization.html"
 
     if request.method == "POST" and request.POST:
         group_form = GroupForm(request.POST, request.FILES)
@@ -347,8 +347,8 @@ def create_group(request, name):
 
 @login_required()
 # @permission_required("summit_auth.edit_profile.self")
-def edit_group(request, name="summit.libs.auth2:summit.libs.auth2_edit_group", group_id=-1):
-    template_name = 'registration/edit_group.html'
+def edit_organization(request, name="summit.libs.auth2:summit.libs.auth2_edit_organization", group_id=-1):
+    template_name = 'registration/edit_organization.html'
 
     group_id = int(group_id)
     group = get_object_or_404(UserGroup, id=group_id)
