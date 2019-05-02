@@ -309,12 +309,7 @@ class ProjectCreate(CreateView):
                                             instance=self.object)
         files = request.FILES.getlist('file')
         if project_form.is_valid():
-            fed_agency = project_form.cleaned_data['federal_agency']
-            if fed_agency and len(fed_agency) > 0:
-                try:
-                    project_form.instance.federal_agency = FederalAgency.objects.get(name=fed_agency)
-                except ObjectDoesNotExist:
-                    print("Need to make a new one")
+            project_form = check_fields(project_form)
 
             self.object = project_form.save()
             if self.object.status != 'DRAFT':
@@ -384,12 +379,7 @@ class ProjectEdit(UpdateView):
                                             instance=self.object)
         files = request.FILES.getlist('file')
         if project_form.is_valid() and project_file_form.is_valid():
-            fed_agency = project_form.cleaned_data['federal_agency']
-            if fed_agency and len(fed_agency) > 0:
-                try:
-                    project_form.instance.federal_agency = FederalAgency.objects.get(name=fed_agency)
-                except ObjectDoesNotExist:
-                    print("Need to make a new one")
+            project_form = check_fields(project_form)
             self.object = project_form.save()
             for f in files:
                 project_file_instance = File(file=f, project=self.object)
@@ -401,6 +391,27 @@ class ProjectEdit(UpdateView):
             return self.render_to_response(ctx)
             super(ProjectEdit, self).post(request)
         return HttpResponseRedirect(self.get_success_url())
+
+
+def check_fields(project_form):
+    # Federal Agency
+    fed_agency = project_form.cleaned_data['federal_agency']
+    if fed_agency and len(fed_agency) > 0:
+        try:
+            project_form.instance.federal_agency = FederalAgency.objects.get(name=fed_agency)
+        except ObjectDoesNotExist:
+            print("Need to make a new one")
+
+    # Partner
+    partner = project_form.cleaned_data['partner']
+    if partner and len(partner) > 0:
+        try:
+            project_form.instance.partner = Partner.objects.get(name=partner)
+        except ObjectDoesNotExist:
+            print("Need to make a new one")
+
+    return project_form
+
 
 class ProjectAutofill(View):
     form_class = ProjectFileForm
@@ -755,12 +766,17 @@ def request_project_info(request, project_id):
 
 
 from rest_framework import viewsets
-from .serializers import FederalAgencySerializer
+from .serializers import FederalAgencySerializer, PartnerSerializer
 
 
 class FederalAgencyViewSet(viewsets.ModelViewSet):
     queryset = FederalAgency.objects.all().order_by('name')
     serializer_class = FederalAgencySerializer
+
+
+class PartnerViewSet(viewsets.ModelViewSet):
+    queryset = Partner.objects.all().order_by('name')
+    serializer_class = PartnerSerializer
 
 #
 #

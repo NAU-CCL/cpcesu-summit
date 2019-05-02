@@ -6,3 +6,9 @@ class FederalAgencySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = FederalAgency
         fields = ('pk', 'name')
+
+
+class PartnerSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Partner
+        fields = ('pk', 'name')

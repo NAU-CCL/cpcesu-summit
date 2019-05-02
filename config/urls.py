@@ -30,6 +30,7 @@ from summit.apps.projects import views
 # REST Endpoints
 router = routers.DefaultRouter()
 router.register(r'federal_agencies', views.FederalAgencyViewSet)
+router.register(r'partners', views.PartnerViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),

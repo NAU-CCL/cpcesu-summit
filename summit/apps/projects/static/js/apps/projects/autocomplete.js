@@ -98,11 +98,21 @@ document.addEventListener("click", function (e) {
 }
 
 $.getJSON("/api/federal_agencies/", function(data){
-    var items = [];
+    var agencies = [];
     $.each( data['results'], function(key, agency){
         console.log(agency);
-        items.push(agency.name);
+        agencies.push(agency.name);
     });
 
-    autocomplete(document.getElementById("federal_agency"), items);
+    autocomplete(document.getElementById("federal_agency"), agencies);
+});
+
+$.getJSON("/api/partners/", function(data){
+    var partners = [];
+    $.each( data['results'], function(key, partner){
+        console.log(partner);
+        partners.push(partner.name);
+    });
+
+    autocomplete(document.getElementById("partner"), partners);
 });
