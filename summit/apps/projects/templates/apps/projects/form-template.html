@@ -3,6 +3,7 @@
 
 {% block primary %}
     <form action="" method="post" enctype="multipart/form-data" name="form">
+        {% csrf_token %}
         <div class="card">
             <div class="card-header">
                 <h3>{% block form_title%}Project Form{% endblock %}</h3>
@@ -11,66 +12,48 @@
                 <div class="row">
                     {{ form.errors }}
                 </div>
-                <p>NOTE: If you leave this tab you will lose progress.</p>
+                <p><span style="color: red; ">NOTE:</span> If you leave this page you will lose progress.</p>
                 <div class="row">
                     <div class="col-sm-4">
-
-                        {% csrf_token %}
                         {{ form.non_field_errors }}
                         {% block row1_col1 %}{% endblock %}
 
                     </div>
                     <div class="col-sm-4">
-
-                        {% csrf_token %}
                         {{ form.non_field_errors }}
                         {% block row1_col2 %}{% endblock %}
                     </div>
                     <div class="col-sm-4">
-
-                        {% csrf_token %}
                         {{ form.non_field_errors }}
                         {% block row1_col3 %}{% endblock %}
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-4">
-
-                        {% csrf_token %}
                         {{ form.non_field_errors }}
                         {% block row2_col1 %}{% endblock %}
 
                     </div>
                     <div class="col-sm-4">
-
-                        {% csrf_token %}
                         {{ form.non_field_errors }}
                         {% block row2_col2 %}{% endblock %}
                     </div>
                     <div class="col-sm-4">
-
-                        {% csrf_token %}
                         {{ form.non_field_errors }}
                         {% block row2_col3 %}{% endblock %}
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-4">
-
-                        {% csrf_token %}
                         {{ form.non_field_errors }}
                         {% block row3_col1 %}{% endblock %}
 
                     </div>
                     <div class="col-sm-4">
-
-                        {% csrf_token %}
                         {{ form.non_field_errors }}
                         {% block row3_col2 %}{% endblock %}
                     </div>
                     <div class="col-sm-4">
-
-                        {% csrf_token %}
                         {{ form.non_field_errors }}
                         {% block row3_col3 %}{% endblock %}
                     </div>
