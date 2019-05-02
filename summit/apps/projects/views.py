@@ -309,7 +309,13 @@ class ProjectCreate(CreateView):
                                             instance=self.object)
         files = request.FILES.getlist('file')
         if project_form.is_valid():
-            project_form.instance.federal_agency = FederalAgency.objects.get(name=project_form.cleaned_data['federal_agency'])
+            fed_agency = project_form.cleaned_data['federal_agency']
+            if fed_agency and len(fed_agency) > 0:
+                try:
+                    project_form.instance.federal_agency = FederalAgency.objects.get(name=fed_agency)
+                except ObjectDoesNotExist:
+                    print("Need to make a new one")
+
             self.object = project_form.save()
             if self.object.status != 'DRAFT':
                 self.confirm_status = True
@@ -378,8 +384,12 @@ class ProjectEdit(UpdateView):
                                             instance=self.object)
         files = request.FILES.getlist('file')
         if project_form.is_valid() and project_file_form.is_valid():
-            project_form.instance.federal_agency = FederalAgency.objects.get(
-                name=project_form.cleaned_data['federal_agency'])
+            fed_agency = project_form.cleaned_data['federal_agency']
+            if fed_agency and len(fed_agency) > 0:
+                try:
+                    project_form.instance.federal_agency = FederalAgency.objects.get(name=fed_agency)
+                except ObjectDoesNotExist:
+                    print("Need to make a new one")
             self.object = project_form.save()
             for f in files:
                 project_file_instance = File(file=f, project=self.object)
@@ -729,7 +739,7 @@ def request_project_info(request, project_id):
 
             recipients = ['remy@nau.edu']
             if cc_myself:
-                recipients += customer_email
+                recipients.append(customer_email)
 
             message = get_template('apps/projects/partials/project_request_email.html').render(ctx)
             email = EmailMessage(subject, message, to=recipients, reply_to=[customer_email])

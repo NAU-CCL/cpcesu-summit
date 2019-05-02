@@ -40,7 +40,7 @@ class AppLinks:
                                     'dropdown_id': app_name
                                 })
 
-    project_public_list = DjangoLink('project_public_link', app_name, app_regex,
+    project_public_list = DjangoLink('project_public_list', app_name, app_regex,
                                      r'^public_projects/$',
                                      views.ProjectPublicListView.as_view(),
                                      'Public Projects',
@@ -48,6 +48,12 @@ class AppLinks:
                                          'auth_required': True,
                                          'dropdown_id': app_name
                                      })
+
+    project_public_anon_link = DjangoLink('project_public_anon_link', app_name, app_regex,
+                                          r'^public_projects/$',
+                                          views.ProjectPublicListView.as_view(),
+                                          'Public Projects',
+                                          link_args={'auth_required': False})
 
     # All URLs
     project_upload_progress = DjangoURL('project_upload_progress',
