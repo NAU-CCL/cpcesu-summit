@@ -475,6 +475,14 @@ class ProjectModifications(CreateView):
     model = Modification
     form_class = ModificationForm
 
+    def total_award_amount(self):
+        prj = get_object_or_404(Project, pk=self.kwargs.get("id"))
+        modifications = Modification.objects.filter(project=prj)
+        total_mod_amount = 0
+        for mod in modifications:
+            total_mod_amount += mod.mod_amount
+        return (prj.budget or 0) + total_mod_amount
+
     def get_success_url(self):
         return reverse('summit.apps.projects:project_detail',
                        args=[self.kwargs.get("id")])
@@ -493,7 +501,8 @@ class ProjectModifications(CreateView):
             ],
             'project': get_object_or_404(Project, pk=self.kwargs.get("id")),
             'files': ModFile.objects.filter(modification=self.object),
-            'file_form': ModificationFileForm()
+            'file_form': ModificationFileForm(),
+            'total_award_amount': self.total_award_amount()
         }
         ctx = super(ProjectModifications, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
