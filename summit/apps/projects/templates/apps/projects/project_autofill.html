@@ -43,6 +43,8 @@
                     </div>
                 <button type="submit" class="btn btn-sm btn-primary" id="js-upload-submit">Upload files</button>
                 </div>
+                {% csrf_token %}
+
             </form>
             <!-- Drop Zone -->
             <h4>Or drag and drop files below</h4>
@@ -56,6 +58,13 @@
             <ul class="fileList">
                 <li>None</li>
             </ul>
+
+<!--        <form class="form-horizontal" action="" id="autofill-form" method="post" enctype="multipart/form-data">-->
+<!--            {% csrf_token %}-->
+<!--            {{ form.as_p }}-->
+
+<!--        </form><input class="btn btn-primary" type="submit" value="Submit">-->
+
     </div>
 </div>
 {% endblock %}
