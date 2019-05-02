@@ -42,9 +42,9 @@ def logged_out(request):
 
 
 @login_required()
-@permission_required("summit_auth.view_profile.self")
-def view_profile(request, profile_id=-1):
-    template_name = 'registration/view_profile.html'
+# @permission_required("summit_auth.view_profile.self")
+def view_contact(request, profile_id=-1):
+    template_name = 'registration/view_contact.html'
 
     try:
         profile_id = int(profile_id)
@@ -87,8 +87,8 @@ def view_profile(request, profile_id=-1):
 
 @login_required()
 @permission_required("summit_auth.edit_profile.self")
-def edit_profile(request, profile_id=-1):
-    template_name = 'registration/edit_profile.html'
+def edit_contact(request, profile_id=-1):
+    template_name = 'registration/edit_contact.html'
 
     try:
         profile_id = int(profile_id)
@@ -108,9 +108,9 @@ def edit_profile(request, profile_id=-1):
         if profile_form.is_valid():
             profile = profile_form.save()
             if profile.user is not None and profile.user.id == request.user.id:
-                return HttpResponseRedirect(reverse('summit.libs.auth:view_profile'))
+                return HttpResponseRedirect(reverse('summit.libs.auth:view_my_contact'))
             else:
-                return HttpResponseRedirect(reverse('summit.libs.auth:view_profile_other', kwargs={'profile_id': profile.id}))
+                return HttpResponseRedirect(reverse('summit.libs.auth:view_contact', kwargs={'profile_id': profile.id}))
     elif user_profile is None:
         profile_form = ProfileForm()
     else:
@@ -133,8 +133,8 @@ def edit_profile(request, profile_id=-1):
 
 @login_required()
 #@permission_required()
-def all_users(request, name):
-    template_name = "registration/all_users.html"
+def all_contacts(request, name):
+    template_name = "registration/all_contacts.html"
 
     profiles = UserProfile.objects.all().order_by('assigned_group', 'last_name', 'first_name')
 
@@ -161,8 +161,8 @@ def all_users(request, name):
 
 @login_required()
 #@permission_required()
-def all_groups(request, name):
-    template_name = "registration/all_groups.html"
+def all_organizations(request, name):
+    template_name = "registration/all_organizations.html"
 
     cesus = CESUnit.objects.all()
     feds = FederalAgency.objects.all()
@@ -211,8 +211,8 @@ def all_groups(request, name):
 
 
 @login_required()
-def manage_group(request, name='summit.libs.auth.manage_group', group_id=-1):
-    template_name = "registration/manage_group.html"
+def manage_organization(request, name='summit.libs.auth.manage_organization', group_id=-1):
+    template_name = "registration/manage_organization.html"
 
     group_id = int(group_id)
     if group_id <= 0:
@@ -220,7 +220,7 @@ def manage_group(request, name='summit.libs.auth.manage_group', group_id=-1):
             profile = UserProfile.objects.get(user=request.user)
             group_id = profile.assigned_group.id
         except (AttributeError, ObjectDoesNotExist) as e:
-            return HttpResponseRedirect(reverse('summit.libs.auth2:summit.libs.auth2_All Groups'))
+            return HttpResponseRedirect(reverse('summit.libs.auth:all_organizations'))
 
     group = get_object_or_404(UserGroup, id=group_id)
 
@@ -273,8 +273,8 @@ def manage_group(request, name='summit.libs.auth.manage_group', group_id=-1):
 
 
 @login_required()
-def create_profile(request, name="summit.libs.auth_Create Contact", group_id=0):
-    template_name = "registration/create_user.html"
+def create_contact(request, name="summit.libs.auth_Create Contact", group_id=0):
+    template_name = "registration/create_contact.html"
 
     group_id = int(group_id)
 
@@ -283,7 +283,7 @@ def create_profile(request, name="summit.libs.auth_Create Contact", group_id=0):
 
         if profile_form.is_valid():
             profile_form.save()
-            return HttpResponseRedirect(reverse('summit.libs.auth2:summit.libs.auth2_All Contacts'))
+            return HttpResponseRedirect(reverse('summit.libs.auth:all_contacts'))
     elif group_id > 0:
         profile_form = ProfileForm(initial={'assigned_group': group_id})
     else:
@@ -304,8 +304,8 @@ def create_profile(request, name="summit.libs.auth_Create Contact", group_id=0):
 
 
 @login_required()
-def create_group(request, name):
-    template_name = "registration/create_group.html"
+def create_organization(request, name):
+    template_name = "registration/create_organization.html"
 
     if request.method == "POST" and request.POST:
         group_form = GroupForm(request.POST, request.FILES)
@@ -327,7 +327,7 @@ def create_group(request, name):
                 partner = Partner.objects.create(pk=group.id, created_on=group.created_on, name=group.name, description=group.description, avatar=group.avatar)
                 partner.save()
 
-            return HttpResponseRedirect(reverse('summit.libs.auth2:summit.libs.auth2_All Orgs.'))
+            return HttpResponseRedirect(reverse('summit.libs.auth:all_organizations'))
     else:
         group_form = GroupForm()
 
@@ -347,8 +347,8 @@ def create_group(request, name):
 
 @login_required()
 # @permission_required("summit_auth.edit_profile.self")
-def edit_group(request, name="summit.libs.auth2:summit.libs.auth2_edit_group", group_id=-1):
-    template_name = 'registration/edit_group.html'
+def edit_organization(request, name="summit.libs.auth:edit_organization", group_id=-1):
+    template_name = 'registration/edit_organization.html'
 
     group_id = int(group_id)
     group = get_object_or_404(UserGroup, id=group_id)
@@ -402,7 +402,7 @@ def edit_group(request, name="summit.libs.auth2:summit.libs.auth2_edit_group", g
                                                  description=group.description, avatar=group.avatar)
                 partner.save()
 
-            return HttpResponseRedirect(reverse('summit.libs.auth2:manage_group_other', kwargs={'group_id': group_id}))
+            return HttpResponseRedirect(reverse('summit.libs.auth:manage_organization', kwargs={'group_id': group_id}))
     else:
         group_form = GroupForm(instance=group)
 

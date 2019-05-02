@@ -1,12 +1,13 @@
 {% extends 'layouts/base.html' %}
+{% load common_tags %}
 {% load static %}
 {% block primary %}
 
     <span>
-        <a href="{% url 'summit.apps.projects:project-edit' id=object.id %}">
+        <a href="{% get_url_from_app_link 'summit.apps.projects' 'project_edit' id=object.id %}">
             <button type="button" class="btn btn-light">Edit Project</button>
         </a>
-        <a href="{% url 'summit.apps.projects:project-mods' id=object.id %}">
+        <a href="{% get_url_from_app_link 'summit.apps.projects' 'project_mod_create' id=object.id %}">
             <button type="button" class="btn btn-info">Add Modifications</button>
         </a>
     </span>
@@ -33,7 +34,15 @@
                     </tr>
                     <tr>
                         <td><b>Federal Agency:</b></td>
-                        <td>{{ object.federal_agency }} </td>
+                        {% if object.federal_agency %}
+                        <td>
+                            <a href="{% get_url_from_app_link 'summit.libs.auth' 'manage_organization' group_id=object.federal_agency.id %}">
+                            {{ object.federal_agency }}
+                            </a>
+                        </td>
+                        {% else %}
+                            <td>None</td>
+                        {% endif %}
                     </tr>
                     <tr>
                         <td><b>Award #:</b></td>
@@ -45,7 +54,15 @@
                     </tr>
                     <tr>
                         <td><b>Partner:</b></td>
-                        <td>{{ object.partner }} </td>
+                        {% if object.partner %}
+                        <td>
+                            <a href="{% get_url_from_app_link 'summit.libs.auth' 'manage_organization' group_id=object.partner.id %}">
+                            {{ object.partner }}
+                            </a>
+                        </td>
+                        {% else %}
+                            <td>None</td>
+                        {% endif %}
                     </tr>
                     <tr>
                         <td><b>Location:</b></td>
@@ -126,19 +143,51 @@
                     <tbody>
                         <tr>
                             <td><b>Agency Project Manager:</b></td>
-                            <td>{{ object.project_manager }}</td>
+                            {% if object.project_manager %}
+                            <td>
+                                <a href="{% get_url_from_app_link 'summit.libs.auth' 'view_contact' profile_id=object.project_manager.id %}">
+                                {{ object.project_manager }}
+                                </a>
+                            </td>
+                            {% else %}
+                                <td>None</td>
+                            {% endif %}
                         </tr>
                         <tr>
                             <td><b>Agency Agreements Tech Rep:</b></td>
-                            <td>{{ object.tech_rep }}</td>
+                            {% if object.tech_rep %}
+                            <td>
+                                <a href="{% get_url_from_app_link 'summit.libs.auth' 'view_contact' profile_id=object.tech_rep.id %}">
+                                {{ object.tech_rep }}
+                                </a>
+                            </td>
+                            {% else %}
+                                <td>None</td>
+                            {% endif %}
                         </tr>
                         <tr>
                             <td><b>Partner Principal Investigator:</b></td>
-                            <td>{{ object.pp_i }}</td>
+                            {% if object.pp_i %}
+                            <td>
+                                <a href="{% get_url_from_app_link 'summit.libs.auth' 'view_contact' profile_id=object.pp_i.id %}">
+                                {{ object.pp_i }}
+                                </a>
+                            </td>
+                            {% else %}
+                                <td>None</td>
+                            {% endif %}
                         </tr>
                     <tr>
                             <td><b>Staff Member:</b></td>
-                            <td>{{ object.staff_member }}</td>
+                            {% if object.staff_member %}
+                            <td>
+                                <a href="{% get_url_from_app_link 'summit.libs.auth' 'view_contact' profile_id=object.staff_member.id %}">
+                                {{ object.staff_member }}
+                                </a>
+                            </td>
+                            {% else %}
+                                <td>None</td>
+                            {% endif %}
                         </tr>
                     </tbody>
                 </table>
@@ -213,6 +262,12 @@
                             {{ object.tent_end_date }}
                         </td>
                     </tr>
+                    <tr>
+                        <td><b>End:<br><small>(from modifications)</small></b></td>
+                        <td>
+                            {{ end_date_from_mods|default:'TO DO' }}
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -269,7 +324,7 @@
             <p class="card-subtitle">To view or edit modifications, click the blue highlighted 'Number'.</p>
         </div>
         <div class="row">
-            <a href="{% url 'summit.apps.projects:project-mods' id=object.id %}">
+            <a href="{% get_url_from_app_link 'summit.apps.projects' 'project_mod_create' id=object.id %}">
                 <button type="button" class="btn btn-sm btn-info">Add Modifications</button>
             </a>
         </div>
@@ -280,7 +335,7 @@
                     <tbody>
                         <tr>
                             <td><b>Number:</b></td>
-                            <td><u><a href="{% url 'summit.apps.projects:project-mods-edit' id=object.id mod_id=mod.mod_num %}">
+                            <td><u><a href="{% get_url_from_app_link 'summit.apps.projects' 'project_mod_edit' id=object.id mod_id=mod.mod_num %}">
                                 {{ mod.mod_num }}
                             </a></u></td>
                         </tr>

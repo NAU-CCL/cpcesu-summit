@@ -1,5 +1,6 @@
 {% extends 'apps/projects/form-template.html' %}
-{% block form_title %}Create Project Form{% endblock %}
+{% load common_tags %}
+{% block form_title %}Edit Project Form{% endblock %}
 
 {% block row1_col1 %}
 
@@ -22,7 +23,10 @@
                 <h6><label class="control-label col-sm-auto"><b>{{ form.federal_agency.label_tag }}</b></label></h6>
             </td>
             <td>
-                {{ form.federal_agency }}<br><br>
+                <div class="autocomplete">
+                    <input class="form-control" id="federal_agency" type="text" name="federal_agency" placeholder="Federal Agency" autocomplete="off" value="{{federal_agency.name}}">
+                </div><br/>
+<!--                {{ form.federal_agency }}<br><br>-->
             </td>
         </tr>
         <tr>
@@ -237,7 +241,7 @@
             <tbody>
             <tr>
                 <td><b>Number:</b></td>
-                <td><u><a href="{% url 'summit.apps.projects:project-mods-edit' id=object.id mod_id=mod.mod_num %}">
+                <td><u><a href="{% get_url_from_app_link 'summit.apps.projects' 'project_mod_edit' id=object.id mod_id=mod.mod_num %}">
                     {{ mod.mod_num }}
                 </a></u></td>
             </tr>

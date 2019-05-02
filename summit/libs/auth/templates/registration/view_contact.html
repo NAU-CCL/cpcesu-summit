@@ -1,4 +1,5 @@
 {% extends 'layouts/base.html' %}
+{% load common_tags %}
 {% load static %}
 
 
@@ -8,13 +9,13 @@
     {% if has_profile %}
 
     {% if is_own %}
-    <a href="{% url 'summit.libs.auth:edit_profile' %}"
+    <a href="{% get_url_from_app_link 'summit.libs.auth' 'edit_my_contact' %}"
        class="btn btn-primary btn-sm m-0 waves-effect">Edit Your Contact</a>
     <a href="{% url 'password_change' %}"
        class="btn btn-primary btn-sm m-0 waves-effect">Change Password</a>
 
     {% elif can_edit %}
-    <a href="{% url 'summit.libs.auth:edit_profile_other' profile_id=profile.id %}"
+    <a href="{% get_url_from_app_link 'summit.libs.auth' 'edit_contact' profile_id=profile.id %}"
     class="btn btn-primary btn-sm m-0 waves-effect">Edit Contact</a>
     {% endif %}
 
@@ -54,7 +55,7 @@
             <tr>
                 <td><b>Assigned Group:</b></td>
                 {% if profile.assigned_group and profile.assigned_group.id %}
-                    <td>{{ profile.assigned_group }} <a href="{% url 'summit.libs.auth2:manage_group_other' group_id=profile.assigned_group.id %}" class="btn btn-primary btn-sm m-0 waves-effect">Manage Org.</a></td>
+                    <td>{{ profile.assigned_group }} <a href="{% get_url_from_app_link 'summit.libs.auth' 'manage_organization' group_id=profile.assigned_group.id %}" class="btn btn-primary btn-sm m-0 waves-effect">Manage Org.</a></td>
                 {% else %}
                     <td>No Group</td>
                 {% endif %}
@@ -62,7 +63,7 @@
         </table>
 
         {% else %}
-        <a href="{% url 'summit.libs.auth:edit_profile' %}">Create Contact</a>
+        <a href="{% get_url_from_app_link 'summit.libs.auth' 'edit_contact' %}">Create Contact</a>
         {% endif %}
     </div>
 </div>

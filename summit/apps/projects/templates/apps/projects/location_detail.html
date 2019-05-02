@@ -1,4 +1,5 @@
 {% extends 'layouts/base.html' %}
+{% load common_tags %}
 {% load static %}
 
 {% block primary %}
@@ -8,10 +9,10 @@
     <br>
 
 <span>
-    <a href="{% url 'summit.apps.projects:summit.apps.projects_Manage Locations' %}">
+    <a href="{% get_url_from_app_link 'summit.apps.projects' 'locations' %}">
         <button type="button" class="btn btn-light">All Locations</button>
     </a>
-    <a href="{% url 'summit.apps.projects:location-edit' id=object.id %}">
+    <a href="{% get_url_from_app_link 'summit.apps.projects' 'location_edit' id=object.id %}">
         <button type="button" class="btn btn-info">Edit Location</button>
     </a>
 </span>

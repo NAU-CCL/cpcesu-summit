@@ -29,6 +29,7 @@ from .shared import(
     CELERY_BROKER_URL,
     CELERY_RESULT_BACKEND,
     DEFAULT_FROM_EMAIL,
+    REST_FRAMEWORK,
 )
 
 __all__ = [
@@ -61,6 +62,7 @@ __all__ = [
     'CELERY_BROKER_URL',
     'CELERY_RESULT_BACKEND',
     'DEFAULT_FROM_EMAIL',
+    'REST_FRAMEWORK',
 ]
 
 # MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']

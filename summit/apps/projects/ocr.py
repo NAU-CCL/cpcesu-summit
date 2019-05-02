@@ -165,7 +165,7 @@ def collect_data(filename):
         # 15. Points of Contact
 
     # Windows only for testing purposes
-    # pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe"
+    pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
     pdf_field_text = {}
 

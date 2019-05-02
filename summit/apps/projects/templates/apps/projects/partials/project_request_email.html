@@ -1,0 +1,18 @@
+{% autoescape off %}
+
+Name: {{ customer_name }}<br>
+
+Email: {{ customer_email }}<br>
+
+Message: {{ message }}<br>
+<br>
+
+To check which project the person is asking about, click the link below:<br>
+
+
+{{request.scheme}}://{{ request.META.HTTP_HOST }}{% url 'summit.apps.projects:project_detail' project_id %}<br><br>
+
+
+If clicking the link above doesn't work, please copy and paste the URL in a new browser window instead.<br>
+
+{% endautoescape %}

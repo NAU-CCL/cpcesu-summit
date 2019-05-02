@@ -1,13 +1,6 @@
 from . import choices
-import datetime
-from decimal import Decimal
-from django.core.validators import MinValueValidator
-from django.core.files.storage import FileSystemStorage
-from django.conf import settings
-from django.utils import timezone
 
 from django.db import models
-from simple_history.models import HistoricalRecords
 
 from summit.libs.auth.models import Partner, FederalAgency, CESUnit, UserProfile
 from summit.libs.models import AuditModel
@@ -32,7 +25,7 @@ class Location(models.Model):
 
     def get_absolute_url(self):
         from django.urls import reverse
-        return reverse('summit.apps.projects:location-detail', args=[str(self.id)])
+        return reverse('summit.apps.projects:location_detail', args=[str(self.id)])
 
     def __str__(self):
         return self.name
@@ -49,6 +42,7 @@ class Project(AuditModel):
     STATUS = choices.ProjectChoices.STATUS
     STUDENT_SUPPORT = choices.ProjectChoices.STUDENT_SUPPORT
     TYPE = choices.ProjectChoices.TYPE
+    YOUTH_VETS = choices.ProjectChoices.YOUTH_VETS
 
     # Fields to be required: (Tentative)
     award_office = models.CharField(choices=AWARD_OFFICE, max_length=10, blank=True, null=True)
@@ -135,7 +129,7 @@ class Project(AuditModel):
                                  verbose_name="Alternate Research Coordinator / CESU Representative")
 
     req_iacuc = models.BooleanField(verbose_name="Requires IACUC Review/ Concurrence", default=False, blank=True)
-    youth_vets = models.CharField(choices=AWARD_OFFICE, max_length=500, blank=True, null=True)
+    youth_vets = models.CharField(choices=YOUTH_VETS, max_length=500, blank=True, null=True)
     field_of_science_sub = models.CharField(choices=FIELD_OF_SCIENCE_SUB, max_length=100,
                                             blank=True, null=True, verbose_name="Sub-Fields (Field of Science)",
                                             default=FIELD_OF_SCIENCE_SUB[0])
@@ -144,7 +138,7 @@ class Project(AuditModel):
 
     def get_absolute_url(self):
         from django.urls import reverse
-        return reverse('summit.apps.projects:project-detail', args=[str(self.id)])
+        return reverse('summit.apps.projects:project_detail', args=[str(self.id)])
 
     def __str__(self):
         return self.project_title

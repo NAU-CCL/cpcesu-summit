@@ -15,9 +15,9 @@ from celery.result import AsyncResult
 import json
 
 from .tasks import read_pdf
-from summit.libs.auth.models import UserProfile, CESUnit
+from summit.libs.auth.models import UserProfile, CESUnit, FederalAgency, Partner, UserGroup
 from .models import Project, File, Location, Modification, ModFile
-from .forms import ProjectForm, ProjectFileForm, LocationForm, ModificationForm, ModificationFileForm
+from .forms import ProjectForm, ProjectFileForm, LocationForm, ModificationForm, ModificationFileForm, ContactForm
 
 
 class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -108,17 +108,18 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
         all_projects = self.get_queryset()
 
         user = self.request.user
-        user_group = self.request.user.group
 
         try:
             profile = UserProfile.objects.get(user=user)
         except ObjectDoesNotExist:
             profile = None
 
-        try:
-            ces_unit = CESUnit.objects.get(id=user_group.id)
-        except (ObjectDoesNotExist, AttributeError) as e:
-            ces_unit = None
+        if profile is not None:
+            try:
+                ces_unit = CESUnit.objects.get(id=profile.assigned_group.id)
+            except (ObjectDoesNotExist, AttributeError) as e:
+                ces_unit = None
+        else: ces_unit = None
 
         user_filtered_projects = all_projects.filter(cesu_unit=ces_unit, staff_member=profile, status="DRAFT") \
                                  | all_projects.filter(cesu_unit=None, status="DRAFT") \
@@ -204,28 +205,18 @@ class ProjectPublicDetail(DetailView):
     model = Project
     template_name = 'apps/projects/project_detail_public.html'
 
+    def total_award_amount(self):
+        prj = self.get_object()
+        modifications = Modification.objects.filter(project=prj)
+        total_mod_amount = 0
+        for mod in modifications:
+            total_mod_amount += mod.mod_amount
+        return (prj.budget or 0) + total_mod_amount
+
     def get_context_data(self, **kwargs):
         context = {
-            # 'name': self.kwargs['name'],
             'pagetitle': 'Projects Details',
             'title': 'Projects Details',
-            # 'bannerTemplate': 'fullscreen',
-            'header': {
-                # 'background': 'apps/core/imgs/default.jpg',
-                # 'heading1': 'Heading 1',
-                # 'heading2': 'Heading 2',
-                # 'buttons': [
-                #     {
-                #         'name': 'Button 1',
-                #         'link': '/#button1'
-                #     },
-                #     {
-                #         'name': 'External Button',
-                #         'link': 'https://www.google.com/',
-                #         'target': '_blank'
-                #     }
-                # ]
-            },
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
                 'css/datatables/dashboard.css'
@@ -233,11 +224,11 @@ class ProjectPublicDetail(DetailView):
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
                 'js/datatables/dashboard.js'
-            ]
+            ],
+            'total_award_amount': self.total_award_amount()
         }
         ctx = super(ProjectPublicDetail, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
-        # ctx['history_data'] =
         return ctx
 
     def get_object(self, **kwargs):
@@ -257,29 +248,26 @@ class ProjectCreate(CreateView):
         return super(ProjectCreate, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('summit.apps.projects:project-detail', args=[str(self.object.id)])
+        return reverse('summit.apps.projects:project_detail', args=[str(self.object.id)])
 
     def get(self, request, *args, **kwargs):
         if 'job' in request.GET:
             job_id = request.GET['job']
             project = Project.objects.get(job_id=job_id)
             form = self.form_class(instance=project)
-            #upload = File.objects.filter()[:1].get()
-            #print(str(upload.file.path))
 
-            return render(request, self.template_name, {'form': form,})#'file_path': upload.file.path})
+            return render(request, self.template_name, {'form': form})
         else:
             context = {
                 'name': self.kwargs['name'],
                 'pagetitle': 'Create Project',
                 'title': 'Create Project',
+                'bannerTemplate': 'none',
                 'cssFiles': [
-                    'libs/mdb/css/addons/datatables.min.css',
-                    'css/apps/projects/dashboard.css'
+                    'css/apps/projects/autofill.css',
                 ],
                 'jsFiles': [
-                    'libs/mdb/js/addons/datatables.min.js',
-                    'js/apps/projects/dashboard.js'
+                    'js/apps/projects/autocomplete.js',
                 ],
                 'form': self.get_form_class(),
                 'file_form': ProjectFileForm()
@@ -321,6 +309,7 @@ class ProjectCreate(CreateView):
                                             instance=self.object)
         files = request.FILES.getlist('file')
         if project_form.is_valid():
+            project_form.instance.federal_agency = FederalAgency.objects.get(name=project_form.cleaned_data['federal_agency'])
             self.object = project_form.save()
             if self.object.status != 'DRAFT':
                 self.confirm_status = True
@@ -359,7 +348,7 @@ class ProjectEdit(UpdateView):
         return (prj.budget or 0) + total_mod_amount
 
     def get_success_url(self):
-        return reverse('summit.apps.projects:project-detail', args=[str(self.object.id)])
+        return reverse('summit.apps.projects:project_detail', args=[str(self.object.id)])
 
     def get_context_data(self, **kwargs):
         context = {
@@ -367,16 +356,15 @@ class ProjectEdit(UpdateView):
             'title': 'Edit Project',
             'bannerTemplate': 'none',
             'cssFiles': [
-                'libs/mdb/css/addons/datatables.min.css',
-                'css/datatables/dashboard.css'
+                'css/apps/projects/autofill.css',
             ],
             'jsFiles': [
-                'libs/mdb/js/addons/datatables.min.js',
-                'js/datatables/dashboard.js'
+                'js/apps/projects/autocomplete.js',
             ],
             'files': File.objects.filter(project=self.object),
             'file_form': ProjectFileForm(),
-            'total_award_amount': self.total_award_amount()
+            'total_award_amount': self.total_award_amount(),
+            'federal_agency': self.get_object().federal_agency
 
         }
         ctx = super(ProjectEdit, self).get_context_data(**kwargs)
@@ -390,6 +378,8 @@ class ProjectEdit(UpdateView):
                                             instance=self.object)
         files = request.FILES.getlist('file')
         if project_form.is_valid() and project_file_form.is_valid():
+            project_form.instance.federal_agency = FederalAgency.objects.get(
+                name=project_form.cleaned_data['federal_agency'])
             self.object = project_form.save()
             for f in files:
                 project_file_instance = File(file=f, project=self.object)
@@ -402,53 +392,10 @@ class ProjectEdit(UpdateView):
             super(ProjectEdit, self).post(request)
         return HttpResponseRedirect(self.get_success_url())
 
-
-# def project_form_redirect(request, name):
-#     template_name = 'apps/projects/project_form_redirection.html'
-#
-#     context = {
-#         'name': name,
-#         'pagetitle': 'not Home',
-#         'title': 'Form rediceiction, autofill or manual',
-#         'bannerTemplate': 'fullscreen',
-#         'header': {
-#             'heading1': 'Project Creation Redirection',
-#             'heading2': '',
-#             'buttons': [
-#                 {
-#                     'name': 'Autofill',
-#                     'link': '/projects/autofill'
-#                 },
-#                 {
-#                     'name': 'Manual',
-#                     'link': '/projects/create',
-#                 }
-#             ]
-#         },
-#     }
-#     return render(request, template_name, context)
-
-# def project_autofill(request, name):
-#     template_name = 'apps/projects/project_autofill.html'
-#     context = {
-#         'name': name,
-#         'pagetitle': 'Autofill Project Form',
-#         'title': 'Autofill Project Form',
-#         'header': {
-#         },
-#         'cssFiles': [
-#         ],
-#         'jsFiles': [
-#             'js/apps/projects/fileUpload.js'
-#         ],
-#     }
-#     return render(request, template_name, context)
-
 class ProjectAutofill(View):
     form_class = ProjectFileForm
     success_url = reverse_lazy('summit.apps.projects:project-create')
     template_name = 'apps/projects/project_autofill_form.html'
-    #template_name = 'apps/projects/project_autofill.html'
 
     def get(self, request, name):
         form = self.form_class()
@@ -462,58 +409,7 @@ class ProjectAutofill(View):
             }
             return render(request, self.template_name, context)
         else:
-            # context = {
-            #     'name': name,
-            #     'pagetitle': 'Autofill Project Form',
-            #     'title': 'Autofill Project Form',
-            #     'header': {
-            #     },
-            #     'cssFiles': [
-            #     ],
-            #     'jsFiles': [
-            #         'js/apps/projects/fileUpload.js'
-            #     ],
-            # }
-            # return render(request, self.template_name, context)
-
             return render(request, self.template_name, {'form': form})
-
-    # def get_context_data(self, **kwargs):
-    #     context = {
-    #         'name': self.kwargs['name'],
-    #         'pagetitle': 'Create Project',
-    #         'title': 'Create Project',
-    #         'cssFiles': [
-    #             'libs/mdb/css/addons/datatables.min.css',
-    #             'css/apps/projects/dashboard.css'
-    #         ],
-    #         'jsFiles': [
-    #             'libs/mdb/js/addons/datatables.min.js',
-    #             'js/apps/projects/dashboard.js'
-    #         ],
-    #         'form': self.form_class,
-    #         'file_form': ProjectFileForm()
-    #     }
-    #     ctx = super(ProjectAutofill, self).get_context_data(**kwargs)
-    #     ctx = {**ctx, **context}
-    #     return ctx
-
-    # def get_context_data(self, **kwargs):
-    #     context = {
-    #         #'name': name,
-    #         'pagetitle': 'Autofill Project Form',
-    #         'title': 'Autofill Project Form',
-    #         'header': {
-    #         },
-    #         'cssFiles': [
-    #         ],
-    #         'jsFiles': [
-    #             'js/apps/projects/fileUpload.js'
-    #         ],
-    #     }
-    #     ctx = super(ProjectAutofill, self).get_context_data(**kwargs)
-    #     ctx = {**ctx, **context}
-    #     return ctx
 
     def post(self, request, name):
         form = self.form_class(request.POST, request.FILES)
@@ -521,7 +417,7 @@ class ProjectAutofill(View):
             upload = form.save()
             job = read_pdf.delay(upload.file.path)
             print(upload.file.path)
-            return HttpResponseRedirect(reverse('summit.apps.projects:project-progress') + '?job=' + job.id)
+            return HttpResponseRedirect(reverse('summit.apps.projects:project_upload_progress') + '?job=' + job.id)
         else:
             form = self.form_class()
             return render(request, self.template_name, {'form': form})
@@ -540,27 +436,28 @@ class ProjectProgress(UpdateView):
             context = {
                 'data': data,
                 'task_id': job_id,
-                'url': reverse('summit.apps.projects:summit.apps.projects_Create Project') + '?job=' + job_id,
+                'url': reverse('summit.apps.projects:project_create') + '?job=' + job_id,
             }
             return render(request, self.template_name, context)
         return render(request, self.template_name)
 
     def post(self, request, *args, **kwargs):
+        print('over there\n')
         if request.is_ajax():
             if 'task_id' in request.POST.keys() and request.POST['task_id']:
                 task_id = request.POST['task_id']
                 task = AsyncResult(task_id)
                 data = task.result or task.state
+                # print("has task id, data = ", task.result, " | state = ", task.state)
+                data = json.dumps(data)
             else:
                 data = 'No task_id in the request'
+                # print("no task id")
         else:
             data = 'This is not an ajax request'
+            # print("not ajax")
 
-        # if data == 'SUCCESS':
-        #     return HttpResponseRedirect(reverse('summit.apps.projects:project-create'))
-
-        json_data = json.dumps(data)
-        return HttpResponse(json_data, content_type='application/json')
+        return HttpResponse(data, content_type='application/json')
 
 
 class ProjectModifications(CreateView):
@@ -569,7 +466,7 @@ class ProjectModifications(CreateView):
     form_class = ModificationForm
 
     def get_success_url(self):
-        return reverse('summit.apps.projects:project-detail',
+        return reverse('summit.apps.projects:project_detail',
                        args=[self.kwargs.get("id")])
 
     def get_context_data(self, **kwargs):
@@ -626,7 +523,7 @@ class ProjectModEdit(UpdateView):
         return Modification.objects.get(mod_num=pk_, project=prj_)
 
     def get_success_url(self):
-        return reverse('summit.apps.projects:project-detail',
+        return reverse('summit.apps.projects:project_detail',
                        args=[self.kwargs.get("id")])
 
     def get_context_data(self, **kwargs):
@@ -776,7 +673,7 @@ class LocationEdit(UpdateView):
         return get_object_or_404(Location, pk=pk_)
 
     def get_success_url(self):
-        return reverse('summit.apps.projects:location-detail', args=[str(self.object.id)])
+        return reverse('summit.apps.projects:location_detail', args=[str(self.object.id)])
 
     def get_context_data(self, **kwargs):
         context = {
@@ -799,6 +696,61 @@ class LocationEdit(UpdateView):
             ctx = self.get_context_data()
             return self.render_to_response(ctx)
 
+
+#
+#
+# Non-class-based views
+#
+#
+
+from django.template.loader import get_template
+from django.core.mail import EmailMessage
+
+
+def request_project_info(request, project_id):
+    template_name = 'apps/projects/project_public_request.html'
+
+    project = get_object_or_404(Project, pk=project_id)
+
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+
+        if form.is_valid():
+            subject = "CPCESU Project Management - Project Request - " + project.project_title
+            customer_email = form.cleaned_data['your_email']
+            ctx = {
+                "customer_name": form.cleaned_data['your_name'],
+                "customer_email": customer_email,
+                "message": form.cleaned_data['message'],
+                "project_id": project_id,
+                "request": request
+            }
+            cc_myself = form.cleaned_data['cc_myself']
+
+            recipients = ['remy@nau.edu']
+            if cc_myself:
+                recipients += customer_email
+
+            message = get_template('apps/projects/partials/project_request_email.html').render(ctx)
+            email = EmailMessage(subject, message, to=recipients, reply_to=[customer_email])
+            email.content_subtype = "html"
+            email.send()
+
+            return HttpResponseRedirect(reverse('summit.apps.projects:project_public_detail', kwargs={"id": project_id}))
+
+    else:
+        form = ContactForm(initial={'project_id': project_id})
+
+    return render(request, template_name, {'form': form, 'project': project})
+
+
+from rest_framework import viewsets
+from .serializers import FederalAgencySerializer
+
+
+class FederalAgencyViewSet(viewsets.ModelViewSet):
+    queryset = FederalAgency.objects.all().order_by('name')
+    serializer_class = FederalAgencySerializer
 
 #
 #
@@ -844,7 +796,3 @@ def export_to_csv(request):
                  project.tent_start_date, project.type, project.youth_vets])
 
     return response
-
-
-def change_history(request, id):
-    return HttpResponseRedirect(reverse('admin:summit_projects_project_history', args=id))

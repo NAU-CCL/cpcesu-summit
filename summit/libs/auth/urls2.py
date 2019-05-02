@@ -1,42 +1,26 @@
 # Secondary URLs loaded in at the end for better nav bar
-from django.conf.urls import url
 
-from config.links import link, get_name
+from config.links import app_link, url_wrapper
 
-from . import views
+from . import vars
 
+app_name = vars.app_name
+app_regex = vars.app_regex
 
-app_name = 'summit.libs.auth2'
-app_regex = r'^accounts/'
 urlpatterns = [
-    link(r'^all_users/$', views.all_users, name=get_name(app_name, "All Contacts"), link_args={
-        'auth_required': True,
-        'app_regex': app_regex,
-        'dropdown_id': app_name,
-        'dropdown_name': 'Personnel'
-    }),
-    link(r'^all_groups/$', views.all_groups, name=get_name(app_name, "All Orgs."), link_args={
-        'auth_required': True,
-        'app_regex': app_regex,
-        'dropdown_id': app_name,
-    }),
-    link(r'^create_group/$', views.create_group, name=get_name(app_name, "Create Org."), link_args={
-        'auth_required': True,
-        'app_regex': app_regex,
-        'dropdown_id': app_name,
-    }),
-    link(r'^create_user/$', views.create_profile, name=get_name(app_name, "Create Contact"), link_args={
-        'auth_required': True,
-        'app_regex': app_regex,
-        'dropdown_id': app_name,
-    }),
-    link(r'^manage_group/$', views.manage_group, name=get_name(app_name, "Manage My Org."), link_args={
-        'auth_required': True,
-        'app_regex': app_regex,
-        'dropdown_id': app_name,
-    }),
+    url_wrapper(vars.AppLinks.logged_out),
+    url_wrapper(vars.AppLinks.edit_contact),
+    url_wrapper(vars.AppLinks.edit_my_contact),
+    url_wrapper(vars.AppLinks.view_my_contact),
+    url_wrapper(vars.AppLinks.view_contact),
 
-    url(r'^manage_group/(?P<group_id>[-\w]+)/$', views.manage_group, name='manage_group_other'),
-    url(r'^edit_group/(?P<group_id>[-\w]+)/$', views.edit_group, name='edit_group'),
-    url(r'^create_user/(?P<group_id>[-\w]+)/$', views.create_profile, name='create_user_with_group')
+    app_link(vars.AppLinks.all_contacts),
+    app_link(vars.AppLinks.all_organizations),
+    app_link(vars.AppLinks.create_contact),
+    app_link(vars.AppLinks.create_organization),
+    app_link(vars.AppLinks.manage_my_organization),
+
+    url_wrapper(vars.AppLinks.manage_organization),
+    url_wrapper(vars.AppLinks.edit_organization),
+    url_wrapper(vars.AppLinks.create_contact_in_group)
 ]
