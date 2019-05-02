@@ -4,7 +4,8 @@ from .models import Project, File, Location, Modification, ModFile
 
 
 class ProjectForm(forms.ModelForm):
-    federal_agency = forms.CharField()
+    federal_agency = forms.CharField(required=False)
+
     class Meta:
         model = Project
         fields = ['award_office', 'budget', 'description', 'discipline', 'exec_start_date',

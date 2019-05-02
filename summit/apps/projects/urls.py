@@ -11,6 +11,7 @@ urlpatterns = [
     app_link(vars.AppLinks.project_create),
     app_link(vars.AppLinks.project_upload),
     app_link(vars.AppLinks.project_public_list),
+    app_link(vars.AppLinks.project_public_anon_link),
 
 
     # Project URLs

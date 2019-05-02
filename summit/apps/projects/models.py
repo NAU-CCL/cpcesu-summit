@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from . import choices
 
 from django.db import models
@@ -31,6 +33,9 @@ class Location(models.Model):
         return self.name
 
 
+from django.core.validators import MinValueValidator, MaxValueValidator
+
+
 class Project(AuditModel):
     AWARD_OFFICE = choices.ProjectChoices.AWARD_OFFICE
     DISCIPLINE = choices.ProjectChoices.DISCIPLINE
@@ -47,7 +52,8 @@ class Project(AuditModel):
     # Fields to be required: (Tentative)
     award_office = models.CharField(choices=AWARD_OFFICE, max_length=10, blank=True, null=True)
     budget = models.DecimalField(max_digits=12, decimal_places=2, help_text=_help_text['budget'], blank=True, null=True,
-                                 verbose_name="Initial", default=0)
+                                 verbose_name="Initial", default=1000, validators=[MinValueValidator(Decimal('1000.00')),
+                                                                                   MaxValueValidator(Decimal('9999999.99'))])
     cesu_unit = models.ForeignKey(CESUnit, on_delete=models.CASCADE,
                                   related_name='cesu_unit', default=None, verbose_name="CESUnit", blank=True, null=True)
     description = models.TextField(help_text=_help_text['description'], verbose_name="Abstract/Description", blank=True)
