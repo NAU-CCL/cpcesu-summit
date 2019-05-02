@@ -52,7 +52,10 @@
                 <h6><label class="control-label col-sm-auto"><b>{{ form.partner.label_tag }}</b></label></h6>
             </td>
             <td>
-                {{ form.partner }}<br><br>
+                <div class="autocomplete">
+                    <input class="form-control" id="partner" type="text" name="partner" placeholder="Partner" autocomplete="off">
+                </div><br/>
+<!--                {{ form.partner }}<br><br>-->
             </td>
         </tr>
         <tr>
