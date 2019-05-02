@@ -17,7 +17,7 @@ import json
 from .tasks import read_pdf
 from summit.libs.auth.models import UserProfile, CESUnit
 from .models import Project, File, Location, Modification, ModFile
-from .forms import ProjectForm, ProjectFileForm, LocationForm, ModificationForm, ModificationFileForm
+from .forms import ProjectForm, ProjectFileForm, LocationForm, ModificationForm, ModificationFileForm, ContactForm
 
 
 class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -438,7 +438,6 @@ class ProjectAutofill(View):
     form_class = ProjectFileForm
     success_url = reverse_lazy('summit.apps.projects:project-create')
     template_name = 'apps/projects/project_autofill_form.html'
-    #template_name = 'apps/projects/project_autofill.html'
 
     def get(self, request, name):
         form = self.form_class()
@@ -452,58 +451,7 @@ class ProjectAutofill(View):
             }
             return render(request, self.template_name, context)
         else:
-            # context = {
-            #     'name': name,
-            #     'pagetitle': 'Autofill Project Form',
-            #     'title': 'Autofill Project Form',
-            #     'header': {
-            #     },
-            #     'cssFiles': [
-            #     ],
-            #     'jsFiles': [
-            #         'js/apps/projects/fileUpload.js'
-            #     ],
-            # }
-            # return render(request, self.template_name, context)
-
             return render(request, self.template_name, {'form': form})
-
-    # def get_context_data(self, **kwargs):
-    #     context = {
-    #         'name': self.kwargs['name'],
-    #         'pagetitle': 'Create Project',
-    #         'title': 'Create Project',
-    #         'cssFiles': [
-    #             'libs/mdb/css/addons/datatables.min.css',
-    #             'css/apps/projects/dashboard.css'
-    #         ],
-    #         'jsFiles': [
-    #             'libs/mdb/js/addons/datatables.min.js',
-    #             'js/apps/projects/dashboard.js'
-    #         ],
-    #         'form': self.form_class,
-    #         'file_form': ProjectFileForm()
-    #     }
-    #     ctx = super(ProjectAutofill, self).get_context_data(**kwargs)
-    #     ctx = {**ctx, **context}
-    #     return ctx
-
-    # def get_context_data(self, **kwargs):
-    #     context = {
-    #         #'name': name,
-    #         'pagetitle': 'Autofill Project Form',
-    #         'title': 'Autofill Project Form',
-    #         'header': {
-    #         },
-    #         'cssFiles': [
-    #         ],
-    #         'jsFiles': [
-    #             'js/apps/projects/fileUpload.js'
-    #         ],
-    #     }
-    #     ctx = super(ProjectAutofill, self).get_context_data(**kwargs)
-    #     ctx = {**ctx, **context}
-    #     return ctx
 
     def post(self, request, name):
         form = self.form_class(request.POST, request.FILES)
@@ -542,13 +490,16 @@ class ProjectProgress(UpdateView):
                 task_id = request.POST['task_id']
                 task = AsyncResult(task_id)
                 data = task.result or task.state
+                # print("has task id, data = ", task.result, " | state = ", task.state)
+                data = json.dumps(data)
             else:
                 data = 'No task_id in the request'
+                # print("no task id")
         else:
             data = 'This is not an ajax request'
+            # print("not ajax")
 
-        json_data = json.dumps(data)
-        return HttpResponse(json_data, content_type='application/json')
+        return HttpResponse(data, content_type='application/json')
 
 
 class ProjectModifications(CreateView):
@@ -786,6 +737,53 @@ class LocationEdit(UpdateView):
         else:
             ctx = self.get_context_data()
             return self.render_to_response(ctx)
+
+
+#
+#
+# Non-class-based views
+#
+#
+
+from django.template.loader import get_template
+from django.core.mail import EmailMessage
+
+
+def request_project_info(request, project_id):
+    template_name = 'apps/projects/project_public_request.html'
+
+    project = get_object_or_404(Project, pk=project_id)
+
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+
+        if form.is_valid():
+            subject = "CPCESU Project Management - Project Request - " + project.project_title
+            customer_email = form.cleaned_data['your_email']
+            ctx = {
+                "customer_name": form.cleaned_data['your_name'],
+                "customer_email": customer_email,
+                "message": form.cleaned_data['message'],
+                "project_id": project_id,
+                "request": request
+            }
+            cc_myself = form.cleaned_data['cc_myself']
+
+            recipients = ['remy@nau.edu']
+            if cc_myself:
+                recipients += customer_email
+
+            message = get_template('apps/projects/partials/project_request_email.html').render(ctx)
+            email = EmailMessage(subject, message, to=recipients, reply_to=[customer_email])
+            email.content_subtype = "html"
+            email.send()
+
+            return HttpResponseRedirect(reverse('summit.apps.projects:project_public_detail', kwargs={"id": project_id}))
+
+    else:
+        form = ContactForm(initial={'project_id': project_id})
+
+    return render(request, template_name, {'form': form, 'project': project})
 
 
 #

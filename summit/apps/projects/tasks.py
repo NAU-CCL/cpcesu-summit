@@ -42,11 +42,14 @@ def test(arg):
 
 @app.task(bind=True)
 def read_pdf(self, filename):
+    print("Working...")
     current_task.update_state(state='PROGRESS',
                               meta={'process_percent': 0})
 
+    print("Collecting data...")
     data = collect_data(filename)
 
+    print("Updating progress...")
     current_task.update_state(state='PROGRESS',
                               meta={'process_percent': 90})
 
@@ -62,7 +65,7 @@ def read_pdf(self, filename):
                               meta={'process_percent': 95})
 
     STATUS = choices.ProjectChoices.STATUS
-    print(STATUS)
+    print("STATUS: ", STATUS)
 
     logger.info('Request id: {0}'.format(self.request.id))
     print(self.request.id)
@@ -104,8 +107,11 @@ def read_pdf(self, filename):
         job_id=str(self.request.id),
     )
 
-    new_project.save(force_insert=True)
+    print("SAVING PROJECT")
+    proj = new_project.save(force_insert=True)
 
-    new_project.save()
+    print("Check proj - ", proj)
+    proj2 = new_project.save()
+    print("Check proj2 - ", proj2)
     current_task.update_state(state='COMPLETE',
                               meta={'process_percent': 100})

@@ -1,16 +1,14 @@
 from django.shortcuts import get_object_or_404, render
 
 
-def index(request, name):
+def index(request):
     template_name = 'apps/core/index.html'
 
     context = {
-        'name': name,
         'pagetitle': 'Home',
         'title': 'Home page',
         'bannerTemplate': 'fullscreen',
         'header': {
-            # 'background': 'apps/core/imgs/default.jpg',
             'heading1': 'Welcome to Summit',
             'heading2': 'Your New Cooperative Ecosystem Studies Unit Project Management System',
             'buttons': [
@@ -25,12 +23,10 @@ def index(request, name):
                     'link': ("summit.apps.projects:project_dashboard" if request.user.is_authenticated
                              else "summit.apps.projects:project_public_list"),
                     'uses_reverse': True
-                    # 'target': '_blank'
                 }
             ]
         },
         'cssFiles': [
-            # 'css/apps/core/testing.css'
         ]
     }
 

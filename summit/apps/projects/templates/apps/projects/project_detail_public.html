@@ -11,7 +11,7 @@
     </div><br>
 
     <span>
-        <a href="{% get_url_from_app_link 'summit.apps.projects' 'project_public_detail' id=object.id %}">
+        <a href="{% get_url_from_app_link 'summit.apps.projects' 'project_public_request' project_id=object.id %}">
             <button type="button" class="btn btn-light">Request Project Information</button>
         </a>
     </span>

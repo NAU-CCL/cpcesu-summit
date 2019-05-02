@@ -91,3 +91,10 @@ class LocationForm(forms.ModelForm):
     class Meta:
         model = Location
         fields = ['name']
+
+
+class ContactForm(forms.Form):
+    your_name = forms.CharField(label="Your Name", max_length=100)
+    your_email = forms.EmailField()
+    message = forms.CharField(widget=forms.Textarea)
+    cc_myself = forms.BooleanField(required=False)

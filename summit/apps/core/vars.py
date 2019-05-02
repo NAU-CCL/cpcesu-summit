@@ -7,8 +7,7 @@ app_regex = ''
 
 
 class AppLinks:
-    index = DjangoLink('index', app_name, app_regex, r'^$', views.index,
-                       'Home')
+    index = DjangoURL('index', r'^$', views.index, app_name)
     about = DjangoLink('about', app_name, app_regex, r'^about/$', views.about,
                        'About')
 
