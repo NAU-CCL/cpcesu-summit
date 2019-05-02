@@ -385,3 +385,31 @@ to double check that tasks are being created and their status is correct, do
 pip install flower
 celery flower -A summit --address=127.0.0.1 --port=5555
 ```
+
+#### Setting up OCR on Windows
+
+The OCR system uses Google's Tessereact to perform the reading, ImageMagick to convert pdf's to images to be processed,
+and Ghostscript, requirement of ImageMagick, to convert pdf's to images. Both have wrappers that are pip installed
+through the requirements, but you need to install several programs for the wrappers to function correctly. 
++ [Google Tessereact Windows](https://github.com/UB-Mannheim/tesseract/wiki)
++ [ImageMagick](http://www.imagemagick.org/script/download.php)
++ [Ghostscript](https://www.ghostscript.com/download/gsdnld.html)
+
+In the test_ocr.py file(will be changed in the future), you will need to make sure the line
+```
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe"
+```
+
+is not commented for the system to work.
+
+For Ubuntu, ImageMagick and Ghostscript was already installed, so no need to get it.
+```
+sudo apt install tesseract-ocr
+```
+in etc/ImageMagick-6/policy.xml, change 
+
+```
+<policy domain="coder" rights="none" pattern="PDF" />
+to
+<policy domain="coder" rights="read" pattern="PDF" />
+```

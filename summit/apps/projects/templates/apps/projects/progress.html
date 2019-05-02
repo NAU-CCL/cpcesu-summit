@@ -1,0 +1,72 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="card">
+  <div class="card-header">
+      <h3>Progress</h3>
+  </div>
+  <div class="card-body">
+      <p>
+  The Task is <span id="user-count"></span>!
+</p>
+<div class="status"></div>
+   {% if task_id %}
+   <div class="progress">
+       <div class="bar" style="width:25%"></div>
+   </div>
+      <progress class="bar" value="22" max="100"></progress>
+
+{% endif %}
+</div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+<script type="text/javascript">
+    var poll_xhr;
+    var willstop = 0;
+
+    (function(){
+        var poll = function(){
+            var json_dump = "{{ data }}";
+            var task_id = "{{ task_id }}";
+            var success_url = "{{ url }}";
+            poll_xhr = $.ajax({
+                url:'progress/',
+                type: 'POST',
+                data: {
+                    task_id: task_id,
+                    csrfmiddlewaretoken: "{{csrf_token}}",
+                },
+                success: function(result) {
+                    if (result.process_percent == null || result.process_percent == undefined) {
+                        willstop = 1;
+                        document.getElementById("user-count").textContent="DONE";
+                        jQuery('.bar').val(100);
+                        jQuery('.bar').html(100 + '%');
+                        $(location).attr('href', success_url)
+                    } else {
+                        jQuery('.bar').val(result.process_percent);
+                        jQuery('.bar').html(result.process_percent + '%');
+                        document.getElementById("user-count").textContent="PROCRESSING";
+                    };
+                }
+            });
+
+            //if (this.readyState == 4 && this.status == 302) {
+              //  var json = JSON.parse(this.responseText);
+                //console.log(json.success);
+                //following line would actually change the url of your window.
+                //window.location.href = json.success;
+            //}
+        };
+
+        var refreshIntervalId = setInterval(function() {
+            poll();
+            if(willstop == 1){
+                clearInterval(refreshIntervalId);
+            }
+        },500);
+    })();
+</script>
+{% endblock %}

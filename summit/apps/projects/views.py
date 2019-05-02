@@ -1,15 +1,21 @@
 import csv
 import datetime
 from django.http import HttpResponse, Http404, HttpResponseRedirect
+
 from django.shortcuts import get_object_or_404, render
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import reverse
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.core.urlresolvers import reverse, reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, View
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.http import HttpResponseRedirect, HttpResponse
+from django.core.files import File
 
+from celery.result import AsyncResult
+import json
+
+from .tasks import read_pdf
 from summit.libs.auth.models import UserProfile, CESUnit
-
 from .models import Project, File, Location, Modification, ModFile
 from .forms import ProjectForm, ProjectFileForm, LocationForm, ModificationForm, ModificationFileForm
 
@@ -166,25 +172,10 @@ class ProjectDetail(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = {
-            # 'name': self.kwargs['name'],
             'pagetitle': 'Projects Details',
             'title': 'Projects Details',
             'bannerTemplate': 'none',
             'header': {
-                # 'background': 'apps/core/imgs/default.jpg',
-                # 'heading1': 'Heading 1',
-                # 'heading2': 'Heading 2',
-                # 'buttons': [
-                #     {
-                #         'name': 'Button 1',
-                #         'link': '/#button1'
-                #     },
-                #     {
-                #         'name': 'External Button',
-                #         'link': 'https://www.google.com/',
-                #         'target': '_blank'
-                #     }
-                # ]
             },
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
@@ -259,6 +250,41 @@ class ProjectCreate(CreateView):
     template_name = 'apps/projects/project_create_form.html'
     form_class = ProjectForm
     confirm_status = False
+
+    def form_valid(self, form):
+        project = form.save()
+        read_pdf.delay(project.file.path)
+        return super(ProjectCreate, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('summit.apps.projects:project-detail', args=[str(self.object.id)])
+
+    def get(self, request, *args, **kwargs):
+        if 'job' in request.GET:
+            job_id = request.GET['job']
+            project = Project.objects.get(job_id=job_id)
+            form = self.form_class(instance=project)
+            #upload = File.objects.filter()[:1].get()
+            #print(str(upload.file.path))
+
+            return render(request, self.template_name, {'form': form,})#'file_path': upload.file.path})
+        else:
+            context = {
+                'name': self.kwargs['name'],
+                'pagetitle': 'Create Project',
+                'title': 'Create Project',
+                'cssFiles': [
+                    'libs/mdb/css/addons/datatables.min.css',
+                    'css/apps/projects/dashboard.css'
+                ],
+                'jsFiles': [
+                    'libs/mdb/js/addons/datatables.min.js',
+                    'js/apps/projects/dashboard.js'
+                ],
+                'form': self.get_form_class(),
+                'file_form': ProjectFileForm()
+            }
+            return render(request, self.template_name, context)
 
     def get_context_data(self, **kwargs):
         context = {
@@ -373,8 +399,168 @@ class ProjectEdit(UpdateView):
         else:
             ctx = self.get_context_data()
             return self.render_to_response(ctx)
-        super(ProjectEdit, self).post(request)
+            super(ProjectEdit, self).post(request)
         return HttpResponseRedirect(self.get_success_url())
+
+
+# def project_form_redirect(request, name):
+#     template_name = 'apps/projects/project_form_redirection.html'
+#
+#     context = {
+#         'name': name,
+#         'pagetitle': 'not Home',
+#         'title': 'Form rediceiction, autofill or manual',
+#         'bannerTemplate': 'fullscreen',
+#         'header': {
+#             'heading1': 'Project Creation Redirection',
+#             'heading2': '',
+#             'buttons': [
+#                 {
+#                     'name': 'Autofill',
+#                     'link': '/projects/autofill'
+#                 },
+#                 {
+#                     'name': 'Manual',
+#                     'link': '/projects/create',
+#                 }
+#             ]
+#         },
+#     }
+#     return render(request, template_name, context)
+
+# def project_autofill(request, name):
+#     template_name = 'apps/projects/project_autofill.html'
+#     context = {
+#         'name': name,
+#         'pagetitle': 'Autofill Project Form',
+#         'title': 'Autofill Project Form',
+#         'header': {
+#         },
+#         'cssFiles': [
+#         ],
+#         'jsFiles': [
+#             'js/apps/projects/fileUpload.js'
+#         ],
+#     }
+#     return render(request, template_name, context)
+
+class ProjectAutofill(View):
+    form_class = ProjectFileForm
+    success_url = reverse_lazy('summit.apps.projects:project-create')
+    template_name = 'apps/projects/project_autofill_form.html'
+    #template_name = 'apps/projects/project_autofill.html'
+
+    def get(self, request, name):
+        form = self.form_class()
+        if 'job' in request.GET:
+            job_id = request.GET['job']
+            job = AsyncResult(job_id)
+            data = job.result or job.state
+            context = {
+                'data': data,
+                'task_id': job_id,
+            }
+            return render(request, self.template_name, context)
+        else:
+            # context = {
+            #     'name': name,
+            #     'pagetitle': 'Autofill Project Form',
+            #     'title': 'Autofill Project Form',
+            #     'header': {
+            #     },
+            #     'cssFiles': [
+            #     ],
+            #     'jsFiles': [
+            #         'js/apps/projects/fileUpload.js'
+            #     ],
+            # }
+            # return render(request, self.template_name, context)
+
+            return render(request, self.template_name, {'form': form})
+
+    # def get_context_data(self, **kwargs):
+    #     context = {
+    #         'name': self.kwargs['name'],
+    #         'pagetitle': 'Create Project',
+    #         'title': 'Create Project',
+    #         'cssFiles': [
+    #             'libs/mdb/css/addons/datatables.min.css',
+    #             'css/apps/projects/dashboard.css'
+    #         ],
+    #         'jsFiles': [
+    #             'libs/mdb/js/addons/datatables.min.js',
+    #             'js/apps/projects/dashboard.js'
+    #         ],
+    #         'form': self.form_class,
+    #         'file_form': ProjectFileForm()
+    #     }
+    #     ctx = super(ProjectAutofill, self).get_context_data(**kwargs)
+    #     ctx = {**ctx, **context}
+    #     return ctx
+
+    # def get_context_data(self, **kwargs):
+    #     context = {
+    #         #'name': name,
+    #         'pagetitle': 'Autofill Project Form',
+    #         'title': 'Autofill Project Form',
+    #         'header': {
+    #         },
+    #         'cssFiles': [
+    #         ],
+    #         'jsFiles': [
+    #             'js/apps/projects/fileUpload.js'
+    #         ],
+    #     }
+    #     ctx = super(ProjectAutofill, self).get_context_data(**kwargs)
+    #     ctx = {**ctx, **context}
+    #     return ctx
+
+    def post(self, request, name):
+        form = self.form_class(request.POST, request.FILES)
+        if form.is_valid():
+            upload = form.save()
+            job = read_pdf.delay(upload.file.path)
+            print(upload.file.path)
+            return HttpResponseRedirect(reverse('summit.apps.projects:project-progress') + '?job=' + job.id)
+        else:
+            form = self.form_class()
+            return render(request, self.template_name, {'form': form})
+
+
+class ProjectProgress(UpdateView):
+    template_name = 'apps/projects/progress.html'
+    model = ProjectCreate
+
+    def get(self, request, *args, **kwargs):
+        print('over here\n')
+        if 'job' in request.GET:
+            job_id = request.GET['job']
+            job = AsyncResult(job_id)
+            data = job.result or job.state
+            context = {
+                'data': data,
+                'task_id': job_id,
+                'url': reverse('summit.apps.projects:summit.apps.projects_Create Project') + '?job=' + job_id,
+            }
+            return render(request, self.template_name, context)
+        return render(request, self.template_name)
+
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            if 'task_id' in request.POST.keys() and request.POST['task_id']:
+                task_id = request.POST['task_id']
+                task = AsyncResult(task_id)
+                data = task.result or task.state
+            else:
+                data = 'No task_id in the request'
+        else:
+            data = 'This is not an ajax request'
+
+        # if data == 'SUCCESS':
+        #     return HttpResponseRedirect(reverse('summit.apps.projects:project-create'))
+
+        json_data = json.dumps(data)
+        return HttpResponse(json_data, content_type='application/json')
 
 
 class ProjectModifications(CreateView):
@@ -662,19 +848,3 @@ def export_to_csv(request):
 
 def change_history(request, id):
     return HttpResponseRedirect(reverse('admin:summit_projects_project_history', args=id))
-
-
-def project_autofill(request, name):
-    template_name = 'apps/projects/project_autofill.html'
-    context = {
-        'name': name,
-        'pagetitle': 'Autofill Project Form',
-        'title': 'Autofill Project Form',
-        'bannerTemplate': 'none',
-        'cssFiles': [
-        ],
-        'jsFiles': [
-            'js/apps/projects/fileUpload.js'
-        ],
-    }
-    return render(request, template_name, context)

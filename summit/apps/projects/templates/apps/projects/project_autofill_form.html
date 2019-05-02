@@ -1,0 +1,44 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="card">
+  <div class="card-header">
+      <h3>Autofill</h3>
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">Please fill out all fields.</h5>
+
+        <form class="form-horizontal" action="" id="autofill-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+<!--            <label class="control-label col-sm-auto"><b><u>Current Files</u></b><br></label>-->
+<!--            {% if files %}-->
+<!--                {% for file in files %}-->
+<!--                    <br><a href=" {{ file.file.url }} " target="_blank"> {{ file.file }}</a><br>-->
+<!--                {% endfor %}-->
+<!--            {% else %}-->
+<!--            <br>No files have been added-->
+<!--            {% endif %}-->
+
+            <input class="btn btn-primary" type="submit" value="Submit">
+        </form>
+
+      <p>
+</p>
+<div class="status"></div>
+   {% if task_id %}
+   <div class="progress">
+       <div class="bar"></div>
+   </div>
+
+{% endif %}
+</div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+
+{% endblock %}
+
+

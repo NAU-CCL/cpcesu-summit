@@ -1,5 +1,11 @@
 from . import choices
 import datetime
+from decimal import Decimal
+from django.core.validators import MinValueValidator
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
+from django.utils import timezone
+
 from django.db import models
 from simple_history.models import HistoricalRecords
 
@@ -11,7 +17,10 @@ _help_text = choices.ProjectChoices.help_text
 
 
 def get_directory_path(instance, filename):
-    return 'projects/{0}/{1}'.format(instance.project.id, filename)
+    if instance.id is None:
+        return 'autofill/{0}'.format(filename)
+    else:
+        return 'projects/{0}/{1}'.format(instance.project.id, filename)
 
 
 def get_mod_directory_path(instance, filename):
@@ -48,7 +57,7 @@ class Project(AuditModel):
     cesu_unit = models.ForeignKey(CESUnit, on_delete=models.CASCADE,
                                   related_name='cesu_unit', default=None, verbose_name="CESUnit", blank=True, null=True)
     description = models.TextField(help_text=_help_text['description'], verbose_name="Abstract/Description", blank=True)
-    discipline = models.CharField(max_length=20, choices=DISCIPLINE,
+    discipline = models.CharField(max_length=21, choices=DISCIPLINE,
                                   help_text=_help_text['discipline'], blank=True,
                                   default=DISCIPLINE[0])
     exec_start_date = models.DateField(blank=True, default="2019-1-1", verbose_name="Executed")
@@ -95,7 +104,7 @@ class Project(AuditModel):
                                       choices=SOURCE_OF_FUNDING, default=SOURCE_OF_FUNDING[0])
     staff_member = models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="Staff Member",
                                      blank=True, related_name='staff_member', default=None, null=True)
-    status = models.CharField(max_length=20, choices=STATUS, default=STATUS[0], blank=True)
+    status = models.CharField(max_length=50, choices=STATUS, default=STATUS[0], blank=True)
 
     tech_rep = models.ForeignKey(UserProfile, help_text=_help_text['tech_rep'], blank=True,
                                  verbose_name="Agreements Tech Representative", null=True)
@@ -124,11 +133,14 @@ class Project(AuditModel):
                                     blank=True, default=0.0)
     alt_coord = models.CharField(max_length=500, help_text=_help_text['alt_coord'], blank=True,
                                  verbose_name="Alternate Research Coordinator / CESU Representative")
+
     req_iacuc = models.BooleanField(verbose_name="Requires IACUC Review/ Concurrence", default=False, blank=True)
     youth_vets = models.CharField(choices=AWARD_OFFICE, max_length=500, blank=True, null=True)
     field_of_science_sub = models.CharField(choices=FIELD_OF_SCIENCE_SUB, max_length=100,
                                             blank=True, null=True, verbose_name="Sub-Fields (Field of Science)",
                                             default=FIELD_OF_SCIENCE_SUB[0])
+
+    job_id = models.CharField(max_length=500, blank=True, null=True)
 
     def get_absolute_url(self):
         from django.urls import reverse
