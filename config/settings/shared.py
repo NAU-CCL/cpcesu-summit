@@ -43,7 +43,7 @@ DJANGO_APPS = [
 
     # Other Django-related libraries (3rd party)
     'django_celery_beat',
-    'simple_history',
+    'rest_framework',
 ]
 
 PROJ_APPS = [
@@ -174,3 +174,7 @@ CELERY_BROKER_URL = 'redis://localhost'
 CELERY_RESULT_BACKEND = 'redis'
 
 DEFAULT_FROM_EMAIL = 'CPCESU Project Management System <cpcesu@nau.edu>'
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}

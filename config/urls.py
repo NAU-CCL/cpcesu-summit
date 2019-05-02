@@ -25,6 +25,12 @@ from summit.libs.auth.vars import app_regex as auth_regex, app_name as auth_name
 from summit.apps.docs.vars import app_regex as docs_regex, app_name as docs_name
 from summit.apps.projects.vars import app_regex as project_regex, app_name as project_name
 
+from rest_framework import routers
+from summit.apps.projects import views
+# REST Endpoints
+router = routers.DefaultRouter()
+router.register(r'federal_agencies', views.FederalAgencyViewSet)
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(auth_regex, include('django.contrib.auth.urls')),
@@ -33,6 +39,8 @@ urlpatterns = [
     url(docs_regex, include(docs_name + '.urls')),
     url(project_regex, include(project_name + '.urls')),
     url(auth_regex, include(auth_name + '.urls2')),
+    url(r'^api/', include(router.urls)),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ] + static(prefix=settings.STATIC_URL, document_root=settings.STATIC_ROOT)\
               + static(prefix=settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

@@ -15,7 +15,7 @@ from celery.result import AsyncResult
 import json
 
 from .tasks import read_pdf
-from summit.libs.auth.models import UserProfile, CESUnit
+from summit.libs.auth.models import UserProfile, CESUnit, FederalAgency, Partner, UserGroup
 from .models import Project, File, Location, Modification, ModFile
 from .forms import ProjectForm, ProjectFileForm, LocationForm, ModificationForm, ModificationFileForm, ContactForm
 
@@ -264,12 +264,10 @@ class ProjectCreate(CreateView):
                 'title': 'Create Project',
                 'bannerTemplate': 'none',
                 'cssFiles': [
-                    'libs/mdb/css/addons/datatables.min.css',
-                    'css/apps/projects/dashboard.css'
+                    'css/apps/projects/autofill.css',
                 ],
                 'jsFiles': [
-                    'libs/mdb/js/addons/datatables.min.js',
-                    'js/apps/projects/dashboard.js'
+                    'js/apps/projects/autocomplete.js',
                 ],
                 'form': self.get_form_class(),
                 'file_form': ProjectFileForm()
@@ -311,6 +309,7 @@ class ProjectCreate(CreateView):
                                             instance=self.object)
         files = request.FILES.getlist('file')
         if project_form.is_valid():
+            project_form.instance.federal_agency = FederalAgency.objects.get(name=project_form.cleaned_data['federal_agency'])
             self.object = project_form.save()
             if self.object.status != 'DRAFT':
                 self.confirm_status = True
@@ -357,16 +356,15 @@ class ProjectEdit(UpdateView):
             'title': 'Edit Project',
             'bannerTemplate': 'none',
             'cssFiles': [
-                'libs/mdb/css/addons/datatables.min.css',
-                'css/datatables/dashboard.css'
+                'css/apps/projects/autofill.css',
             ],
             'jsFiles': [
-                'libs/mdb/js/addons/datatables.min.js',
-                'js/datatables/dashboard.js'
+                'js/apps/projects/autocomplete.js',
             ],
             'files': File.objects.filter(project=self.object),
             'file_form': ProjectFileForm(),
-            'total_award_amount': self.total_award_amount()
+            'total_award_amount': self.total_award_amount(),
+            'federal_agency': self.get_object().federal_agency
 
         }
         ctx = super(ProjectEdit, self).get_context_data(**kwargs)
@@ -380,6 +378,8 @@ class ProjectEdit(UpdateView):
                                             instance=self.object)
         files = request.FILES.getlist('file')
         if project_form.is_valid() and project_file_form.is_valid():
+            project_form.instance.federal_agency = FederalAgency.objects.get(
+                name=project_form.cleaned_data['federal_agency'])
             self.object = project_form.save()
             for f in files:
                 project_file_instance = File(file=f, project=self.object)
@@ -391,48 +391,6 @@ class ProjectEdit(UpdateView):
             return self.render_to_response(ctx)
             super(ProjectEdit, self).post(request)
         return HttpResponseRedirect(self.get_success_url())
-
-
-# def project_form_redirect(request, name):
-#     template_name = 'apps/projects/project_form_redirection.html'
-#
-#     context = {
-#         'name': name,
-#         'pagetitle': 'not Home',
-#         'title': 'Form rediceiction, autofill or manual',
-#         'bannerTemplate': 'fullscreen',
-#         'header': {
-#             'heading1': 'Project Creation Redirection',
-#             'heading2': '',
-#             'buttons': [
-#                 {
-#                     'name': 'Autofill',
-#                     'link': '/projects/autofill'
-#                 },
-#                 {
-#                     'name': 'Manual',
-#                     'link': '/projects/create',
-#                 }
-#             ]
-#         },
-#     }
-#     return render(request, template_name, context)
-
-# def project_autofill(request, name):
-#     template_name = 'apps/projects/project_autofill.html'
-#     context = {
-#         'name': name,
-#         'pagetitle': 'Autofill Project Form',
-#         'title': 'Autofill Project Form',
-#         'header': {
-#         },
-#         'cssFiles': [
-#         ],
-#         'jsFiles': [
-#             'js/apps/projects/fileUpload.js'
-#         ],
-#     }
-#     return render(request, template_name, context)
 
 class ProjectAutofill(View):
     form_class = ProjectFileForm
@@ -785,6 +743,14 @@ def request_project_info(request, project_id):
 
     return render(request, template_name, {'form': form, 'project': project})
 
+
+from rest_framework import viewsets
+from .serializers import FederalAgencySerializer
+
+
+class FederalAgencyViewSet(viewsets.ModelViewSet):
+    queryset = FederalAgency.objects.all().order_by('name')
+    serializer_class = FederalAgencySerializer
 
 #
 #

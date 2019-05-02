@@ -23,7 +23,10 @@
                 <h6><label class="control-label col-sm-auto"><b>{{ form.federal_agency.label_tag }}</b></label></h6>
             </td>
             <td>
-                {{ form.federal_agency }}<br><br>
+                <div class="autocomplete">
+                    <input class="form-control" id="federal_agency" type="text" name="federal_agency" placeholder="Federal Agency" autocomplete="off" value="{{federal_agency.name}}">
+                </div><br/>
+<!--                {{ form.federal_agency }}<br><br>-->
             </td>
         </tr>
         <tr>
