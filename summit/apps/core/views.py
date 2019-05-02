@@ -16,13 +16,14 @@ def index(request, name):
             'buttons': [
                 {
                     'name': 'About Summit',
-                    'link': "summit.apps.core:summit.apps.core_About",
+                    'link': "summit.apps.core:about",
                     'uses_reverse': True
                 },
                 {
-                    'name': 'Current Projects',
-                    'link': ("summit.apps.projects:summit.apps.projects_All Projects" if request.user.is_authenticated
-                             else "summit.apps.projects:summit.apps.projects_Public Projects"),
+                    'name': ('Your Dashboard' if request.user.is_authenticated
+                             else 'Current Projects'),
+                    'link': ("summit.apps.projects:project_dashboard" if request.user.is_authenticated
+                             else "summit.apps.projects:project_public_list"),
                     'uses_reverse': True
                     # 'target': '_blank'
                 }

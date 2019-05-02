@@ -83,7 +83,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, email, password):
+    def create_superuser(self, username, email, first_name, last_name, password):
         """
         Used to create a super user (CPCESU admin) with all permissions
         :param username: user's username
@@ -100,6 +100,16 @@ class UserManager(BaseUserManager):
         user.is_admin = True
         user.is_superuser = True
         user.save(using=self._db)
+        print(user)
+
+        # CPCESU
+        group = CESUnit.objects.get(pk=1)
+        print(group)
+
+        # New profile with group
+        profile = UserProfile(user=user, first_name=first_name, last_name=last_name, assigned_group=group)
+        profile.save(using=self._db)
+        print(profile)
         return user
 
 
@@ -119,8 +129,6 @@ class User(AbstractUser):
                                              "backend",
                                    verbose_name="Admin site access?")
 
-    group = models.ForeignKey(UserGroup, null=True, blank=True, on_delete=models.SET_NULL)
-
     external_id = models.CharField(
         max_length=100,
         unique=True,
@@ -130,7 +138,7 @@ class User(AbstractUser):
 
     objects = UserManager()
 
-    REQUIRED_FIELDS = ['email']
+    REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
 
     def get_full_name(self):
         """
@@ -181,7 +189,7 @@ class UserProfile(AuditModel):
     fax_number = models.CharField(max_length=30, blank=True)
     email_address = models.EmailField(blank=True)
 
-    assigned_group = models.ForeignKey(UserGroup, blank=True, null=True, on_delete=models.CASCADE, verbose_name="Assigned Organization")
+    assigned_group = models.ForeignKey(UserGroup, blank=True, null=True, on_delete=models.SET_NULL, verbose_name="Assigned Organization")
 
     def get_full_name(self):
         if self.user is not None:

@@ -108,17 +108,18 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
         all_projects = self.get_queryset()
 
         user = self.request.user
-        user_group = self.request.user.group
 
         try:
             profile = UserProfile.objects.get(user=user)
         except ObjectDoesNotExist:
             profile = None
 
-        try:
-            ces_unit = CESUnit.objects.get(id=user_group.id)
-        except (ObjectDoesNotExist, AttributeError) as e:
-            ces_unit = None
+        if profile is not None:
+            try:
+                ces_unit = CESUnit.objects.get(id=profile.assigned_group.id)
+            except (ObjectDoesNotExist, AttributeError) as e:
+                ces_unit = None
+        else: ces_unit = None
 
         user_filtered_projects = all_projects.filter(cesu_unit=ces_unit, staff_member=profile, status="DRAFT") \
                                  | all_projects.filter(cesu_unit=None, status="DRAFT") \
@@ -204,28 +205,18 @@ class ProjectPublicDetail(DetailView):
     model = Project
     template_name = 'apps/projects/project_detail_public.html'
 
+    def total_award_amount(self):
+        prj = self.get_object()
+        modifications = Modification.objects.filter(project=prj)
+        total_mod_amount = 0
+        for mod in modifications:
+            total_mod_amount += mod.mod_amount
+        return (prj.budget or 0) + total_mod_amount
+
     def get_context_data(self, **kwargs):
         context = {
-            # 'name': self.kwargs['name'],
             'pagetitle': 'Projects Details',
             'title': 'Projects Details',
-            # 'bannerTemplate': 'fullscreen',
-            'header': {
-                # 'background': 'apps/core/imgs/default.jpg',
-                # 'heading1': 'Heading 1',
-                # 'heading2': 'Heading 2',
-                # 'buttons': [
-                #     {
-                #         'name': 'Button 1',
-                #         'link': '/#button1'
-                #     },
-                #     {
-                #         'name': 'External Button',
-                #         'link': 'https://www.google.com/',
-                #         'target': '_blank'
-                #     }
-                # ]
-            },
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
                 'css/datatables/dashboard.css'
@@ -233,11 +224,11 @@ class ProjectPublicDetail(DetailView):
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
                 'js/datatables/dashboard.js'
-            ]
+            ],
+            'total_award_amount': self.total_award_amount()
         }
         ctx = super(ProjectPublicDetail, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
-        # ctx['history_data'] =
         return ctx
 
     def get_object(self, **kwargs):
@@ -257,22 +248,21 @@ class ProjectCreate(CreateView):
         return super(ProjectCreate, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('summit.apps.projects:project-detail', args=[str(self.object.id)])
+        return reverse('summit.apps.projects:project_detail', args=[str(self.object.id)])
 
     def get(self, request, *args, **kwargs):
         if 'job' in request.GET:
             job_id = request.GET['job']
             project = Project.objects.get(job_id=job_id)
             form = self.form_class(instance=project)
-            #upload = File.objects.filter()[:1].get()
-            #print(str(upload.file.path))
 
-            return render(request, self.template_name, {'form': form,})#'file_path': upload.file.path})
+            return render(request, self.template_name, {'form': form})
         else:
             context = {
                 'name': self.kwargs['name'],
                 'pagetitle': 'Create Project',
                 'title': 'Create Project',
+                'bannerTemplate': 'none',
                 'cssFiles': [
                     'libs/mdb/css/addons/datatables.min.css',
                     'css/apps/projects/dashboard.css'
@@ -359,7 +349,7 @@ class ProjectEdit(UpdateView):
         return (prj.budget or 0) + total_mod_amount
 
     def get_success_url(self):
-        return reverse('summit.apps.projects:project-detail', args=[str(self.object.id)])
+        return reverse('summit.apps.projects:project_detail', args=[str(self.object.id)])
 
     def get_context_data(self, **kwargs):
         context = {
@@ -521,7 +511,7 @@ class ProjectAutofill(View):
             upload = form.save()
             job = read_pdf.delay(upload.file.path)
             print(upload.file.path)
-            return HttpResponseRedirect(reverse('summit.apps.projects:project-progress') + '?job=' + job.id)
+            return HttpResponseRedirect(reverse('summit.apps.projects:project_upload_progress') + '?job=' + job.id)
         else:
             form = self.form_class()
             return render(request, self.template_name, {'form': form})
@@ -540,12 +530,13 @@ class ProjectProgress(UpdateView):
             context = {
                 'data': data,
                 'task_id': job_id,
-                'url': reverse('summit.apps.projects:summit.apps.projects_Create Project') + '?job=' + job_id,
+                'url': reverse('summit.apps.projects:project_create') + '?job=' + job_id,
             }
             return render(request, self.template_name, context)
         return render(request, self.template_name)
 
     def post(self, request, *args, **kwargs):
+        print('over there\n')
         if request.is_ajax():
             if 'task_id' in request.POST.keys() and request.POST['task_id']:
                 task_id = request.POST['task_id']
@@ -555,9 +546,6 @@ class ProjectProgress(UpdateView):
                 data = 'No task_id in the request'
         else:
             data = 'This is not an ajax request'
-
-        # if data == 'SUCCESS':
-        #     return HttpResponseRedirect(reverse('summit.apps.projects:project-create'))
 
         json_data = json.dumps(data)
         return HttpResponse(json_data, content_type='application/json')
@@ -569,7 +557,7 @@ class ProjectModifications(CreateView):
     form_class = ModificationForm
 
     def get_success_url(self):
-        return reverse('summit.apps.projects:project-detail',
+        return reverse('summit.apps.projects:project_detail',
                        args=[self.kwargs.get("id")])
 
     def get_context_data(self, **kwargs):
@@ -626,7 +614,7 @@ class ProjectModEdit(UpdateView):
         return Modification.objects.get(mod_num=pk_, project=prj_)
 
     def get_success_url(self):
-        return reverse('summit.apps.projects:project-detail',
+        return reverse('summit.apps.projects:project_detail',
                        args=[self.kwargs.get("id")])
 
     def get_context_data(self, **kwargs):
@@ -776,7 +764,7 @@ class LocationEdit(UpdateView):
         return get_object_or_404(Location, pk=pk_)
 
     def get_success_url(self):
-        return reverse('summit.apps.projects:location-detail', args=[str(self.object.id)])
+        return reverse('summit.apps.projects:location_detail', args=[str(self.object.id)])
 
     def get_context_data(self, **kwargs):
         context = {
@@ -844,7 +832,3 @@ def export_to_csv(request):
                  project.tent_start_date, project.type, project.youth_vets])
 
     return response
-
-
-def change_history(request, id):
-    return HttpResponseRedirect(reverse('admin:summit_projects_project_history', args=id))

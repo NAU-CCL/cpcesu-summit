@@ -26,7 +26,7 @@ class AppLinks:
     all_contacts = DjangoLink('all_contacts', app_name, app_regex,
                               r'^all_contacts/$', views.all_contacts, 'All Contacts',
                               link_args={
-                                  'auth_required': True, 'app_regex': app_regex,
+                                  'auth_required': True,
                                   'dropdown_id': app_name,
                                   'dropdown_name': 'Personnel'
                               })

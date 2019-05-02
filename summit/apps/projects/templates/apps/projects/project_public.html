@@ -1,4 +1,5 @@
 {% extends 'layouts/base.html' %}
+{% load common_tags %}
 {% load static %}
 
 {% block content %}
@@ -40,7 +41,7 @@
                 <td>${{ project.budget}}</td>
                 <td>
                     <a class="btn btn-outline-primary btn-sm m-0 waves-effect"
-                    href="{% url 'summit.apps.projects:project-detail-public' id=project.id %}">
+                    href="{% get_url_from_app_link 'summit.apps.projects' 'project_public_detail' id=project.id %}">
                         View More
                     </a>
                 </td>

@@ -1,4 +1,5 @@
 {% extends 'layouts/base.html' %}
+{% load common_tags %}
 {% load static %}
 
 {% block primary %}
@@ -6,7 +7,7 @@
 <p>Locations added to Projects such as states, parks, etc.</p>
 
 <div>
-    <a href="{% url 'summit.apps.projects:location-create' %}" class="btn btn-primary btn-sm m-0 waves-effect">Create Location</a>
+    <a href="{% get_url_from_app_link 'summit.apps.projects' 'location_create' %}" class="btn btn-primary btn-sm m-0 waves-effect">Create Location</a>
 </div>
 
 <table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0" width="100%">
@@ -24,7 +25,7 @@
             <td href="">{{ location.name }}</td>
             <td>
                 <a type="button" class="btn btn-outline-primary btn-sm m-0 waves-effect"
-                href="{% url 'summit.apps.projects:location-detail' id=location.id %}">
+                href="{% get_url_from_app_link 'summit.apps.projects' 'location_detail' id=location.id %}">
                     View More
                 </a>
             </td>

@@ -1,30 +1,41 @@
 {% extends 'layouts/base.html' %}
+{% load common_tags %}
 {% load static %}
 
 {% block content %}
     <h1>Public Project Details</h1>
     <div class="card-header">
-        <h2 align="center">{{ object.project_title }}</h2><p align="center">P-Number: {{ object.p_num }} </p>
+        <h2 align="center">{{ object.project_title }}</h2>
+        <p align="center">Award Number: {{ object.p_num|default:'Unknown' }} |
+        Location: {{ object.location|default:'Unknown' }}</p>
     </div><br>
 
     <span>
-        <a href="{% url 'summit.apps.projects:project-detail-public' id=object.id %}">
+        <a href="{% get_url_from_app_link 'summit.apps.projects' 'project_public_detail' id=object.id %}">
             <button type="button" class="btn btn-light">Request Project Information</button>
         </a>
     </span>
 
     <div class="row">
-        <div class="card col-sm-12">
-            <table>
+        <div class="card col-sm-12 ">
+            <table class="table table-striped table-bordered">
                 <tbody>
                     <tr>
-                        <td><b>Partner:</b></td><td>{{ object.partner }}</td> <td><b>Federal Agency:</b></td><td>{{ object.federal_agency }}</td>
+                        <td><b>Project Status:</b> {{ object.status }}</td>
+                        <td><b>Total Funding: {{ total_award_amount }}</b></td>
+                        <td><b>Start Year:</b> {{ object.exec_start_date|date:'Y' }}</td>
+                        <td><b>Youth/Veteran Involvement:</b> {{ object.youth_vets }}</td>
                     </tr>
                     <tr>
-                        <td><b>Type:</b></td> <td>{{ object.type }}</td> <td><b>Student Support:</b></td><td>{{ object.student_support }}</td>
+                        <td colspan="2"><b>Partner:</b> {{ object.partner }}</td>
+                        <td colspan="2"><b>Federal Agency:</b> {{ object.federal_agency }}</td>
                     </tr>
                     <tr>
-                        <td><b>Description:</b></td><td colspan="3">{{ object.description }}</td>
+                        <td colspan="2"><b>Principle Investigator:</b> {{ object.pp_i.first_name }} {{ object.pp_i.last_name }}</td>
+                        <td colspan="2"><b>Federal Project Manager:</b> {{ object.project_manager.first_name }} {{ object.project_manager.last_name }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="6"><b>Description:</b><br>{{ object.description }}</td>
                     </tr>
                 </tbody>
             </table>

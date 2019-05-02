@@ -16,18 +16,26 @@ Including another URLconf
 
 from django.conf import settings
 from django.conf.urls import url, include
+from django.conf.urls.static import static
 from django.contrib import admin
+
+from summit.libs.auth.vars import app_regex as auth_regex, app_name as auth_name
+
+
+from summit.apps.docs.vars import app_regex as docs_regex, app_name as docs_name
+from summit.apps.projects.vars import app_regex as project_regex, app_name as project_name
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^accounts/', include('django.contrib.auth.urls')),
-    url(r'^accounts/', include('summit.libs.auth.urls')),
+    url(auth_regex, include('django.contrib.auth.urls')),
+    url(auth_regex, include(auth_name + '.urls')),
     url('', include('summit.apps.core.urls')),
-    url(r'^docs/', include('summit.apps.docs.urls')),
-    url(r'^projects/', include('summit.apps.projects.urls')),
-    url(r'^accounts/', include('summit.libs.auth.urls2')),
+    url(docs_regex, include(docs_name + '.urls')),
+    url(project_regex, include(project_name + '.urls')),
+    url(auth_regex, include(auth_name + '.urls2')),
+] + static(prefix=settings.STATIC_URL, document_root=settings.STATIC_ROOT)\
+              + static(prefix=settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-]
 
 handler400 = 'summit.libs.views.error400'
 handler403 = 'summit.libs.views.error403'

@@ -1,4 +1,5 @@
 {% extends 'layouts/base.html' %}
+{% load common_tags %}
 {% load static %}
 
 {% block primary %}
@@ -10,7 +11,7 @@
 {% endif %}
 
     <div class="container-fluid">
-        <form action="{% url 'summit.apps.projects:project-export-csv' %}" method="post" enctype="multipart/form-data"
+        <form action="{% get_url_from_app_link 'summit.apps.projects' 'project_export_csv' %}" method="post" enctype="multipart/form-data"
               name="export_form">
             {% csrf_token %}
             <div>
@@ -56,7 +57,7 @@
                         <td>{{ project.budget }}</td>
                         <td>
                             <a class="btn btn-outline-primary btn-sm m-0 waves-effect"
-                               href="{% url 'summit.apps.projects:project-detail' id=project.id %}">
+                               href="{% get_url_from_app_link 'summit.apps.projects' 'project_detail' id=project.id %}">
                                 Details
                             </a>
                         </td>
@@ -68,7 +69,7 @@
 
         </form>
         {% if not table2_disabled%}
-        <form action="{% url 'summit.apps.projects:project-export-csv' %}" method="post" enctype="multipart/form-data"
+        <form action="{% get_url_from_app_link 'summit.apps.projects' 'project_export_csv' %}" method="post" enctype="multipart/form-data"
               name="export_form">
             {% csrf_token %}
 
@@ -110,7 +111,7 @@
                         <td>{{ project.staff_member.first_name }} {{ project.staff_member.last_name }}</td>
                         <td>
                             <a class="btn btn-outline-primary btn-sm m-0 waves-effect"
-                               href="{% url 'summit.apps.projects:project-detail' id=project.id %}">
+                               href="{% get_url_from_app_link 'summit.apps.projects' 'project_detail' id=project.id %}">
                                 Details
                             </a>
                         </td>

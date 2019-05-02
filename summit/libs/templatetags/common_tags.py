@@ -5,17 +5,26 @@ from django.urls import reverse
 
 from summit.libs.auth.vars import app_name as auth_app_name, AppLinks as AuthAppLinks
 
+from summit.apps.core.vars import app_name as core_app_name, AppLinks as CoreAppLinks
+from summit.apps.docs.vars import app_name as docs_app_name, AppLinks as DocsAppLinks
+from summit.apps.projects.vars import app_name as projects_app_name, AppLinks as ProjectsAppLinks
+
 register = template.Library()
 
 app_links = {
-    auth_app_name: AuthAppLinks
+    auth_app_name: AuthAppLinks,
+
+    core_app_name: CoreAppLinks,
+    docs_app_name: DocsAppLinks,
+    projects_app_name: ProjectsAppLinks
 }
 
 
 @register.simple_tag()
-def get_url_from_app_link(app_name, link_ident):
-    app_link = getattr(app_links[app_name], link_ident)
-    return reverse(app_link.app_name + ":" + app_link.ident)
+def get_url_from_app_link(app_name, link_ident, **kwargs):
+    app_var = app_links[app_name]
+    app_link = getattr(app_var, link_ident)
+    return reverse(app_name + ":" + app_link.ident, kwargs=kwargs)
 
 
 @register.inclusion_tag('partials/nav_links.html', takes_context=True)
@@ -24,7 +33,7 @@ def nav_links(context):
         name = context['name']
     except KeyError:
         name = "NONE"
-        context['name'] = "NONE"
+        context['name'] = name
     nav_links_groups = links.get()
 
     nav_links_html = [

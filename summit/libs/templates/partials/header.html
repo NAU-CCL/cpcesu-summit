@@ -38,7 +38,7 @@
               {% if notifications%}
                 {% for notification in notifications %}
                 <a class="intercept"
-                   href="{% url 'summit.apps.projects:project-detail' id=notification.project.pk %}"
+                   href="{% get_url_from_app_link 'summit.apps.projects' 'project_detail' id=notification.project.pk %}"
                    data-arg1="{{ notification.pk }}">
                 {{ notification.project.project_title }} - {{ notification.type }}
                 </a>
