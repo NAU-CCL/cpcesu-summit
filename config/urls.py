@@ -51,8 +51,8 @@ handler403 = 'summit.libs.views.error403'
 handler404 = 'summit.libs.views.error404'
 handler500 = 'summit.libs.views.error500'
 
-if settings.DEBUG:
-    import debug_toolbar
-    urlpatterns = [
-        url('__debug__/', include(debug_toolbar.urls)),
-    ] + urlpatterns
+# if settings.DEBUG:
+#     import debug_toolbar
+#     urlpatterns = [
+#         url('__debug__/', include(debug_toolbar.urls)),
+#     ] + urlpatterns

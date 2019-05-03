@@ -50,7 +50,7 @@
                     </tr>
                     <tr>
                         <td><b>Awarding Office:</b></td>
-                        <td>ADD</td>
+                        <td>{{ object.get_award_office_display }}</td>
                     </tr>
                     <tr>
                         <td><b>Partner:</b></td>
@@ -263,9 +263,14 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><b>End:<br><small>(from modifications)</small></b></td>
+                        <td><b>Extended:</b></td>
                         <td>
-                            {{ end_date_from_mods|default:'TO DO' }}
+                            {{ date_ext|default:'No extension added' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <small>(from modifications)</small>
                         </td>
                     </tr>
                     </tbody>
@@ -297,6 +302,12 @@
                         <td><b>Field of Science:</b></td>
                         <td>
                             {{ object.get_field_of_science_display }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Subfield:</b></td>
+                        <td>
+                            {{ object.get_field_of_science_sub_display }}
                         </td>
                     </tr>
                     </tbody>
@@ -350,6 +361,10 @@
                         </tr>
                         <tr>
                             <td><b>Executed:</b></td><td>{{ mod.mod_executed }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Extension:</b></td>
+                            <td>{{ mod.mod_extension|default:'No Extension' }}</td>
                         </tr><br>
                     </tbody>
                 </table>
