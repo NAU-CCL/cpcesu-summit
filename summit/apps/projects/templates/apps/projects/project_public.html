@@ -1,35 +1,49 @@
-{% extends 'layouts/base.html' %}
+{% extends my_template %}
+
 {% load common_tags %}
 {% load static %}
 
 {% block content %}
 
-{% if pagetitle %}
-    <h1 style="text-align: center">{{ pagetitle }}</h1>
+{% if not is_widget%}
+    {% if pagetitle %}
+        <h1 style="text-align: center">{{ pagetitle }}</h1>
+    {% else %}
+        <h1 style="text-align: center">Public Projects</h1>
+    {% endif %}
+
+
+    <p class="animated fadeIn text-muted">List for publicly viewable projects that are currently active or are formally
+        completed and are archived.</p>
 {% else %}
-    <h1 style="text-align: center">Public Projects</h1>
+    <p class="animated fadeIn text-muted">This is all publicly viewable project done with the CPCESU. For a better viewing experience,
+    we suggest you visit <a href="http://ryloth.ceias.nau.edu/projects/public_public" target="_blank">our Project Management System</a>.</p>
 {% endif %}
+    <div class="table-responsive">
+        <style>
+            tr td, tr th{
+                padding: 0.5rem 0 !important;
+                margin: 0 !important;
+                vertical-align: middle !important;
+            }
+        </style>
 
-
-<p class="animated fadeIn text-muted">List for publicly viewable projects that are currently active or are formally
-    completed and are archived.</p>
-
-    <table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0" width="100%">
-        <thead>
+        <table class="dtBasicExample table table-striped table-bordered" width="100%">
+            <thead>
             <tr>
-                <th class="th-sm">Award Number</th>
-                <th class="th-sm">Title</th>
-                <th class="th-sm">Status</th>
-                <th class="th-sm">Federal Agency</th>
-                <th class="th-sm">Non-Gov't Partner</th>
-                <th class="th-sm">Start Date</th>
-                <th class="th-sm">End Date</th>
-                <th class="th-sm">Total Funds</th>
-                <th class="th-sm">Details</th>
+                <th>Award Number</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Federal Agency</th>
+                <th>Non-Gov't Partner</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Total Funds</th>
+                <th>Details</th>
             </tr>
-        </thead>
-        <tbody>
-    {% for project in projects %}
+            </thead>
+            <tbody>
+            {% for project in projects %}
             <tr>
                 <th scope="row">{{ project.p_num }}</th>
                 <td href="">{{ project.project_title }}</td>
@@ -41,12 +55,14 @@
                 <td>${{ project.budget}}</td>
                 <td>
                     <a class="btn btn-outline-primary btn-sm m-0 waves-effect"
-                    href="{% get_url_from_app_link 'summit.apps.projects' 'project_public_detail' id=project.id %}">
+                       href="{% get_url_from_app_link 'summit.apps.projects' 'project_public_detail' id=project.id %}"
+                       target="{{ link_target }}">
                         View More
                     </a>
                 </td>
             </tr>
-    {% endfor %}
-        </tbody>
-    </table>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

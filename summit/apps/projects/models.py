@@ -23,6 +23,7 @@ def get_mod_directory_path(instance, filename):
 
 
 class Location(models.Model):
+    abbrv = models.TextField(max_length=64, unique=True)
     name = models.TextField(max_length=255, unique=True)
 
     def get_absolute_url(self):
@@ -30,10 +31,10 @@ class Location(models.Model):
         return reverse('summit.apps.projects:location_detail', args=[str(self.id)])
 
     def __str__(self):
-        return self.name
+        return self.name + " (" + self.abbrv + ")"
 
 
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Project(AuditModel):
@@ -52,9 +53,8 @@ class Project(AuditModel):
     # Fields to be required: (Tentative)
     award_office = models.CharField(choices=AWARD_OFFICE, max_length=10, blank=True, null=True)
     budget = models.DecimalField(max_digits=12, decimal_places=2, help_text=_help_text['budget'], blank=True, null=True,
-                                 verbose_name="Initial", default=1000, validators=[MinValueValidator(Decimal('1000.00')),
-                                                                                   MaxValueValidator(Decimal('9999999.99'))])
-    cesu_unit = models.ForeignKey(CESUnit, on_delete=models.CASCADE,
+                                 verbose_name="Initial", default=0, validators=[MinValueValidator(Decimal(0.00)), MaxValueValidator(Decimal('9999999.99'))])
+    cesu_unit = models.ForeignKey(CESUnit, on_delete=models.SET_NULL,
                                   related_name='cesu_unit', default=None, verbose_name="CESUnit", blank=True, null=True)
     description = models.TextField(help_text=_help_text['description'], verbose_name="Abstract/Description", blank=True)
     discipline = models.CharField(max_length=21, choices=DISCIPLINE,
@@ -102,7 +102,7 @@ class Project(AuditModel):
     src_of_funding = models.CharField(max_length=500, help_text=_help_text['src_of_funding'],
                                       blank=True, verbose_name="Source of Funding",
                                       choices=SOURCE_OF_FUNDING, default=SOURCE_OF_FUNDING[0])
-    staff_member = models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="Staff Member",
+    staff_member = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, verbose_name="Staff Member",
                                      blank=True, related_name='staff_member', default=None, null=True)
     status = models.CharField(max_length=50, choices=STATUS, default=STATUS[0], blank=True)
 

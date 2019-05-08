@@ -3,9 +3,6 @@ from django.contrib import admin
 from .models import Project, File, Location, Modification, ModFile
 
 
-# from simple_history.admin import SimpleHistoryAdmin
-
-
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('project_title', 'sensitive', 'short_summary')
 

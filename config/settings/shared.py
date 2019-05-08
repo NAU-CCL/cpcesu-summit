@@ -76,7 +76,7 @@ DJANGO_MIDDLEWARES = [
     # Do not touch
 
     # Other Django-related libraries (3rd party)
-    # 'simple_history.middleware.HistoryRequestMiddleware',
+    # None
 ]
 
 PROJ_MIDDLEWARES = [

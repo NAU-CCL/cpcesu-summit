@@ -7,9 +7,13 @@ $(document).ready(function ()
     $('.dataTables_length').addClass('bs-select');
 
 
-    $('#select_all').click(function () {
-        // if (isChecked){
-        $('.export_list').prop("checked", !$('.export_list').prop("checked"));
-        // }
+    $('#select_all_1').click(function () {
+        $('.export_list_1').prop("checked", !$('.export_list_1').prop("checked"));
+        $('#select_all_1').prop("checked", $('.export_list_1').prop("checked"));
+    });
+
+    $('#select_all_2').click(function () {
+        $('.export_list_2').prop("checked", !$('.export_list_2').prop("checked"));
+        $('#select_all_1').prop("checked", $('.export_list_1').prop("checked"));
     });
 });

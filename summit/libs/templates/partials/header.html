@@ -1,4 +1,5 @@
 {% load common_tags %}
+{% load doc_tags %}
 {% load static %}
 
 
@@ -24,18 +25,24 @@
 
       <!-- Links -->
       {% nav_links %}
+
       <!-- Links -->
       <ul class="navbar-nav justify-content-center">
+        {% autoescape off %}
+        {% help_docs %}
+        {% endautoescape %}
+
         {% if request.user.is_authenticated %}
 
           <!-- Notifications -->
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle waves-effect waves-light" id="navbarDropdownMenuLink-5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Notifications
-            </a>
-            <div class="dropdown-menu dropdown-menu-right dropdown-info" aria-labelledby="navbarDropdownMenuLink-5">
 
-              {% if notifications%}
+        <!-- Profile -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle waves-effect waves-light" id="navbarDropdownMenuLink-4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Welcome, {{ request.user.username }}
+          </a>
+          <div class="dropdown-menu dropdown-menu-right dropdown-info" aria-labelledby="navbarDropdownMenuLink-4">
+            {% if notifications%}
                 {% for notification in notifications %}
                 <a class="intercept"
                    href="{% get_url_from_app_link 'summit.apps.projects' 'project_detail' id=notification.project.pk %}"
@@ -46,18 +53,10 @@
               {% else %}
                 <p class="dropdown-item">No new notifications</p>
               {% endif %}
-
-              <a class="dropdown-item waves-effect waves-light" href="/">Notification Center</a>
-            </div>
-          </li>
-
-        <!-- Profile -->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle waves-effect waves-light" id="navbarDropdownMenuLink-4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Welcome, {{ request.user.username }}
-          </a>
-          <div class="dropdown-menu dropdown-menu-right dropdown-info" aria-labelledby="navbarDropdownMenuLink-4">
+            <a class="dropdown-item waves-effect waves-light" href="/">Notification Center</a>
+            <div class="divider dropdown-divider"></div>
             <a class="dropdown-item waves-effect waves-light" href="{% get_url_from_app_link 'summit.libs.auth' 'view_my_contact' %}">My account</a>
+            <a class="dropdown-item waves-effect waves-light" href="{% url 'admin:index' %}">Admin site</a>
             <a class="dropdown-item waves-effect waves-light" href="{% url 'logout' %}">Log out</a>
           </div>
         </li>

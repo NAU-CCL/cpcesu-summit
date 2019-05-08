@@ -1,11 +1,10 @@
 from django.shortcuts import render
 
 
-def index(request, name):
+def index(request):
     template_name = 'apps/docs/doc_index.html'
 
     context = {
-        'name': name,
         'pagetitle': 'Docs Index',
         'title': 'Docs Index',
         'header': {
@@ -16,11 +15,10 @@ def index(request, name):
     return render(request, template_name, context)
 
 
-def details(request, name):
+def details(request):
     template_name = 'apps/docs/doc_details.html'
 
     context = {
-        'name': name,
         'pagetitle': 'Docs Details',
         'title': 'Docs Details',
         'header': {
@@ -31,11 +29,10 @@ def details(request, name):
     return render(request, template_name, context)
 
 
-def form(request, name):
+def form(request):
     template_name = 'apps/docs/doc_form.html'
 
     context = {
-        'name': name,
         'pagetitle': 'Docs Form',
         'title': 'Docs Form',
         'header': {
