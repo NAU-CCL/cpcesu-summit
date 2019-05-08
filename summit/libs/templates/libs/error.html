@@ -1,12 +1,13 @@
 {% extends 'layouts/base.html' %}
+{% load common_tags %}
 {% load static %}
 
 
-{% block primary %}
+{% block content %}
 <h1>{{ error_msg|default:"Looks like you've hit a snag in our system"}}!</h1>
 
 <p>{{ error_desc|default:"Please report this by using the 'Send Feedback' button at the top of this page" }}</p>
 
-<!--<a class="button" href="{% get_url_from_app_link 'summit.apps.core' 'home' %}">Send Feedback</a>-->
+    {#<!--<a class="button" href="{% get_url_from_app_link 'summit.apps.core' 'home' %}">Send Feedback</a>-->#}
 
 {% endblock %}

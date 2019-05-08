@@ -38,6 +38,7 @@ class ProjectChoices:
     DRAFTING = 'DRAFT'
     EXECUTED = 'EXECUTED'
     CLOSED = 'CLOSED'
+    APPROVED = 'APPROVED'
 
     NATURAL = 'NATURAL'
     CULTURAL = 'CULTURAL'
@@ -90,16 +91,6 @@ class ProjectChoices:
     YES = 'YES'
     NO = 'NO'
 
-    # Sub Fields for Field of Science
-    # ES - Atmospheric Sciences,
-    # ES - Geological Sciences,
-    # ES – Oceanography,
-    # ES - Environmental Sciences NEC,
-    # LS - Biological (excl.Environmental)
-    # LS - Environmental Biology,
-    # LS - Agricultural Science,
-    # LS - Medical Science,
-    # LS - Life Science NEC
     ES_AS = 'ES_AS'
     ES_GS = 'ES_GS'
     ES_O = 'ES_O'
@@ -137,8 +128,9 @@ class ProjectChoices:
     )
     STATUS = (
         (DRAFTING, 'Drafting'),
+        (APPROVED, 'Approved'),
         (EXECUTED, 'Executed'),
-        (CLOSED, 'Closed')
+        (CLOSED, 'Closed'),
     )
     DISCIPLINE = (
         (NONE, 'None'),

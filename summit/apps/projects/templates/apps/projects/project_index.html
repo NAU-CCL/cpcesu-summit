@@ -2,7 +2,8 @@
 {% load common_tags %}
 {% load static %}
 
-{% block primary %}
+{#{% block primary %}#}
+{% block content %}
 
 {% if pagetitle %}
     <h1 style="text-align: center">{{ pagetitle }}</h1>
@@ -18,43 +19,47 @@
                 <h5><b>{{ table1_header }}</b></h5>
                 <p class="animated fadeIn text-muted">{{ table1_desc }}</p>
             </div>
-
-            <table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0"
-                   style="width:100%">
+            <button class="btn btn-outline-success btn-sm m-0 waves-effect" type="submit" value="Submit"
+                    style="float: left;">
+                Export
+            </button>
+            <table class="dtBasicExample table-responsive-sm table-striped table-bordered" style="width: 100%;">
                 <thead>
                 <tr>
-                    <th class="th-sm">
-                        <button class="btn btn-outline-success btn-sm m-0 waves-effect" type="submit" value="Submit">
-                            Export
-                        </button>
+                    <th>
+                        <input type="checkbox" id="select_all">
                     </th>
-                    <th class="th-sm">P-Num</th>
-                    <th class="th-sm">Status</th>
-                    <th class="th-sm">Title</th>
-                    <th class="th-sm">Federal Agency</th>
-                    <th class="th-sm">Partner</th>
-                    <th class="th-sm">Type</th>
-                    <th class="th-sm">Discipline</th>
-                    <th class="th-sm">Fiscal Year</th>
-                    <th class="th-sm">Budget</th>
-                    <th class="th-sm">View Details</th>
+                    <th>Status</th>
+                    <th>FY</th>
+                    <th>Agency</th>
+                    <th>Award #</th>
+                    <th>Partner</th>
+                    <th>Title</th>
+                    <th>Total Amount</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>PM</th>
+                    <th>PI</th>
+                    <th>View Details</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for project in projects %}
                     <tr>
                         <th scope="row">
-                            <input type="checkbox" name="export_list" value="{{ project.id }}"/>
+                            <input class="export_list" type="checkbox" name="export_list" value="{{ project.id }}"/>
                         </th>
-                        <td>{{ project.p_num }}</td>
                         <td>{{ project.get_status_display }}</td>
-                        <td>{{ project.project_title }}</td>
-                        <td>{{ project.federal_agency }}</td>
-                        <td>{{ project.partner }}</td>
-                        <td>{{ project.get_type_display }}</td>
-                        <td>{{ project.get_discipline_display }}</td>
                         <td>{{ project.fiscal_year }}</td>
-                        <td>{{ project.budget }}</td>
+                        <td>{{ project.federal_agency }}</td>
+                        <td>{{ project.p_num }}</td>
+                        <td>{{ project.partner }}</td>
+                        <td>{{ project.project_title }}</td>
+                        <td>{{ project.total_award_amount }}</td>
+                        <td>{{ project.tent_start_date }}</td>
+                        <td>{{ project.tent_end_date }}</td>
+                        <td>{{ project.project_manager }}</td>
+                        <td>{{ project.pp_i }}</td>
                         <td>
                             <a class="btn btn-outline-primary btn-sm m-0 waves-effect"
                                href="{% get_url_from_app_link 'summit.apps.projects' 'project_detail' id=project.id %}">
@@ -66,7 +71,6 @@
                 </tbody>
             </table>
             <br>
-
         </form>
         {% if not table2_disabled%}
         <form action="{% get_url_from_app_link 'summit.apps.projects' 'project_export_csv' %}" method="post" enctype="multipart/form-data"
@@ -77,16 +81,16 @@
                 <h5><b>{{ table2_header }}</b></h5>
                 <p class="animated fadeIn text-muted">{{ table2_desc }}</p>
             </div>
-
+            <button class="btn btn-outline-success btn-sm m-0 waves-effect" type="submit" value="Submit"
+                    style="float: left;">
+                Export
+            </button>
             <table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0"
                    style="width: 100%;">
                 <thead>
                 <tr>
                     <th class="th-sm">
-                        <button class="btn btn-outline-success btn-sm m-0 waves-effect" type="submit" value="Submit"
-                                style="float: left;">
-                            Export
-                        </button>
+                        <input type="checkbox" id="select_all">
                     </th>
                     <th class="th-sm">P-Num</th>
                     <th class="th-sm">Status</th>
@@ -101,7 +105,7 @@
                 {% for project in recent_projects %}
                     <tr>
                         <th scope="row">
-                            <input type="checkbox" name="export_list" value="{{ project.id }}"/>
+                            <input class="export_list" type="checkbox" name="export_list" value="{{ project.id }}"/>
                         </th>
                         <td>{{ project.p_num }}</td>
                         <td>{{ project.get_status_display }}</td>
@@ -125,12 +129,12 @@
     </div>
 {% endblock %}
 
-{% block sidebar %}
-    {% include 'apps/projects/partials/side_nav.html' %}
-{% endblock %}
+{#{% block sidebar %}#}
+{#    {% include 'apps/projects/partials/side_nav.html' %}#}
+{#{% endblock %}#}
 
-{% block layout_wrapper %}
-    {% with layout='left'  %}
-        {{ block.super }}
-    {% endwith %}
-{% endblock %}
+{#{% block layout_wrapper %}#}
+{#    {% with layout='left'  %}#}
+{#        {{ block.super }}#}
+{#    {% endwith %}#}
+{#{% endblock %}#}

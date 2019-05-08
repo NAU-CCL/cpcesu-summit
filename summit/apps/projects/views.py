@@ -18,6 +18,7 @@ from .tasks import read_pdf
 from summit.libs.auth.models import UserProfile, CESUnit, FederalAgency, Partner, UserGroup
 from .models import Project, File, Location, Modification, ModFile
 from .forms import ProjectForm, ProjectFileForm, LocationForm, ModificationForm, ModificationFileForm, ContactForm
+from .choices import ProjectChoices
 
 
 class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -125,6 +126,16 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
                                  | all_projects.filter(cesu_unit=None, status="DRAFT") \
                                  | all_projects.filter(staff_member=profile, status="DRAFT")
 
+        dashboard_projects = []
+
+        for proj in user_filtered_projects:
+            modifications = Modification.objects.filter(project=proj)
+            total_mod_amount = 0
+            for mod in modifications:
+                total_mod_amount += mod.mod_amount
+            proj.total_award_amount = (proj.budget or 0) + total_mod_amount
+            dashboard_projects.append(proj)
+
         start_date = datetime.datetime.now() + datetime.timedelta(-30)
         recent_projects = all_projects.filter(created_on__range=[start_date, datetime.datetime.now()])
         context = {
@@ -145,7 +156,7 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
                 'libs/mdb/js/addons/datatables.min.js',
                 'js/datatables/dashboard.js'
             ],
-            'projects': user_filtered_projects,
+            'projects': dashboard_projects,
             'recent_projects': recent_projects,
         }
         ctx = super(ProjectDashboardView, self).get_context_data(**kwargs)
@@ -158,7 +169,6 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
         return get_object_or_404(Project, pk=pk_)
 
 
-# TODO: Change context object name
 class ProjectDetail(LoginRequiredMixin, DetailView):
     model = Project
     template_name = 'apps/projects/project_detail.html'
@@ -170,6 +180,20 @@ class ProjectDetail(LoginRequiredMixin, DetailView):
         for mod in modifications:
             total_mod_amount += mod.mod_amount
         return (prj.budget or 0) + total_mod_amount
+
+    def update_extension(self):
+        time_ext1 = ProjectChoices.MOD_TYPE[2][0]
+        time_ext2 = ProjectChoices.MOD_TYPE[4][0]
+        time_ext3 = ProjectChoices.MOD_TYPE[6][0]
+        prj = self.get_object()
+        modifications = Modification.objects.filter(project=prj).order_by('-pk')
+        for mod in modifications:
+            mod_type = mod.mod_type
+            if mod_type == time_ext1 or mod_type == time_ext2 or mod_type == time_ext3:
+                return mod.mod_extension
+
+        modifications1 = Modification.objects.filter(mod_type__contains='Time Extension')
+        return modifications1
 
     def get_context_data(self, **kwargs):
         context = {
@@ -186,7 +210,8 @@ class ProjectDetail(LoginRequiredMixin, DetailView):
                 'libs/mdb/js/addons/datatables.min.js',
                 'js/datatables/dashboard.js'
             ],
-            'total_award_amount': self.total_award_amount()
+            'total_award_amount': self.total_award_amount(),
+            'date_ext': self.update_extension()
 
         }
         ctx = super(ProjectDetail, self).get_context_data(**kwargs)
@@ -547,6 +572,14 @@ class ProjectModEdit(UpdateView):
     template_name = 'apps/projects/project_modifications.html'
     form_class = ModificationForm
 
+    def total_award_amount(self):
+        prj = get_object_or_404(Project, pk=self.kwargs.get("id"))
+        modifications = Modification.objects.filter(project=prj)
+        total_mod_amount = 0
+        for mod in modifications:
+            total_mod_amount += mod.mod_amount
+        return (prj.budget or 0) + total_mod_amount
+
     def get_object(self, **kwargs):
         prj_ = get_object_or_404(Project, pk=self.kwargs.get("id"))
         pk_ = self.kwargs.get("mod_id")
@@ -570,7 +603,8 @@ class ProjectModEdit(UpdateView):
             ],
             'project': get_object_or_404(Project, pk=self.kwargs.get("id")),
             'files': ModFile.objects.filter(modification=self.object),
-            'file_form': ModificationFileForm()
+            'file_form': ModificationFileForm(),
+            'total_award_amount': self.total_award_amount()
         }
         ctx = super(ProjectModEdit, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
@@ -795,19 +829,21 @@ class PartnerViewSet(viewsets.ModelViewSet):
 
 
 def export_to_csv(request):
+    time_ext1 = ProjectChoices.MOD_TYPE[2][0]
+    time_ext2 = ProjectChoices.MOD_TYPE[4][0]
+    time_ext3 = ProjectChoices.MOD_TYPE[6][0]
+
     file_name = "multi_project_export"
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="' + file_name + '.csv"'
 
     writer = csv.writer(response)
-    writer.writerow(['Budget', 'CESUnit', 'Description', 'Discipline', 'Federal Agency', 'Field of Science',
-                     'Final Report ', 'Fiscal Year', 'Initial Start Date', 'Location',
-                     'Monitoring', 'Project Notes', 'Number of Students', 'P-Num', 'Partner',
-                     'Principal Investigator (PI)',
-                     'Project Manager', 'Project Title', 'Research & Development', 'Scientific Method', 'Sensitive',
-                     'Short Summary', 'Source of Funding', 'Staff Member',
-                     'Status', 'Technical Representative', 'Tentative End Date',
-                     'Tentative Start Date', 'Type of Project', 'Veteran/Youth Support'])
+    writer.writerow(['FY', 'Agency', 'Award #', 'Awarding Office', 'Partner', 'Place', 'Title', 'Type', 'Discipline',
+                     'Youth/Vets', 'Agency Project Manager', 'Agency Agreements Technical Representative',
+                     'Partner Principle Investigator', 'Received', 'Reviewed', 'Approved', 'Executed', 'Start', 'End',
+                     'Extension', 'Description/Abstract', 'Initial', 'Total Award Amount', 'Funding Source',
+                     'Monitoring', 'Scientific Method', 'Field', 'Subfield', 'Status,', 'Sensitive',
+                     'Deliverable(s) Received', 'Notes'])
 
     if request.POST:
         export_list = request.POST.getlist("export_list")
@@ -817,17 +853,32 @@ def export_to_csv(request):
 
         for project_id in export_list:
             project = Project.objects.get(pk=project_id)
+            modifications = Modification.objects.filter(project=project)
+            total_mod_amount = 0
+
+            # Finding Total Award Amount
+            for mod in modifications:
+                total_mod_amount += mod.mod_amount
+            total_award_amount = (project.budget or 0) + total_mod_amount
+
+            # Finding the most recent extended date
+            ext_mods = Modification.objects.filter(project=project).order_by('-pk')
+            for mod in ext_mods:
+                mod_type = mod.mod_type
+                if mod_type == time_ext1 or mod_type == time_ext2 or mod_type == time_ext3:
+                    ext_date = mod.mod_extension
+                    break
 
             if project is None:
                 continue
 
             writer.writerow(
-                [project.budget, project.cesu_unit, project.description, project.discipline, project.federal_agency,
-                 project.field_of_science, project.final_report, project.fiscal_year, project.init_start_date,
-                 project.location, project.monitoring, project.notes, project.num_of_students, project.p_num,
-                 project.partner, project.pp_i, project.project_manager, project.project_title, project.r_d,
-                 project.sci_method, project.sensitive, project.short_summary, project.src_of_funding,
-                 project.staff_member, project.status, project.tech_rep, project.tent_end_date,
-                 project.tent_start_date, project.type, project.youth_vets])
+                [project.fiscal_year, project.federal_agency, project.p_num, project.award_office, project.partner,
+                 project.location, project.project_title, project.type, project.discipline, project.youth_vets,
+                 project.project_manager, project.tech_rep, project.pp_i, project.init_start_date, project.reviewed,
+                 project.task_agreement_start_date, project.exec_start_date, project.tent_start_date,
+                 project.tent_end_date, ext_date, project.description, project.budget, total_award_amount,
+                 project.src_of_funding, project.monitoring, project.sci_method, project.field_of_science,
+                 project.field_of_science_sub, project.status, project.sensitive, project.final_report, project.notes])
 
     return response

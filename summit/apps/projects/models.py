@@ -135,7 +135,7 @@ class Project(AuditModel):
                                  verbose_name="Alternate Research Coordinator / CESU Representative")
 
     req_iacuc = models.BooleanField(verbose_name="Requires IACUC Review/ Concurrence", default=False, blank=True)
-    youth_vets = models.CharField(choices=YOUTH_VETS, max_length=500, blank=True, null=True)
+    youth_vets = models.CharField(choices=YOUTH_VETS, max_length=500, verbose_name="Youth/Vets", default=YOUTH_VETS[0])
     field_of_science_sub = models.CharField(choices=FIELD_OF_SCIENCE_SUB, max_length=100,
                                             blank=True, null=True, verbose_name="Sub-Fields (Field of Science)",
                                             default=FIELD_OF_SCIENCE_SUB[0])

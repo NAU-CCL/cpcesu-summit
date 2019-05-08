@@ -1,7 +1,9 @@
 from django.contrib import admin
 
 from .models import Project, File, Location, Modification, ModFile
-from simple_history.admin import SimpleHistoryAdmin
+
+
+# from simple_history.admin import SimpleHistoryAdmin
 
 
 class ProjectAdmin(admin.ModelAdmin):
@@ -12,7 +14,7 @@ class FileAdmin(admin.ModelAdmin):
     list_display = ('project', 'file')
 
 
-admin.site.register(Project, SimpleHistoryAdmin)
+admin.site.register(Project)
 admin.site.register(File)
 admin.site.register(Modification)
 admin.site.register(ModFile)

@@ -2,6 +2,7 @@ from django.db import models
 
 from summit.apps.projects.models import Project
 
+
 class Notification(models.Model):
     TYPE_OPTIONS = (
         ('CHECKUP', 'Checkup'),
