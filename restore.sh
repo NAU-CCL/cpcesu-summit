@@ -1,0 +1,1 @@
+pg_restore -d cpcesupm -U postgres cpcesupm.bak

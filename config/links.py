@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 
 class DjangoLink:
-    def __init__(self, ident, app_name, app_regex, regex, view_obj, display_name, link_args=dict()):
+    def __init__(self, ident, app_name, app_regex, regex, view_obj, display_name, link_args=dict(), kwargs=None):
         self.ident = ident
         self.regex = regex
         self.view_obj = view_obj
@@ -12,12 +12,15 @@ class DjangoLink:
         self.link_args['app_regex'] = app_regex
         self.link_args['label'] = display_name
 
+        self.kwargs = kwargs
+
 
 class DjangoURL:
-    def __init__(self, ident, regex, view_obj, app_name):
+    def __init__(self, ident, regex, view_obj, app_name, kwargs=None):
         self.ident = ident
         self.regex = regex
         self.view_obj = view_obj
+        self.kwargs = kwargs
 
 
 # Nav links
@@ -36,7 +39,7 @@ def app_link(link_obj, skip_url=False):
         return add_link(link_obj.regex, link_obj.ident, link_obj.link_args)
     else:
         return link(link_obj.regex, link_obj.view_obj, link_obj.ident,
-                    link_args=link_obj.link_args)
+                    link_args=link_obj.link_args, kwargs=link_obj.kwargs)
 
 
 def link(regex, view, name, kwargs=None, link_args=None):
@@ -161,4 +164,4 @@ def get():
 
 
 def url_wrapper(url_obj):
-    return url(url_obj.regex, url_obj.view_obj, None, url_obj.ident)
+    return url(url_obj.regex, url_obj.view_obj, url_obj.kwargs, url_obj.ident)

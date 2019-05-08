@@ -19,11 +19,11 @@
         <tr>
             <td>
                 <span class="text-danger sml">{{ form.federal_agency.errors }}</span>
-                <h6><label class="control-label col-sm-auto"><b>{{ form.federal_agency.label_tag }}</b></label></h6>
+                <h6><label class="control-label col-sm-auto">{{ form.federal_agency.label_tag }}</label></h6>
             </td>
             <td>
                 <div class="autocomplete">
-                    <input class="form-control" id="federal_agency" type="text" name="federal_agency" placeholder="Federal Agency" autocomplete="off">
+                    <input class="form-control" id="federal_agency" type="text" name="federal_agency" placeholder="Federal Agency" value="{{ form.federal_agency.value|default:'' }}" autocomplete="off" value="{{federal_agency.name}}">
                 </div><br/>
 <!--                {{ form.federal_agency }}<br><br>-->
             </td>
@@ -31,7 +31,7 @@
         <tr>
             <td>
                 <span class="text-danger sml">{{ form.p_num.errors }}</span>
-                <h6><label class="control-label col-sm-auto"><b>{{ form.p_num.label_tag }}</b></label></h6>
+                <h6><label class="control-label col-sm-auto">{{ form.p_num.label_tag }}</label></h6>
             </td>
             <td>
                 {{ form.p_num }}<br>
@@ -40,7 +40,7 @@
         <tr>
             <td>
                 <span class="text-danger sml">{{ form.award_office.errors }}</span>
-                <h6><label class="control-label col-sm-auto"><b>{{ form.award_office.label_tag }}</b></label></h6>
+                <h6><label class="control-label col-sm-auto">{{ form.award_office.label_tag }}</label></h6>
             </td>
             <td>
                 {{ form.award_office }}<br><br>
@@ -49,11 +49,11 @@
         <tr>
             <td>
                 <span class="text-danger sml">{{ form.partner.errors }}</span>
-                <h6><label class="control-label col-sm-auto"><b>{{ form.partner.label_tag }}</b></label></h6>
+                <h6><label class="control-label col-sm-auto">{{ form.partner.label_tag }}</label></h6>
             </td>
             <td>
                 <div class="autocomplete">
-                    <input class="form-control" id="partner" type="text" name="partner" placeholder="Partner" autocomplete="off">
+                    <input class="form-control" id="partner" type="text" name="partner" placeholder="Partner" value="{{ form.partner.value|default:'' }}" autocomplete="off">
                 </div><br/>
 <!--                {{ form.partner }}<br><br>-->
             </td>
@@ -61,10 +61,13 @@
         <tr>
             <td>
                 <span class="text-danger sml">{{ form.location.errors }}</span>
-                <h6><label class="control-label col-sm-auto"><b>{{ form.location.label_tag }}</b></label></h6>
+                <h6><label class="control-label col-sm-auto">{{ form.location.label_tag }}</label></h6>
             </td>
             <td>
-                {{ form.location }}<br><br>
+                <div class="autocomplete">
+                    <input class="form-control" id="location" type="text" name="location" placeholder="Location" value="{{ form.location.value|default:''}}" autocomplete="off">
+                </div><br/>
+<!--                {{ form.location }}<br><br>-->
             </td>
         </tr>
         <tr>
@@ -182,37 +185,49 @@
         <tr>
             <td>
                 <span class="text-danger sml">{{ form.project_manager.errors }}</span>
-                <label class="control-label col-sm-auto"><b>{{ form.project_manager.label_tag }}</b></label>
+                <label class="control-label "><b>{{ form.project_manager.label_tag }}</b></label>
             </td>
             <td>
-                {{ form.project_manager }}<br><br>
+                <div class="autocomplete">
+                    <input class="form-control" id="project_manager" type="text" name="project_manager" placeholder="Fed. Project Manager" value="{{ form.project_manager.value|default:'' }}" autocomplete="off">
+                </div><br/>
+<!--                {{ form.project_manager }}<br><br>-->
             </td>
         </tr>
         <tr>
             <td>
                 <span class="text-danger sml">{{ form.tech_rep.errors }}</span>
-                <label class="control-label col-sm-auto"><b>{{ form.tech_rep.label_tag }}</b></label>
+                <label class="control-label "><b>{{ form.tech_rep.label_tag }}</b></label>
             </td>
             <td>
-                {{ form.tech_rep }}<br><br>
+                <div class="autocomplete">
+                    <input class="form-control" id="tech_rep" type="text" name="tech_rep" placeholder="Fed. Technical Rep." value="{{ form.tech_rep.value|default:'' }}" autocomplete="off">
+                </div><br/>
+<!--                {{ form.tech_rep }}<br><br>-->
             </td>
         </tr>
         <tr>
             <td>
                 <span class="text-danger sml">{{ form.pp_i.errors }}</span>
-                <label class="control-label col-sm-auto"><b>{{ form.pp_i.label_tag }}</b></label>
+                <label class="control-label "><b>{{ form.pp_i.label_tag }}</b></label>
             </td>
             <td>
-                {{ form.pp_i }}<br><br>
+                <div class="autocomplete">
+                    <input class="form-control" id="pp_i" type="text" name="pp_i" placeholder="Partner PI" value="{{ form.pp_i.value|default:'' }}" autocomplete="off">
+                </div><br/>
+<!--                {{ form.pp_i }}<br><br>-->
             </td>
         </tr>
         <tr>
             <td>
                 <span class="text-danger sml">{{ form.staff_member.errors }}</span>
-                <label class="control-label col-sm-auto"><b>{{ form.staff_member.label_tag }}</b></label>
+                <label class="control-label "><b>{{ form.staff_member.label_tag }}</b></label>
             </td>
             <td>
-                {{ form.staff_member }}<br><br>
+                <div class="autocomplete">
+                    <input class="form-control" id="staff_member" type="text" name="staff_member" placeholder="CESU Staff" value="{{ form.staff_member.value|default:'' }}" autocomplete="off">
+                </div><br/>
+<!--                {{ form.staff_member }}<br><br>-->
             </td>
         </tr>
         </tbody>

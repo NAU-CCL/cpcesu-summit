@@ -16,10 +16,3 @@ class AppLinks:
                              'link': 'https://in.nau.edu/cpesu/cpcesu-contact/',
                              'target': '_blank'
                          })
-    admin_site = DjangoLink('admin_site', app_name, '', r'^/admin/$', None,
-                            'Admin Site',
-                            link_args={
-                                'auth_required': True,
-                                'side': 'right',
-                                'staff_only': True
-                            })

@@ -81,6 +81,8 @@ class AppLinks:
                                    views.export_to_csv, app_name)
     project_public_request = DjangoURL('project_public_request', r'^public-request/(?P<project_id>[-\w]+)/$',
                                        views.request_project_info, app_name)
+    project_public_widget = DjangoURL('project_public_widget', r'^public-widget/',
+                                      views.ProjectPublicListView.as_view(), app_name, kwargs={"is_widget": True})
 
     # Location Related Links/URLs
     # States, Parks, etc. in one model/object

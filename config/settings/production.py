@@ -64,8 +64,7 @@ __all__ = [
     'REST_FRAMEWORK',
 ]
 
-# DEBUG = False
-DEBUG = True
+DEBUG = False
 # SECRET_KEY = env('SECRET_KEY')
 ALLOWED_HOSTS = ['*']
 

@@ -66,12 +66,11 @@ class ProjectPublicListView(ListView):
     context_object_name = 'projects'
 
     def get_queryset(self):
-        projects = Project.objects.exclude(status="DRAFT")
+        projects = Project.objects.exclude(status="DRAFT").exclude(status="")
         return projects
 
     def get_context_data(self, **kwargs):
         context = {
-            'name': self.kwargs['name'],
             'pagetitle': 'Public Projects List',
             'title': 'Public Projects List',
             'header': {
@@ -86,6 +85,17 @@ class ProjectPublicListView(ListView):
             ],
             'project_url': 'summit.apps.projects:project-detail-public'
         }
+
+        # If widget vs. full website
+        if "name" in self.kwargs and self.kwargs['name'] is not None:
+            context['name'] = self.kwargs['name']
+        if "is_widget" in self.kwargs and self.kwargs['is_widget'] is True:
+            context['my_template'] = 'layouts/widget.html'
+            context['link_target'] = '_blank'
+            context['is_widget'] = True
+        else:
+            context['my_template'] = 'layouts/base.html'
+
         ctx = super(ProjectPublicListView, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
         return ctx
@@ -283,6 +293,12 @@ class ProjectCreate(CreateView):
 
             return render(request, self.template_name, {'form': form})
         else:
+            try:
+                profile = UserProfile.objects.get(user=request.user)
+                form = ProjectForm(initial={'staff_member': profile})
+            except ObjectDoesNotExist:
+                pass
+
             context = {
                 'name': self.kwargs['name'],
                 'pagetitle': 'Create Project',
@@ -294,7 +310,7 @@ class ProjectCreate(CreateView):
                 'jsFiles': [
                     'js/apps/projects/autocomplete.js',
                 ],
-                'form': self.get_form_class(),
+                'form': form,
                 'file_form': ProjectFileForm()
             }
             return render(request, self.template_name, context)
@@ -324,7 +340,6 @@ class ProjectCreate(CreateView):
     def get_object(self, **kwargs):
         pk_ = self.kwargs.get("id")
         project = get_object_or_404(Project, pk=pk_)
-        print(kwargs)
         return project
 
     def post(self, request, *args, **kwargs):
@@ -377,6 +392,17 @@ class ProjectEdit(UpdateView):
         return reverse('summit.apps.projects:project_detail', args=[str(self.object.id)])
 
     def get_context_data(self, **kwargs):
+        proj = self.get_object()
+        form = ProjectForm(instance=proj, initial={
+            "federal_agency": proj.federal_agency,
+            "partner": proj.partner,
+            "location": proj.location,
+
+            "project_manager": proj.project_manager,
+            "tech_rep": proj.tech_rep,
+            "pp_i": proj.pp_i,
+            "staff_member": proj.staff_member
+        })
         context = {
             'pagetitle': 'Edit Project',
             'title': 'Edit Project',
@@ -390,11 +416,12 @@ class ProjectEdit(UpdateView):
             'files': File.objects.filter(project=self.object),
             'file_form': ProjectFileForm(),
             'total_award_amount': self.total_award_amount(),
-            'federal_agency': self.get_object().federal_agency
-
+            'federal_agency': self.get_object().federal_agency,
+            'form': form
         }
         ctx = super(ProjectEdit, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
+
         return ctx
 
     def post(self, request, *args, **kwargs):
@@ -426,6 +453,8 @@ def check_fields(project_form):
             project_form.instance.federal_agency = FederalAgency.objects.get(name=fed_agency)
         except ObjectDoesNotExist:
             print("Need to make a new one")
+    else:
+        project_form.instance.federal_agency = None
 
     # Partner
     partner = project_form.cleaned_data['partner']
@@ -434,6 +463,99 @@ def check_fields(project_form):
             project_form.instance.partner = Partner.objects.get(name=partner)
         except ObjectDoesNotExist:
             print("Need to make a new one")
+    else:
+        project_form.instance.partner = None
+
+    # Location
+    location = project_form.cleaned_data['location']
+    if location and len(location) > 0:
+        print(location)
+
+        name_parts = location.split(" ")
+        if len(name_parts) >= 2:
+            name = ' '.join(name_parts[:-1])
+            abrev = name_parts[-1].strip('()')
+            print(name, abrev)
+            try:
+                project_form.instance.location = Location.objects.get(name=name)
+            except ObjectDoesNotExist:
+                print("Need to make a new one")
+    else:
+        project_form.instance.location = None
+
+    # CES Unit
+    project_form.instance.cesu_unit = CESUnit.objects.get(pk=1)
+
+    # Project Manager
+    project_manager = project_form.cleaned_data['project_manager']
+    if project_manager and len(project_manager) > 0:
+        # First split based on space
+        name_parts = project_manager.split(" ")
+        if len(name_parts) >= 2:
+            first_name = name_parts[0]
+            last_name = ' '.join(name_parts[1:])
+
+            try:
+                # Second map and save
+                project_form.instance.project_manager = UserProfile.objects.get(first_name=first_name, last_name=last_name)
+            except ObjectDoesNotExist:
+                print("Need to make a new one")
+    else:
+        project_form.instance.project_manager = None
+
+    # Tech Rep
+    tech_rep = project_form.cleaned_data['tech_rep']
+    if tech_rep and len(tech_rep) > 0:
+        # First split based on space
+        name_parts = tech_rep.split(" ")
+        if len(name_parts) >= 2:
+            first_name = name_parts[0]
+            last_name = ' '.join(name_parts[1:])
+
+            try:
+                # Second map and save
+                project_form.instance.tech_rep = UserProfile.objects.get(first_name=first_name,
+                                                                         last_name=last_name)
+            except ObjectDoesNotExist:
+                print("Need to make a new one")
+    else:
+        project_form.instance.tech_rep = None
+
+    # Partner principle investigator
+    pp_i = project_form.cleaned_data['pp_i']
+    if pp_i and len(pp_i) > 0:
+        # First split based on space
+        name_parts = pp_i.split(" ")
+        if len(name_parts) >= 2:
+            first_name = name_parts[0]
+            last_name = ' '.join(name_parts[1:])
+
+            try:
+                # Second map and save
+                project_form.instance.pp_i = UserProfile.objects.get(first_name=first_name,
+                                                                     last_name=last_name)
+            except ObjectDoesNotExist:
+                print("Need to make a new one")
+    else:
+        project_form.instance.pp_i = None
+
+    # CESU Staff Member
+    staff_member = project_form.cleaned_data['staff_member']
+    if staff_member and len(staff_member) > 0:
+        # First split based on space
+        name_parts = staff_member.split(" ")
+        if len(name_parts) >= 2:
+            first_name = name_parts[0]
+            last_name = ' '.join(name_parts[1:])
+
+            try:
+                # Second map and save
+                project_form.instance.staff_member = UserProfile.objects.get(first_name=first_name,
+                                                                             last_name=last_name)
+            except ObjectDoesNotExist:
+                print("Need to make a new one")
+    else:
+        project_form.instance.staff_member = None
 
     return project_form
 
@@ -809,17 +931,51 @@ def request_project_info(request, project_id):
 
 
 from rest_framework import viewsets
-from .serializers import FederalAgencySerializer, PartnerSerializer
+from .serializers import FederalAgencySerializer, PartnerSerializer, LocationSerializer, UserProfileSerializer
 
 
 class FederalAgencyViewSet(viewsets.ModelViewSet):
     queryset = FederalAgency.objects.all().order_by('name')
     serializer_class = FederalAgencySerializer
+    http_method_names = ['get']
+    pagination_class = None
 
 
 class PartnerViewSet(viewsets.ModelViewSet):
     queryset = Partner.objects.all().order_by('name')
     serializer_class = PartnerSerializer
+    http_method_names = ['get']
+    pagination_class = None
+
+
+class LocationViewSet(viewsets.ModelViewSet):
+    queryset = Location.objects.all().order_by('name')
+    serializer_class = LocationSerializer
+    http_method_names = ['get']
+    pagination_class = None
+
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    queryset = UserProfile.objects.all().order_by('last_name')
+    serializer_class = UserProfileSerializer
+    http_method_names = ['get']
+    pagination_class = None
+
+    def get_queryset(self):
+        queryset = UserProfile.objects.all().order_by('last_name')
+        group_id = self.request.query_params.get('assigned_group_pk', None)
+        group_name = self.request.query_params.get('assigned_group_name', None)
+
+        if group_id is not None:
+            queryset = queryset.filter(assigned_group_id=group_id)
+        elif group_name is not None:
+            try:
+                group = UserGroup.objects.get(name=group_name)
+                queryset = queryset.filter(assigned_group=group)
+            except ObjectDoesNotExist:
+                queryset = UserProfile.objects.none()
+
+        return queryset
 
 #
 #

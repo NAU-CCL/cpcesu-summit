@@ -6,17 +6,27 @@ from .models import Project, File, Location, Modification, ModFile
 class ProjectForm(forms.ModelForm):
     federal_agency = forms.CharField(required=False)
     partner = forms.CharField(required=False)
+    location = forms.CharField(required=False)
+
+    project_manager = forms.CharField(required=False)
+    tech_rep = forms.CharField(required=False)
+    pp_i = forms.CharField(required=False)
+    staff_member = forms.CharField(required=False)
 
     class Meta:
         model = Project
         fields = ['award_office', 'budget', 'description', 'discipline', 'exec_start_date',
                   # 'federal_agency',
-                  'field_of_science', 'final_report', 'fiscal_year', 'init_start_date', 'location',
+                  'field_of_science', 'final_report', 'fiscal_year', 'init_start_date',
+                  # 'location',
                   'monitoring', 'notes', 'num_of_students', 'p_num',
                   # 'partner',
-                  'pp_i', 'project_manager',
+                  # 'pp_i', 'project_manager',
                   'project_title', 'r_d', 'reviewed', 'sci_method', 'sensitive', 'short_summary', 'src_of_funding',
-                  'staff_member', 'status', 'tech_rep', 'tent_end_date', 'tent_start_date',
+                  # 'staff_member',
+                  'status',
+                  # 'tech_rep',
+                  'tent_end_date', 'tent_start_date',
                   'task_agreement_start_date', 'type', 'field_of_science_sub', 'youth_vets']
         widgets = {
             'award_office': forms.Select(attrs={'class': 'custom-select custom-select'}),
@@ -28,15 +38,15 @@ class ProjectForm(forms.ModelForm):
             'status': forms.Select(attrs={'class': 'custom-select custom-select'}),
             # 'partner': forms.Select(attrs={'class': 'custom-select custom-select'}),
             # 'federal_agency': forms.Select(attrs={'class': 'custom-select custom-select'}),
-            'pp_i': forms.Select(attrs={'class': 'custom-select custom-select'}),
-            'project_manager': forms.Select(attrs={'class': 'custom-select custom-select'}),
-            'tech_rep': forms.Select(attrs={'class': 'custom-select custom-select'}),
-            'location': forms.Select(attrs={'class': 'custom-select custom-select'}),
+            # 'pp_i': forms.Select(attrs={'class': 'custom-select custom-select'}),
+            # 'project_manager': forms.Select(attrs={'class': 'custom-select custom-select'}),
+            # 'tech_rep': forms.Select(attrs={'class': 'custom-select custom-select'}),
+            # 'location': forms.Select(attrs={'class': 'custom-select custom-select'}),
             'budget': forms.NumberInput(attrs={'class': 'form-control'}),
             'fiscal_year': forms.NumberInput(attrs={'class': 'form-control'}),
             'youth_vets': forms.Select(attrs={'class': 'custom-select custom-select'}),
             'cesu_unit': forms.Select(attrs={'class': 'custom-select custom-select'}),
-            'staff_member': forms.Select(attrs={'class': 'custom-select custom-select'}),
+            # 'staff_member': forms.Select(attrs={'class': 'custom-select custom-select'}),
             'discipline': forms.Select(attrs={'class': 'custom-select custom-select'}),
             'r_d': forms.Select(attrs={'class': 'custom-select custom-select'}),
             'src_of_funding': forms.Select(attrs={'class': 'custom-select custom-select'}),
@@ -96,7 +106,7 @@ class ModificationFileForm(forms.ModelForm):
 class LocationForm(forms.ModelForm):
     class Meta:
         model = Location
-        fields = ['name']
+        fields = ['name', 'abbrv']
 
 
 class ContactForm(forms.Form):

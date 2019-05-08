@@ -193,7 +193,7 @@ class UserProfile(AuditModel):
 
     def get_full_name(self):
         if self.user is not None:
-            return self.first_name + " " + self.last_name + " (" + str(self.user) + ")"
+            return self.first_name + " " + self.last_name
         else:
             return self.first_name + " " + self.last_name
 

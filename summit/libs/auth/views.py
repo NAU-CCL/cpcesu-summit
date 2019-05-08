@@ -381,13 +381,13 @@ def edit_organization(request, name="summit.libs.auth:edit_organization", group_
                 is_partner = False
 
             if is_cesu:
-                is_cesu.delete()
+                is_cesu.clear()
             elif is_federal:
-                is_federal.delete()
+                is_federal.clear()
             elif is_partner:
-                is_partner.delete()
+                is_partner.clear()
             else:
-                UserGroup.objects.get(id=group.id).delete()
+                UserGroup.objects.get(id=group.id).clear()
 
             if new_group_type == 1:
                 cesu = CESUnit.objects.create(pk=group.id, created_on=group.created_on, name=group.name,
