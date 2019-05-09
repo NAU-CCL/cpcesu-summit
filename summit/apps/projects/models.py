@@ -23,7 +23,7 @@ def get_mod_directory_path(instance, filename):
 
 
 class Location(models.Model):
-    abbrv = models.TextField(max_length=64, unique=True)
+    abbrv = models.TextField(max_length=64, blank=True, null=True)
     name = models.TextField(max_length=255, unique=True)
 
     def get_absolute_url(self):
@@ -31,7 +31,10 @@ class Location(models.Model):
         return reverse('summit.apps.projects:location_detail', args=[str(self.id)])
 
     def __str__(self):
-        return self.name + " (" + self.abbrv + ")"
+        if self.abbrv:
+            return self.name + " (" + self.abbrv + ")"
+        else:
+            return self.name
 
 
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -60,7 +63,7 @@ class Project(AuditModel):
     discipline = models.CharField(max_length=21, choices=DISCIPLINE,
                                   help_text=_help_text['discipline'], blank=True,
                                   default=DISCIPLINE[0])
-    exec_start_date = models.DateField(blank=True, default="2019-1-1", verbose_name="Executed")
+    exec_start_date = models.DateField(blank=True, null=True, default=None, verbose_name="Executed")
     federal_agency = models.ForeignKey(FederalAgency, on_delete=models.CASCADE,
                                        related_name='federal_agency', default=None,
                                        blank=True, null=True, verbose_name="Agency")
@@ -68,12 +71,12 @@ class Project(AuditModel):
                                         verbose_name="Field of Science",
                                         choices=FIELD_OF_SCIENCE, default=FIELD_OF_SCIENCE[0])
     final_report = models.BooleanField(verbose_name="Final Report", default=False, blank=True)
-    fiscal_year = models.PositiveSmallIntegerField(blank=True, default=2019,
+    fiscal_year = models.PositiveSmallIntegerField(null=True, blank=True, default=2019,
                                                    verbose_name="Fiscal Year")
     location = models.ForeignKey(Location, on_delete=models.SET_NULL,
                                  related_name='location', default=None,
                                  verbose_name="Place", blank=True, null=True)
-    init_start_date = models.DateField(blank=True, default="2019-1-1",
+    init_start_date = models.DateField(blank=True, default=None, null=True,
                                        verbose_name="Project Initially Received")
     monitoring = models.BooleanField(default=False)
     notes = models.TextField(help_text=_help_text['notes'], blank=True)
@@ -93,7 +96,7 @@ class Project(AuditModel):
     r_d = models.CharField(max_length=50, help_text=_help_text['r_d'],
                            blank=True, verbose_name="Research & Development Type",
                            choices=R_D_TYPE)
-    reviewed = models.DateField(blank=True, default="2019-1-1")
+    reviewed = models.DateField(null=True, blank=True, default=None)
     sci_method = models.BooleanField(default=False, blank=True)
     sensitive = models.BooleanField(default=False, help_text=_help_text['sensitive'],
                                     verbose_name="Sensitive", blank=True)
@@ -108,9 +111,9 @@ class Project(AuditModel):
 
     tech_rep = models.ForeignKey(UserProfile, help_text=_help_text['tech_rep'], blank=True,
                                  verbose_name="Agreements Tech Representative", null=True)
-    tent_end_date = models.DateField(blank=True, default="2019-1-1",
+    tent_end_date = models.DateField(blank=True, default=None, null=True,
                                      verbose_name="Tentative End Date")
-    tent_start_date = models.DateField(blank=True, default="2019-1-1",
+    tent_start_date = models.DateField(blank=True, default=None, null=True,
                                        verbose_name="Tentative Start Date")
     type = models.CharField(max_length=50, choices=TYPE, help_text=_help_text['type'],
                             blank=True, verbose_name="Project Type")
@@ -121,12 +124,12 @@ class Project(AuditModel):
 
     funding = models.DecimalField(max_digits=12, decimal_places=2,
                                   help_text=_help_text['funding'], blank=True, default=0.00)
-    comm_start_date = models.DateField(blank=True, default="2019-1-1", verbose_name="Review Comments Sent")
-    task_agreement_start_date = models.DateField(blank=True, default="2019-1-1",
+    comm_start_date = models.DateField(blank=True, default=None, null=True,  verbose_name="Review Comments Sent")
+    task_agreement_start_date = models.DateField(blank=True, default=None, null=True,
                                                  verbose_name="Approved")
     # TODO: Make this automatic whenever they change the status to EXEC
-    actual_start = models.DateField(blank=True, default="2019-1-1", verbose_name="Actual Start Date")
-    actual_end = models.DateField(blank=True, default="2019-1-1", verbose_name="Actual Start Date")
+    actual_start = models.DateField(blank=True, default=None, null=True,  verbose_name="Actual Start Date")
+    actual_end = models.DateField(blank=True, default=None, null=True,  verbose_name="Actual Start Date")
     # TODO: If the sensitive field is checked then remove this field from the form. Splashes proj onto pub page
     perm_share = models.BooleanField(verbose_name="Permission to share", default=False, blank=True)
     award_amt = models.DecimalField(max_digits=12, decimal_places=2, help_text=_help_text['award_amt'],
@@ -141,6 +144,20 @@ class Project(AuditModel):
                                             default=FIELD_OF_SCIENCE_SUB[0])
 
     job_id = models.CharField(max_length=500, blank=True, null=True)
+
+    # LEGACY FIELDS
+    # Somewhat bad practice to apply to ALL projects, but will be necessary to bring in the old data
+    legacy_award_number = models.TextField(verbose_name="Legacy - Award Number", default='')
+    legacy_match_amount = models.TextField(verbose_name="Legacy - Match Amount", default='')
+    legacy_ca_account_number = models.TextField(verbose_name="Legacy - CA Account Number", default='')
+    legacy_account_number = models.TextField(verbose_name="Legacy - Account Number", default='')
+    legacy_area_org = models.TextField(verbose_name="Legacy - Area/Org", default='')
+    legacy_pwe = models.TextField(verbose_name="Legacy - PWE", default='')
+    legacy_project_products = models.TextField(verbose_name="Legacy - Project Products", default='')
+    legacy_received_report_date = models.TextField(verbose_name="Legacy - Received Report Date", default='')
+    legacy_sent_to_tic = models.TextField(verbose_name="Legacy - Sent to TIC", default='')
+
+
 
     def get_absolute_url(self):
         from django.urls import reverse

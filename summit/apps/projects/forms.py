@@ -54,17 +54,17 @@ class ProjectForm(forms.ModelForm):
             'field_of_science_sub': forms.Select(attrs={'class': 'custom-select custom-select'}),
             'type': forms.Select(attrs={'class': 'custom-select custom-select'}),
             'sensitive': forms.CheckboxInput(attrs={'class': 'custom-control custom-checkbox'}),
-            'tent_start_date': forms.SelectDateWidget(years=list(range(1950, 3000)),
+            'tent_start_date': forms.SelectDateWidget(years=list(range(1998, 2100)),
                                                       empty_label=("Year", "Month", "Day"),),
-            'tent_end_date': forms.SelectDateWidget(years=list(range(1950, 3000)),
+            'tent_end_date': forms.SelectDateWidget(years=list(range(1998, 2100)),
                                                       empty_label=("Year", "Month", "Day"),),
-            'init_start_date': forms.SelectDateWidget(years=list(range(1950, 3000)),
+            'init_start_date': forms.SelectDateWidget(years=list(range(1998, 2100)),
                                                       empty_label=("Year", "Month", "Day"),),
-            'exec_start_date': forms.SelectDateWidget(years=list(range(1950, 3000)),
+            'exec_start_date': forms.SelectDateWidget(years=list(range(1998, 2100)),
                                                       empty_label=("Year", "Month", "Day"), ),
-            'task_agreement_start_date': forms.SelectDateWidget(years=list(range(1950, 3000)),
+            'task_agreement_start_date': forms.SelectDateWidget(years=list(range(1998, 2100)),
                                                                 empty_label=("Year", "Month", "Day"), ),
-            'reviewed': forms.SelectDateWidget(years=list(range(1950, 3000)),
+            'reviewed': forms.SelectDateWidget(years=list(range(1998, 2100)),
                                                empty_label=("Year", "Month", "Day"), ),
 
         }
@@ -85,11 +85,11 @@ class ModificationForm(forms.ModelForm):
         fields = ['mod_type', 'mod_num', 'mod_desc', 'mod_amount',
                   'mod_approved', 'mod_executed', 'mod_notes', 'mod_extension']
         widgets = {
-            'mod_approved': forms.SelectDateWidget(years=list(range(1950, 3000)),
+            'mod_approved': forms.SelectDateWidget(years=list(range(1998, 2100)),
                                                    empty_label=("Year", "Month", "Day"), ),
-            'mod_executed': forms.SelectDateWidget(years=list(range(1950, 3000)),
+            'mod_executed': forms.SelectDateWidget(years=list(range(1998, 2100)),
                                                    empty_label=("Year", "Month", "Day"), ),
-            'mod_extension': forms.SelectDateWidget(years=list(range(1950, 3000)),
+            'mod_extension': forms.SelectDateWidget(years=list(range(1998, 2100)),
                                                     empty_label=("Year", "Month", "Day"), ),
         }
 

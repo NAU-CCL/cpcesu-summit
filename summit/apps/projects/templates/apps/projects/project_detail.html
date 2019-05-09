@@ -265,7 +265,11 @@
                     <tr>
                         <td><b>Extended:</b></td>
                         <td>
-                            {{ date_ext|default:'No extension added' }}
+                            {% if object.status == "LEGACY" %}
+                                No extension date from legacy data.
+                            {% else %}
+                                {{ date_ext|default:'No extension added' }}
+                            {% endif %}
                         </td>
                     </tr>
                     <tr>
@@ -331,9 +335,7 @@
 <div class="card">
     <h3 class="card-header">Modifications</h3>
     <div class="card-body">
-        <div class="row">
             <p class="card-subtitle">To view or edit modifications, click the blue highlighted 'Number'.</p>
-        </div>
         <div class="row">
             <a href="{% get_url_from_app_link 'summit.apps.projects' 'project_mod_create' id=object.id %}">
                 <button type="button" class="btn btn-sm btn-info">Add Modifications</button>
@@ -373,7 +375,96 @@
             {% endfor %}
         </div>
     </div>
-</div>
+</div><br>
+
+
+{% if object.status == 'LEGACY' %}
+<div class="card">
+<h3 class="card-header">Legacy Details</h3>
+    <div class="card-body">
+        <h5>From Access Database Import | May 5, 2019</h5>
+        <div class="row">
+            <div class="col-sm-4">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td><b>Award Number:</b><br></td>
+                        <td>
+                            {{ object.legacy_award_number|default:"Blank" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Match Amount:</b><br></td>
+                        <td>
+                            {{ object.legacy_match_amount|default:"Blank" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>CA Account Number:</b><br></td>
+                        <td>
+                            {{ object.legacy_ca_account_number|default:"Blank" }}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-sm-4">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td><b>Account Number:</b><br></td>
+                        <td>
+                            {{ object.legacy_account_number|default:"Blank" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Area / Org:</b><br></td>
+                        <td>
+                            {{ object.legacy_area_org|default:"Blank" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>PWE:</b><br></td>
+                        <td>
+                            {{ object.legacy_pwe|default:"Blank" }}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-sm-4">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td><b>Project Products:</b><br></td>
+                        <td>
+                            {{ object.legacy_project_products|default:"Blank" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Received Report Date:</b><br></td>
+                        <td>
+                            {{ object.legacy_received_report_date|default:"Blank" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Sent to TIC:</b><br></td>
+                        <td>
+                            {{ object.legacy_sent_to_tic|default:"Blank" }}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            </div>
+        </div>
+    </div>
+</div><br>
+{% endif %}
+
 {% endblock %}
 
 {% block sidebar %}

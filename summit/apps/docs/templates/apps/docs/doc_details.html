@@ -1,19 +1,31 @@
-{% extends 'layouts/base.html' %}
+{% extends 'layouts/widget.html' %}
 {% load static %}
 
 
-{% block primary %}
-    <h1 style="text-align: center">Document Details</h1>
+{% block content %}
 
-    <p>Detail view of a specific document.</p>
-{% endblock %}
+{% if doc%}
+    <h1 style="text-align: center">{{ doc.title }}</h1>
+    <h3 style="text-align: center">Document Details</h3>
 
-{% block sidebar %}
-    {% include 'apps/docs/partials/side_nav.html' %}
-{% endblock %}
+    <p>About the Document:</p>
+    <ul>
+        <li>{{ doc.created_by }} on {{ doc.created_on }}</li>
+        <li>{{ doc.last_edited_by }} on {{ doc.updated_at }}</li>
+    </ul>
 
-{% block layout_wrapper %}
-    {% with layout='left'  %}
-        {{ block.super }}
-    {% endwith %}
+    <a href="{% url 'summit.apps.docs:all_docs' %}">View All Documents</a>
+    {% if request.user.is_authenticated and request.user.is_superuser %}
+    | <a href="{% url 'summit.apps.docs:doc_add_edit' %}?page_id={{doc.page_id }}">Edit This Document</a>
+    {% endif %}
+
+    <div>
+        {{ doc.html_body|safe }}
+    </div>
+{% else %}
+<script>
+    window.close();
+</script>
+{% endif %}
+
 {% endblock %}

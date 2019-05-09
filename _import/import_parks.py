@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from summit.apps.projects.models import Location
 
-with open('park_abbreviations.csv') as csv_file:
+with open('_import/park_abbreviations.csv') as csv_file:
     reader = csv.DictReader(csv_file)
 
     for row in reader:

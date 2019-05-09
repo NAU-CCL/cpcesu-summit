@@ -22,7 +22,7 @@ from .choices import ProjectChoices
 
 
 class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
-    template_name = 'apps/projects/project_index.html'
+    template_name = 'apps/projects/project_all_fields.html'
     model = Project
     context_object_name = 'projects'
 
@@ -31,6 +31,18 @@ class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     raise_exception = False
 
     def get_context_data(self, **kwargs):
+        all_projects = Project.objects.all()
+
+        projects = []
+
+        for proj in all_projects:
+            modifications = Modification.objects.filter(project=proj)
+            total_mod_amount = 0
+            for mod in modifications:
+                total_mod_amount += mod.mod_amount
+            proj.total_award_amount = (proj.budget or 0) + total_mod_amount
+            projects.append(proj)
+
         context = {
             'name': self.kwargs['name'],
             'pagetitle': 'All Projects List',
@@ -48,7 +60,8 @@ class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
                 'libs/mdb/js/addons/datatables.min.js',
                 'js/datatables/dashboard.js'
             ],
-            'table2_disabled': True
+            'table2_disabled': True,
+            'projects': projects
         }
         ctx = super(ProjectListView, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
@@ -134,7 +147,7 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
 
         user_filtered_projects = all_projects.filter(cesu_unit=ces_unit, staff_member=profile, status="DRAFT") \
                                  | all_projects.filter(cesu_unit=None, status="DRAFT") \
-                                 | all_projects.filter(staff_member=profile, status="DRAFT")
+                                 | all_projects.filter(staff_member=None, status="DRAFT")
 
         dashboard_projects = []
 
@@ -147,7 +160,7 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
             dashboard_projects.append(proj)
 
         start_date = datetime.datetime.now() + datetime.timedelta(-30)
-        recent_projects = all_projects.filter(created_on__range=[start_date, datetime.datetime.now()])
+        recent_projects = all_projects.filter(created_on__range=[start_date, datetime.datetime.now()]).exclude(status="LEGACY")
         context = {
             'name': self.kwargs['name'],
             'pagetitle': 'Your Dashboard',
