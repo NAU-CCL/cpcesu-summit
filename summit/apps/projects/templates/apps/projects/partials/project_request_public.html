@@ -1,0 +1,19 @@
+{% autoescape off %}
+
+<p>Dear {{ customer_name }},</p>
+
+<p>Your request for further project information is being processed. The following has been sent to us:</p>
+
+<p>
+    Name: {{ customer_name }}<br>
+    Email: {{ customer_email }}<br>
+    Message: {{ message }}<br>
+</p>
+
+<p>Please be patient and we will get back to you as soon as possible.</p>
+
+<p>- Colorado Plateau Cooperative Ecosystem Studies Unit</p>
+<a href="mailto:cpcesu@nau.edu">cpcesu@nau.edu</a><br>
+View Our Projects: <a href="{{request.scheme}}://{{ request.META.HTTP_HOST }}">{{request.scheme}}://{{ request.META.HTTP_HOST }}</a><br>
+
+{% endautoescape %}

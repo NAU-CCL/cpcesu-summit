@@ -79,7 +79,7 @@ class ProjectPublicListView(ListView):
     context_object_name = 'projects'
 
     def get_queryset(self):
-        projects = Project.objects.exclude(status="DRAFT").exclude(status="")
+        projects = Project.objects.exclude(status="DRAFT").exclude(status="").exclude(status="LEGACY")
         return projects
 
     def get_context_data(self, **kwargs):
@@ -460,44 +460,49 @@ class ProjectEdit(UpdateView):
 
 def check_fields(project_form):
     # Federal Agency
-    fed_agency = project_form.cleaned_data['federal_agency']
-    if fed_agency and len(fed_agency) > 0:
+    federal_agency = project_form.cleaned_data['federal_agency']
+    if federal_agency and len(federal_agency) > 0:
         try:
-            project_form.instance.federal_agency = FederalAgency.objects.get(name=fed_agency)
+            federal_agency = FederalAgency.objects.get(name=federal_agency)
         except ObjectDoesNotExist:
-            print("Need to make a new one")
+            federal_agency = FederalAgency(name=federal_agency)
+            federal_agency.save()
     else:
-        project_form.instance.federal_agency = None
+        federal_agency = None
+    project_form.instance.federal_agency = federal_agency
 
     # Partner
     partner = project_form.cleaned_data['partner']
     if partner and len(partner) > 0:
         try:
-            project_form.instance.partner = Partner.objects.get(name=partner)
+            partner = Partner.objects.get(name=partner)
         except ObjectDoesNotExist:
-            print("Need to make a new one")
+            partner = Partner(name=partner)
+            partner.save()
     else:
-        project_form.instance.partner = None
+        partner = None
+    project_form.instance.partner = partner
 
     # Location
     location = project_form.cleaned_data['location']
     if location and len(location) > 0:
-        print(location)
-
         name_parts = location.split(" ")
         if len(name_parts) >= 2:
             name = ' '.join(name_parts[:-1])
             abrev = name_parts[-1].strip('()')
             print(name, abrev)
             try:
-                project_form.instance.location = Location.objects.get(name=name)
+                location = Location.objects.get(name=name)
             except ObjectDoesNotExist:
-                print("Need to make a new one")
+                location = Location(name=name, abbrv=abrev)
+                location.save()
     else:
-        project_form.instance.location = None
+        location = None
+    project_form.instance.location = location
 
     # CES Unit
-    project_form.instance.cesu_unit = CESUnit.objects.get(pk=1)
+    cesu = CESUnit.objects.get(pk=1)
+    project_form.instance.cesu_unit = cesu
 
     # Project Manager
     project_manager = project_form.cleaned_data['project_manager']
@@ -507,14 +512,35 @@ def check_fields(project_form):
         if len(name_parts) >= 2:
             first_name = name_parts[0]
             last_name = ' '.join(name_parts[1:])
+            project_manager = None
 
             try:
                 # Second map and save
-                project_form.instance.project_manager = UserProfile.objects.get(first_name=first_name, last_name=last_name)
+                # project_form.instance.project_manager
+                project_managers = UserProfile.objects.filter(first_name=first_name, last_name=last_name)
+
+                if project_managers is None:
+                    raise ObjectDoesNotExist("No project_managers exist with that query")
+
+                for f_project_manager in project_managers:
+                    # If in assigned group
+                    if (f_project_manager.assigned_group and federal_agency and f_project_manager.assigned_group.id == federal_agency.id) \
+                            or (f_project_manager.assigned_group and cesu and f_project_manager.assigned_group.id == cesu.id):
+                        project_manager = f_project_manager
+                        break
+
+                if project_manager is None:
+                    project_manager = project_managers.first()
+
+                if project_manager is None:
+                    raise ObjectDoesNotExist("No federal managers exists with that query")
+
             except ObjectDoesNotExist:
-                print("Need to make a new one")
+                project_manager = UserProfile(first_name=first_name, last_name=last_name, assigned_group=federal_agency)
+                project_manager.save()
     else:
-        project_form.instance.project_manager = None
+        project_manager = None
+    project_form.instance.project_manager = project_manager
 
     # Tech Rep
     tech_rep = project_form.cleaned_data['tech_rep']
@@ -524,15 +550,38 @@ def check_fields(project_form):
         if len(name_parts) >= 2:
             first_name = name_parts[0]
             last_name = ' '.join(name_parts[1:])
+            tech_rep = None
 
             try:
                 # Second map and save
-                project_form.instance.tech_rep = UserProfile.objects.get(first_name=first_name,
-                                                                         last_name=last_name)
+                # project_form.instance.project_manager
+                tech_reps = UserProfile.objects.filter(first_name=first_name, last_name=last_name)
+
+                if tech_reps is None:
+                    raise ObjectDoesNotExist("No tech_reps exist with that query")
+
+                for f_tech_rep in tech_reps:
+                    # If in assigned group
+                    if (
+                            f_tech_rep.assigned_group and federal_agency and f_tech_rep.assigned_group.id == federal_agency.id) \
+                            or (
+                            f_tech_rep.assigned_group and cesu and f_tech_rep.assigned_group.id == cesu.id):
+                        tech_rep = f_tech_rep
+                        break
+
+                if tech_rep is None:
+                    tech_rep = tech_reps.first()
+
+                if tech_rep is None:
+                    raise ObjectDoesNotExist("No tech_rep exists with that query")
+
             except ObjectDoesNotExist:
-                print("Need to make a new one")
+                tech_rep = UserProfile(first_name=first_name, last_name=last_name,
+                                                  assigned_group=federal_agency)
+                tech_rep.save()
     else:
-        project_form.instance.tech_rep = None
+        tech_rep = None
+    project_form.instance.tech_rep = tech_rep
 
     # Partner principle investigator
     pp_i = project_form.cleaned_data['pp_i']
@@ -542,15 +591,38 @@ def check_fields(project_form):
         if len(name_parts) >= 2:
             first_name = name_parts[0]
             last_name = ' '.join(name_parts[1:])
+            pp_i = None
 
             try:
                 # Second map and save
-                project_form.instance.pp_i = UserProfile.objects.get(first_name=first_name,
-                                                                     last_name=last_name)
+                # project_form.instance.project_manager
+                pp_is = UserProfile.objects.filter(first_name=first_name, last_name=last_name)
+
+                if pp_is is None:
+                    raise ObjectDoesNotExist("No pp_is exist with that query")
+
+                for f_pp_i in pp_is:
+                    # If in assigned group
+                    if (
+                            f_pp_i.assigned_group and partner and f_pp_i.assigned_group.id == partner.id) \
+                            or (
+                            f_pp_i.assigned_group and cesu and f_pp_i.assigned_group.id == cesu.id):
+                        pp_i = f_pp_i
+                        break
+
+                if pp_i is None:
+                    pp_i = pp_is.first()
+
+                if pp_i is None:
+                    raise ObjectDoesNotExist("No pp_i exists with that query")
+
             except ObjectDoesNotExist:
-                print("Need to make a new one")
+                pp_i = UserProfile(first_name=first_name, last_name=last_name,
+                                       assigned_group=partner)
+                pp_i.save()
     else:
-        project_form.instance.pp_i = None
+        pp_i = None
+    project_form.instance.pp_i = pp_i
 
     # CESU Staff Member
     staff_member = project_form.cleaned_data['staff_member']
@@ -560,15 +632,35 @@ def check_fields(project_form):
         if len(name_parts) >= 2:
             first_name = name_parts[0]
             last_name = ' '.join(name_parts[1:])
+            staff_member = None
 
             try:
                 # Second map and save
-                project_form.instance.staff_member = UserProfile.objects.get(first_name=first_name,
-                                                                             last_name=last_name)
+                # project_form.instance.project_manager
+                staff_members = UserProfile.objects.filter(first_name=first_name, last_name=last_name)
+
+                if staff_members is None:
+                    raise ObjectDoesNotExist("No staff_members exist with that query")
+
+                for f_staff_member in staff_members:
+                    # If in assigned group
+                    if f_staff_member.assigned_group and cesu and f_staff_member.assigned_group.id == cesu.id:
+                        staff_member = f_staff_member
+                        break
+
+                if staff_member is None:
+                    staff_member = staff_members.first()
+
+                if staff_member is None:
+                    raise ObjectDoesNotExist("No staff_member exists with that query")
+
             except ObjectDoesNotExist:
-                print("Need to make a new one")
+                staff_member = UserProfile(first_name=first_name, last_name=last_name,
+                                   assigned_group=cesu)
+                staff_member.save()
     else:
-        project_form.instance.staff_member = None
+        staff_member = None
+    project_form.instance.staff_member = staff_member
 
     return project_form
 
@@ -904,6 +996,7 @@ class LocationEdit(UpdateView):
 
 from django.template.loader import get_template
 from django.core.mail import EmailMessage
+from config.settings.shared import DEFAULT_FROM_EMAIL
 
 
 def request_project_info(request, project_id):
@@ -926,12 +1019,16 @@ def request_project_info(request, project_id):
             }
             cc_myself = form.cleaned_data['cc_myself']
 
-            recipients = ['remy@nau.edu']
+            recipients = [DEFAULT_FROM_EMAIL, ]
             if cc_myself:
-                recipients.append(customer_email)
+                cust_emails = [recipients[0], customer_email]
+                message = get_template('apps/projects/partials/project_request_public.html').render(ctx)
+                email = EmailMessage(subject, message, to=cust_emails)
+                email.content_subtype = "html"
+                email.send()
 
             message = get_template('apps/projects/partials/project_request_email.html').render(ctx)
-            email = EmailMessage(subject, message, to=recipients, reply_to=[customer_email])
+            email = EmailMessage(subject, message, to=recipients)
             email.content_subtype = "html"
             email.send()
 
@@ -1032,6 +1129,7 @@ def export_to_csv(request):
 
             # Finding the most recent extended date
             ext_mods = Modification.objects.filter(project=project).order_by('-pk')
+            ext_date = None
             for mod in ext_mods:
                 mod_type = mod.mod_type
                 if mod_type == time_ext1 or mod_type == time_ext2 or mod_type == time_ext3:

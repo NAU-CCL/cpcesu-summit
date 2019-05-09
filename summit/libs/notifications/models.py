@@ -9,7 +9,7 @@ class Notification(models.Model):
         ('NONE', 'None'),
     )
 
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, blank=True)
     type = models.CharField(max_length=10, choices=TYPE_OPTIONS, default='NONE')
     description = models.TextField(help_text="The specific details to the Notification, such as reason, instructions, \
     etc.")
