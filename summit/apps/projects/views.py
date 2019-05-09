@@ -41,6 +41,8 @@ class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             for mod in modifications:
                 total_mod_amount += mod.mod_amount
             proj.total_award_amount = (proj.budget or 0) + total_mod_amount
+            # update a new budget variable with dollar sign and comma as a delimiter.
+            proj.budget = as_currency(proj.budget)
             projects.append(proj)
 
         context = {
@@ -80,6 +82,8 @@ class ProjectPublicListView(ListView):
 
     def get_queryset(self):
         projects = Project.objects.exclude(status="DRAFT").exclude(status="")
+        for proj in projects:
+            proj.budget = as_currency(proj.budget)
         return projects
 
     def get_context_data(self, **kwargs):
@@ -157,6 +161,7 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
             for mod in modifications:
                 total_mod_amount += mod.mod_amount
             proj.total_award_amount = (proj.budget or 0) + total_mod_amount
+            proj.budget = as_currency(proj.budget)
             dashboard_projects.append(proj)
 
         start_date = datetime.datetime.now() + datetime.timedelta(-30)
@@ -510,7 +515,8 @@ def check_fields(project_form):
 
             try:
                 # Second map and save
-                project_form.instance.project_manager = UserProfile.objects.get(first_name=first_name, last_name=last_name)
+                project_form.instance.project_manager = UserProfile.objects.get(first_name=first_name,
+                                                                                last_name=last_name)
             except ObjectDoesNotExist:
                 print("Need to make a new one")
     else:
@@ -1051,3 +1057,10 @@ def export_to_csv(request):
                  project.field_of_science_sub, project.status, project.sensitive, project.final_report, project.notes])
 
     return response
+
+
+def as_currency(amount):
+    if amount >= 0:
+        return '${:,.2f}'.format(amount)
+    else:
+        return '${:,.2f}'.format(-amount)
