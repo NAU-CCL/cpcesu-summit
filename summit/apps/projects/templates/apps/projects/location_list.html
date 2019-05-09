@@ -15,6 +15,7 @@
         <tr>
             <th class="th-sm">#</th>
             <th class="th-sm">Name</th>
+            <th class="th-sm">Abbrv.</th>
             <th class="th-sm">Details</th>
         </tr>
     </thead>
@@ -23,6 +24,7 @@
         <tr>
             <th scope="row">{{ location.id }}</th>
             <td href="">{{ location.name }}</td>
+            <td>{{ location.abbrv }}</td>
             <td>
                 <a type="button" class="btn btn-outline-primary btn-sm m-0 waves-effect"
                 href="{% get_url_from_app_link 'summit.apps.projects' 'location_detail' id=location.id %}">

@@ -1,19 +1,43 @@
-{% extends 'layouts/base.html' %}
+{% extends 'layouts/widget.html' %}
 {% load static %}
 
 
-{% block primary %}
-    <h1 style="text-align: center">Create/Edit Document</h1>
+{% block content %}
 
-    <p>Form view for a new or existing document.</p>
-{% endblock %}
+{% if doc %}
+<h1 style="text-align: center">Edit Document</h1>
 
-{% block sidebar %}
-    {% include 'apps/docs/partials/side_nav.html' %}
-{% endblock %}
+<p>Form view for a new or existing document.</p>
 
-{% block layout_wrapper %}
-    {% with layout='left'  %}
-        {{ block.super }}
-    {% endwith %}
+<p>About the Document:</p>
+<ul>
+    <li>{{ doc.created_by }} on {{ doc.created_on }}</li>
+    <li>{{ doc.last_edited_by }} on {{ doc.updated_at }}</li>
+</ul>
+{% else %}
+<h1 style="text-align: center">Create Document</h1>
+
+<p>Form view for a new document.</p>
+{% endif %}
+
+{% if message %}
+<div class="alert alert-warning" role="alert">
+  {{ message }}
+</div>
+{% endif %}
+
+{% if form.errors %}
+<div class="alert alert-warning" role="alert">
+  {{ form.errors }}
+</div>
+{% endif %}
+
+<form action="" method="post">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+
+    <input type="submit" value="Submit Document">
+</form>
 {% endblock %}

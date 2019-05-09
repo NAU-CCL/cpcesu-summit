@@ -1,19 +1,17 @@
-{% extends 'layouts/base.html' %}
+{% extends 'layouts/widget.html' %}
 {% load static %}
 
 
-{% block primary %}
+{% block content %}
     <h1 style="text-align: center">Document Index</h1>
 
-    <p>Tree view of all documentation.</p>
-{% endblock %}
+    <p>List view of all documentation.</p>
 
-{% block sidebar %}
-    {% include 'apps/docs/partials/side_nav.html' %}
-{% endblock %}
-
-{% block layout_wrapper %}
-    {% with layout='left'  %}
-        {{ block.super }}
-    {% endwith %}
+    {% if docs %}
+    <ul>
+        {% for doc in docs %}
+            <li><a href="{% url 'summit.apps.docs:doc_detail' %}?page_id={{doc.page_id }}">{{doc.title}}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 {% endblock %}

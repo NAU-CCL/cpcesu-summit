@@ -13,4 +13,3 @@ urlpatterns = [
 
 # Static Links
 app_link(vars.AppLinks.contact, True)
-app_link(vars.AppLinks.admin_site, True)

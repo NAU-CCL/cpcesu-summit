@@ -17,7 +17,7 @@
             <div class="{{ sidebar_class|default:'col-md-2 col-lg-1' }}" >
               {% block sidebar %}{% endblock %}
             </div>
-            <div class="{{ main_class|default:'col-md-8 col-lg-11' }}">
+            <div class="{{ main_class|default:'col-md-10 col-lg-11' }}">
               {% block primary %}{{ primary|safe|default:"No content"}}{% endblock %}
             </div>
           {% endif %}
@@ -31,8 +31,6 @@
       {% endif %}
     {% endblock layout_wrapper %}
 
-    <footer>
-      {% include 'partials/footer.html' %}
-    </footer>
+    {% include 'partials/footer.html' %}
   </body>
 </html>

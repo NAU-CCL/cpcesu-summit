@@ -2,8 +2,7 @@
 {% load common_tags %}
 {% load static %}
 
-{#{% block primary %}#}
-{% block content %}
+{% block primary %}
 
 {% if pagetitle %}
     <h1 style="text-align: center">{{ pagetitle }}</h1>
@@ -27,7 +26,7 @@
                 <thead>
                 <tr>
                     <th>
-                        <input type="checkbox" id="select_all">
+                        <input type="checkbox" id="select_all_1">
                     </th>
                     <th>Status</th>
                     <th>FY</th>
@@ -47,7 +46,7 @@
                 {% for project in projects %}
                     <tr>
                         <th scope="row">
-                            <input class="export_list" type="checkbox" name="export_list" value="{{ project.id }}"/>
+                            <input class="export_list_1" type="checkbox" name="export_list" value="{{ project.id }}"/>
                         </th>
                         <td>{{ project.get_status_display }}</td>
                         <td>{{ project.fiscal_year }}</td>
@@ -90,7 +89,7 @@
                 <thead>
                 <tr>
                     <th class="th-sm">
-                        <input type="checkbox" id="select_all">
+                        <input type="checkbox" id="select_all_2">
                     </th>
                     <th class="th-sm">P-Num</th>
                     <th class="th-sm">Status</th>
@@ -105,7 +104,7 @@
                 {% for project in recent_projects %}
                     <tr>
                         <th scope="row">
-                            <input class="export_list" type="checkbox" name="export_list" value="{{ project.id }}"/>
+                            <input class="export_list_2" type="checkbox" name="export_list" value="{{ project.id }}"/>
                         </th>
                         <td>{{ project.p_num }}</td>
                         <td>{{ project.get_status_display }}</td>
@@ -129,12 +128,12 @@
     </div>
 {% endblock %}
 
-{#{% block sidebar %}#}
-{#    {% include 'apps/projects/partials/side_nav.html' %}#}
-{#{% endblock %}#}
+{% block sidebar %}
+    {% include 'apps/projects/partials/side_nav.html' %}
+{% endblock %}
 
-{#{% block layout_wrapper %}#}
-{#    {% with layout='left'  %}#}
-{#        {{ block.super }}#}
-{#    {% endwith %}#}
-{#{% endblock %}#}
+{% block layout_wrapper %}
+    {% with layout='left'  %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}

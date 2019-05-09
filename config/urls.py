@@ -31,6 +31,8 @@ from summit.apps.projects import views
 router = routers.DefaultRouter()
 router.register(r'federal_agencies', views.FederalAgencyViewSet)
 router.register(r'partners', views.PartnerViewSet)
+router.register(r'locations', views.LocationViewSet)
+router.register(r'contacts', views.UserProfileViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -51,8 +53,8 @@ handler403 = 'summit.libs.views.error403'
 handler404 = 'summit.libs.views.error404'
 handler500 = 'summit.libs.views.error500'
 
-# if settings.DEBUG:
-#     import debug_toolbar
-#     urlpatterns = [
-#         url('__debug__/', include(debug_toolbar.urls)),
-#     ] + urlpatterns
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        url('__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns

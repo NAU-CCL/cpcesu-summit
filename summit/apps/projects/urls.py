@@ -23,6 +23,7 @@ urlpatterns = [
     url_wrapper(vars.AppLinks.project_mod_edit),
     url_wrapper(vars.AppLinks.project_export_csv),
     url_wrapper(vars.AppLinks.project_public_request),
+    url_wrapper(vars.AppLinks.project_public_widget),
 
     # Locations Links and URLs
     # States, Parks, etc. in one model/object
