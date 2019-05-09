@@ -208,6 +208,7 @@ with open('_import/Task Agreements.csv') as csv_file:
 
         if len(discipline) > 0 and discipline in DISCIPLINES:
             if DEBUG: print(discipline)
+            discipline = discipline.upper()
 
         # legacy_match_amount
         legacy_match_amount = row[f_legacy_match_amount].strip()

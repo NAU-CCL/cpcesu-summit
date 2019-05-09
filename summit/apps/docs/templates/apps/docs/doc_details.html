@@ -10,8 +10,8 @@
 
     <p>About the Document:</p>
     <ul>
-        <li>{{ doc.created_by }} on {{ doc.created_on }}</li>
-        <li>{{ doc.last_edited_by }} on {{ doc.updated_at }}</li>
+        <li>Originally created: {{ doc.created_by }} on {{ doc.created_on }}</li>
+        <li>Updated by: {{ doc.last_edited_by }} on {{ doc.updated_at }}</li>
     </ul>
 
     <a href="{% url 'summit.apps.docs:all_docs' %}">View All Documents</a>

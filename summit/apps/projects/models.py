@@ -62,14 +62,14 @@ class Project(AuditModel):
     description = models.TextField(help_text=_help_text['description'], verbose_name="Abstract/Description", blank=True)
     discipline = models.CharField(max_length=21, choices=DISCIPLINE,
                                   help_text=_help_text['discipline'], blank=True,
-                                  default=DISCIPLINE[0])
+                                  default=DISCIPLINE[0][0])
     exec_start_date = models.DateField(blank=True, null=True, default=None, verbose_name="Executed")
-    federal_agency = models.ForeignKey(FederalAgency, on_delete=models.CASCADE,
+    federal_agency = models.ForeignKey(FederalAgency, on_delete=models.SET_NULL,
                                        related_name='federal_agency', default=None,
                                        blank=True, null=True, verbose_name="Agency")
     field_of_science = models.CharField(max_length=500, help_text=_help_text['field_of_science'], blank=True,
                                         verbose_name="Field of Science",
-                                        choices=FIELD_OF_SCIENCE, default=FIELD_OF_SCIENCE[0])
+                                        choices=FIELD_OF_SCIENCE, default=FIELD_OF_SCIENCE[0][0])
     final_report = models.BooleanField(verbose_name="Final Report", default=False, blank=True)
     fiscal_year = models.PositiveSmallIntegerField(null=True, blank=True, default=2019,
                                                    verbose_name="Fiscal Year")
@@ -84,12 +84,12 @@ class Project(AuditModel):
                                                        default=0, verbose_name="Number of Students")
     p_num = models.CharField(verbose_name="Award #", blank=True, max_length=500, help_text=_help_text['p_num'],
                              null=True)
-    partner = models.ForeignKey(Partner, on_delete=models.CASCADE, related_name='partner', default=None, blank=True,
+    partner = models.ForeignKey(Partner, on_delete=models.SET_NULL, related_name='partner', default=None, blank=True,
                                 null=True)
-    pp_i = models.ForeignKey(UserProfile, on_delete=models.CASCADE, help_text=_help_text['pp_i'], blank=True,
+    pp_i = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, help_text=_help_text['pp_i'], blank=True,
                              verbose_name="Partner Principle Investigator", related_name='pp_i', default=None,
                              null=True)
-    project_manager = models.ForeignKey(UserProfile, on_delete=models.CASCADE,
+    project_manager = models.ForeignKey(UserProfile, on_delete=models.SET_NULL,
                                         verbose_name="Agency Project Manager", blank=True,
                                         related_name='project_manager', default=None, null=True)
     project_title = models.CharField(max_length=500, help_text=_help_text['project_title'], blank=True, null=True)
@@ -104,7 +104,7 @@ class Project(AuditModel):
                                      verbose_name="Short Description", blank=True)
     src_of_funding = models.CharField(max_length=500, help_text=_help_text['src_of_funding'],
                                       blank=True, verbose_name="Source of Funding",
-                                      choices=SOURCE_OF_FUNDING, default=SOURCE_OF_FUNDING[0])
+                                      choices=SOURCE_OF_FUNDING, default=SOURCE_OF_FUNDING[0][0])
     staff_member = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, verbose_name="Staff Member",
                                      blank=True, related_name='staff_member', default=None, null=True)
     status = models.CharField(max_length=50, choices=STATUS, default=STATUS[0], blank=True)
@@ -141,7 +141,7 @@ class Project(AuditModel):
     youth_vets = models.CharField(choices=YOUTH_VETS, max_length=500, verbose_name="Youth/Vets", default=YOUTH_VETS[0])
     field_of_science_sub = models.CharField(choices=FIELD_OF_SCIENCE_SUB, max_length=100,
                                             blank=True, null=True, verbose_name="Sub-Fields (Field of Science)",
-                                            default=FIELD_OF_SCIENCE_SUB[0])
+                                            default=FIELD_OF_SCIENCE_SUB[0][0])
 
     job_id = models.CharField(max_length=500, blank=True, null=True)
 
@@ -157,14 +157,15 @@ class Project(AuditModel):
     legacy_received_report_date = models.TextField(verbose_name="Legacy - Received Report Date", default='')
     legacy_sent_to_tic = models.TextField(verbose_name="Legacy - Sent to TIC", default='')
 
-
-
     def get_absolute_url(self):
         from django.urls import reverse
         return reverse('summit.apps.projects:project_detail', args=[str(self.id)])
 
     def __str__(self):
-        return self.project_title
+        if self.project_title is None or len(self.project_title) > 0:
+            return "No Title"
+        else:
+            return self.project_title
 
 
 class Modification(models.Model):

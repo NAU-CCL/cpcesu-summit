@@ -4,7 +4,8 @@ from .models import Project, File, Location, Modification, ModFile
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('award_office',
+    list_display = ('__str__',
+                    'award_office',
                     'budget',
                     'cesu_unit',
                     'description',

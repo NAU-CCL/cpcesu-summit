@@ -11,8 +11,8 @@
 
 <p>About the Document:</p>
 <ul>
-    <li>{{ doc.created_by }} on {{ doc.created_on }}</li>
-    <li>{{ doc.last_edited_by }} on {{ doc.updated_at }}</li>
+    <li>Originally created: {{ doc.created_by }} on {{ doc.created_on }}</li>
+    <li>Updated by: {{ doc.last_edited_by }} on {{ doc.updated_at }}</li>
 </ul>
 {% else %}
 <h1 style="text-align: center">Create Document</h1>
