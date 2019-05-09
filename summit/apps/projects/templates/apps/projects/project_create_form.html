@@ -25,7 +25,6 @@
                 <div class="autocomplete">
                     <input class="form-control" id="federal_agency" type="text" name="federal_agency" placeholder="Federal Agency" value="{{ form.federal_agency.value|default:'' }}" autocomplete="off" value="{{federal_agency.name}}">
                 </div><br/>
-<!--                {{ form.federal_agency }}<br><br>-->
             </td>
         </tr>
         <tr>
@@ -55,7 +54,6 @@
                 <div class="autocomplete">
                     <input class="form-control" id="partner" type="text" name="partner" placeholder="Partner" value="{{ form.partner.value|default:'' }}" autocomplete="off">
                 </div><br/>
-<!--                {{ form.partner }}<br><br>-->
             </td>
         </tr>
         <tr>
@@ -191,7 +189,6 @@
                 <div class="autocomplete">
                     <input class="form-control" id="project_manager" type="text" name="project_manager" placeholder="Fed. Project Manager" value="{{ form.project_manager.value|default:'' }}" autocomplete="off">
                 </div><br/>
-<!--                {{ form.project_manager }}<br><br>-->
             </td>
         </tr>
         <tr>
@@ -203,19 +200,17 @@
                 <div class="autocomplete">
                     <input class="form-control" id="tech_rep" type="text" name="tech_rep" placeholder="Fed. Technical Rep." value="{{ form.tech_rep.value|default:'' }}" autocomplete="off">
                 </div><br/>
-<!--                {{ form.tech_rep }}<br><br>-->
             </td>
         </tr>
         <tr>
             <td>
                 <span class="text-danger sml">{{ form.pp_i.errors }}</span>
-                <label class="control-label "><b>{{ form.pp_i.label_tag }}</b></label>
+                <label class="control-label "><b>Partner Principal Investigator:</b></label>
             </td>
             <td>
                 <div class="autocomplete">
                     <input class="form-control" id="pp_i" type="text" name="pp_i" placeholder="Partner PI" value="{{ form.pp_i.value|default:'' }}" autocomplete="off">
                 </div><br/>
-<!--                {{ form.pp_i }}<br><br>-->
             </td>
         </tr>
         <tr>
@@ -227,7 +222,6 @@
                 <div class="autocomplete">
                     <input class="form-control" id="staff_member" type="text" name="staff_member" placeholder="CESU Staff" value="{{ form.staff_member.value|default:'' }}" autocomplete="off">
                 </div><br/>
-<!--                {{ form.staff_member }}<br><br>-->
             </td>
         </tr>
         </tbody>
@@ -303,15 +297,6 @@
             </td>
             <td>
                 {{ form.tent_start_date }}<br><br>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <span class="text-danger sml">{{ form.tent_end_date.errors }}</span>
-                <label class="control-label col-sm-auto"><b>End: </b></label>
-            </td>
-            <td>
-                {{ form.tent_end_date }}<br><br>
             </td>
         </tr>
         <tr>
