@@ -1,0 +1,23 @@
+{% load common_tags %}
+
+<h3>Quick Links</h3>
+<a href="{% get_url_from_app_link 'summit.apps.projects' 'project_create' %}" class="btn-sm btn-primary m-0 waves-effect" style="width: 100%;">Create Project</a>
+<br>
+<br>
+<a href="{% get_url_from_app_link 'summit.apps.projects' 'project_upload' %}" class="btn-sm btn-primary m-0 waves-effect" style="width: 100%;">Upload Project</a>
+<br>
+<br>
+<a href="{% get_url_from_app_link 'summit.apps.projects' 'project_dashboard' %}" class="btn-sm btn-primary m-0 waves-effect" style="width: 100%;">Your Dashboard</a>
+<br>
+<br>
+<a href="{% get_url_from_app_link 'summit.apps.projects' 'all_projects' %}" class="btn-sm btn-primary m-0 waves-effect" style="width: 100%;">All Projects</a>
+<br>
+<br>
+<a href="{% get_url_from_app_link 'summit.libs.auth' 'all_contacts' %}" class="btn-sm btn-primary m-0 waves-effect" style="width: 100%;">All Contacts</a>
+<br>
+<br>
+<a href="{% get_url_from_app_link 'summit.libs.auth' 'all_organizations' %}" class="btn-sm btn-primary m-0 waves-effect" style="width: 100%;">All Organizations</a>
+<br>
+<br>
+
+{% include 'partials/side_nav_globals.html' %}

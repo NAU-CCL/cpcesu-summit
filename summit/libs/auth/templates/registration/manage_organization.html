@@ -1,0 +1,55 @@
+{% extends 'layouts/base.html' %}
+{% load common_tags %}
+{% load static %}
+
+
+{% block primary %}
+<h1 style="text-align: center">{{ group.name }}</h1>
+
+<p>{{ group.description }}</p>
+
+<p>Organization Type: {{ group.type }}</p>
+
+<div>
+    <a href="{% get_url_from_app_link 'summit.libs.auth' 'create_contact_in_group' group_id=group.id %}" class="btn btn-primary btn-sm m-0 waves-effect">Create Contact</a>
+    <a href="{% get_url_from_app_link 'summit.libs.auth' 'edit_organization' group_id=group.id %}" class="btn btn-primary btn-sm m-0 waves-effect">Edit Organization</a>
+</div>
+
+<table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="th-sm">#</th>
+            <th class="th-sm">First Name</th>
+            <th class="th-sm">Last Name</th>
+            <th class="th-sm">Email</th>
+            <th class="th-sm">Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for profile in query %}
+        <tr>
+            <td>{{ profile.id }}</td>
+            <td>{{ profile.first_name }}</td>
+            <td>{{ profile.last_name }}</td>
+            <td>{{ profile.email_address }}</td>
+            <td>
+                <a class="btn btn-outline-primary btn-sm m-0 waves-effect"
+                href="{% get_url_from_app_link 'summit.libs.auth' 'view_contact' profile_id=profile.id %}">
+                    View Contact
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'registration/partials/side_nav.html' %}
+{% endblock %}
+
+{% block layout_wrapper %}
+    {% with layout='left'  %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}

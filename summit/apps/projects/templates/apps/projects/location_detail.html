@@ -1,0 +1,29 @@
+{% extends 'layouts/base.html' %}
+{% load common_tags %}
+{% load static %}
+
+{% block primary %}
+    <div class="card-header">
+        <h2 align="center">{{ object.name }}</h2>
+    </div><br>
+    <br>
+
+<span>
+    <a href="{% get_url_from_app_link 'summit.apps.projects' 'locations' %}">
+        <button type="button" class="btn btn-light">All Locations</button>
+    </a>
+    <a href="{% get_url_from_app_link 'summit.apps.projects' 'location_edit' id=object.id %}">
+        <button type="button" class="btn btn-info">Edit Location</button>
+    </a>
+</span>
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'apps/projects/partials/side_nav.html' %}
+{% endblock %}
+
+{% block layout_wrapper %}
+    {% with layout='left'  %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}

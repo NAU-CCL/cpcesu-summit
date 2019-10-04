@@ -1,22 +1,24 @@
 from django import forms
 from django.contrib import admin
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, Permission
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from summit.libs.auth.models import Partner, User, UserProfile
+from summit.libs.auth.models import User, UserProfile, Partner, CESUnit, FederalAgency
 
 
 class UserCreationForm(forms.ModelForm):
     """
     A form for creating new users with a password confirmation field.
     """
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput, required=False)
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput, required=False)
+    first_name = forms.CharField(label="First name")
+    last_name = forms.CharField(label="Last name")
 
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name')
+        fields = ['username', 'email', 'is_active', 'is_admin', 'is_superuser']
 
     def clean_password(self):
         """
@@ -38,8 +40,16 @@ class UserCreationForm(forms.ModelForm):
         user = super(UserCreationForm, self).save(commit=False)
         user.set_password(self.cleaned_data['password1'])
 
-        if commit:
-            user.save()
+        user.save()
+
+        # Making user profile and assigning to CPCESU
+        # CPCESU
+        group = CESUnit.objects.get(pk=1)
+
+        # New profile with group
+        profile = UserProfile(user=user, first_name=self.cleaned_data.get('first_name'),
+                              last_name=self.cleaned_data.get('last_name'), assigned_group=group)
+        profile.save()
 
         return user
 
@@ -53,7 +63,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'is_active', 'is_admin')
+        fields = ('email', 'first_name', 'last_name', 'is_active', 'is_admin', 'is_superuser')
 
     def clean_password(self):
         """
@@ -74,11 +84,11 @@ class UserAdmin(BaseUserAdmin):
     # For displaying the user model
     list_display = ('username', 'email', 'first_name', 'last_name', 'last_login', 'date_joined', 'is_active', 'is_admin')
     list_filter = ('is_admin', 'is_active')
-    readonly_fields = ('date_joined', 'last_login', 'is_superuser')
+    readonly_fields = ('date_joined', 'last_login')
     fieldsets = (
         (None, {'fields': ('username', 'email', 'password')}),
         ('Personal Info', {'fields': ('first_name', 'last_name')}),
-        ('Permissions', {'fields': ('is_admin', 'is_superuser', 'user_permissions', )}),
+        ('Permissions', {'fields': ('is_admin', 'is_superuser', 'user_permissions')}),
         ('Auditing', {'fields': ('is_active', 'date_joined', 'last_login')}),
     )
 
@@ -96,5 +106,8 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Partner)
+admin.site.register(CESUnit)
+admin.site.register(FederalAgency)
 admin.site.register(UserProfile)
+admin.site.register(Permission)
 admin.site.unregister(Group)

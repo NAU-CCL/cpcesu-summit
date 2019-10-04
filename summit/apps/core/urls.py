@@ -1,10 +1,15 @@
-from django.conf.urls import url, include
+from config.links import app_link, url_wrapper
 
-from . import views
+from . import vars
 
 
-app_name = 'summit.apps.core'
+app_name = vars.app_name
+app_regex = vars.app_regex
+
 urlpatterns = [
-    url(r'^$', views.index),
-    url(r'^about/', views.about),
+    url_wrapper(vars.AppLinks.index),
+    app_link(vars.AppLinks.about)
 ]
+
+# Static Links
+app_link(vars.AppLinks.contact, True)

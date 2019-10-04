@@ -1,0 +1,43 @@
+{% extends 'layouts/widget.html' %}
+{% load static %}
+
+
+{% block content %}
+
+{% if doc %}
+<h1 style="text-align: center">Edit Document</h1>
+
+<p>Form view for a new or existing document.</p>
+
+<p>About the Document:</p>
+<ul>
+    <li>Originally created: {{ doc.created_by }} on {{ doc.created_on }}</li>
+    <li>Updated by: {{ doc.last_edited_by }} on {{ doc.updated_at }}</li>
+</ul>
+{% else %}
+<h1 style="text-align: center">Create Document</h1>
+
+<p>Form view for a new document.</p>
+{% endif %}
+
+{% if message %}
+<div class="alert alert-warning" role="alert">
+  {{ message }}
+</div>
+{% endif %}
+
+{% if form.errors %}
+<div class="alert alert-warning" role="alert">
+  {{ form.errors }}
+</div>
+{% endif %}
+
+<form action="" method="post">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+
+    <input type="submit" value="Submit Document">
+</form>
+{% endblock %}

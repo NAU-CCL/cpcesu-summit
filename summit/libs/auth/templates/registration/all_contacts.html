@@ -1,0 +1,56 @@
+{% extends 'layouts/base.html' %}
+{% load common_tags %}
+{% load static %}
+
+
+{% block primary %}
+<h1 style="text-align: center">Contact Book</h1>
+
+<div>
+    <a href="{% get_url_from_app_link 'summit.libs.auth' 'create_organization' %}" class="btn btn-primary btn-sm m-0 waves-effect">Create Organization</a>
+    <a href="{% get_url_from_app_link 'summit.libs.auth' 'create_contact' %}" class="btn btn-primary btn-sm m-0 waves-effect">Create Contact</a>
+</div>
+
+<table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="th-sm">#</th>
+            <th class="th-sm">First Name</th>
+            <th class="th-sm">Last Name</th>
+            <th class="th-sm">Email</th>
+            <th class="th-sm">Organization</th>
+            <th class="th-sm">Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for profile in query %}
+        <tr>
+            <th scope="row">{{ profile.id }}</th>
+            <td>{{ profile.first_name }}</td>
+            <td>{{ profile.last_name }}</td>
+            <td>{{ profile.email_address }}</td>
+            <td>{{ profile.assigned_group }}</td>
+            <td>
+                <a class="btn btn-outline-primary btn-sm m-0 waves-effect"
+                href="{% get_url_from_app_link 'summit.libs.auth' 'view_contact' profile_id=profile.id %}">
+                    View Contact
+                </a>
+                {% if profile.assigned_group != None %}
+                <a href="{% get_url_from_app_link 'summit.libs.auth' 'manage_organization' group_id=profile.assigned_group.id %}" class="btn btn-outline-primary btn-sm m-0 waves-effect">Manage Org.</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'registration/partials/side_nav.html' %}
+{% endblock %}
+
+{% block layout_wrapper %}
+    {% with layout='left' %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}

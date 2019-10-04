@@ -1,10 +1,16 @@
-from django.conf.urls import url
+from config.links import url_wrapper
 
-from . import views
+from . import vars
 
-# TODO: Create a redirect url for every organization
+app_name = vars.app_name
+app_regex = vars.app_regex
 
-app_name = 'summit.apps.docs'
+
 urlpatterns = [
-    url(r'$', views.index),
+    # Links
+
+    # URLs
+    url_wrapper(vars.AppLinks.doc_detail),
+    url_wrapper(vars.AppLinks.all_docs),
+    url_wrapper(vars.AppLinks.doc_add_edit),
 ]

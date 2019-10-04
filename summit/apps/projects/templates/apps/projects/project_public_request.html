@@ -1,0 +1,58 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+<h1 align="left">Project Modifications</h1><br>
+<form action="" method="post" enctype="multipart/form-data">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="card">
+              <div class="card-header">
+                  <h3>Request Project Details:</h3>
+                  <p>{{ project.project_title }}</p>
+              </div>
+              <div class="card-body">
+                  <div class="form-group">
+                      {% csrf_token %}
+
+                      {% if form.subject.errors %}
+                      <ol>
+                          {% for error in form.subject.errors %}
+                          <li><strong>{{ error|escape }}</strong></li>
+                          {% endfor %}
+                      </ol>
+                      {% endif %}
+
+                      <div class="fieldWrapper">
+                          {{ form.your_name.errors }}
+                          {{ form.your_name.label_tag }}
+                          {{ form.your_name }}
+                      </div>
+
+                      <div class="fieldWrapper">
+                          {{ form.your_email.errors }}
+                          {{ form.your_email.label_tag }}
+                          {{ form.your_email }}
+                      </div>
+
+                      <div class="fieldWrapper">
+                          {{ form.message.errors }}
+                          {{ form.message.label_tag }}
+                          {{ form.message }}
+                      </div>
+
+                      <div class="fieldWrapper">
+                          {{ form.cc_myself.errors }}
+                          {{ form.cc_myself.label_tag }}
+                          {{ form.cc_myself }}
+                      </div>
+
+                      <input class="btn btn-primary" type="submit" value="Submit">
+
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

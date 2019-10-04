@@ -19,11 +19,17 @@ from .shared import(
     STATIC_URL,
     STATICFILES_DIRS,
     STATIC_ROOT,
+    MEDIA_ROOT,
+    MEDIA_URL,
     APPEND_SLASH,
     LOGIN_URL,
     LOGIN_REDIRECT_URL,
     LOGOUT_REDIRECT_URL,
     AUTH_USER_MODEL,
+    CELERY_BROKER_URL,
+    CELERY_RESULT_BACKEND,
+    DEFAULT_FROM_EMAIL,
+    REST_FRAMEWORK,
 )
 
 __all__ = [
@@ -53,16 +59,20 @@ __all__ = [
     'LOGIN_REDIRECT_URL',
     'LOGOUT_REDIRECT_URL',
     'AUTH_USER_MODEL',
+    'CELERY_BROKER_URL',
+    'CELERY_RESULT_BACKEND',
+    'DEFAULT_FROM_EMAIL',
+    'REST_FRAMEWORK',
 ]
 
-MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
-DATABASES['default'] = {
-    'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'summit_db',
-    'USER': 'summit_db_user',
-    'PASSWORD': '$umM1T_DB)',
-    'HOST': '127.0.0.1',
-    'PORT': '5432'
-}
+# MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
+
+DEBUG = True
 INTERNAL_IPS = ['127.0.0.1', 'localhost']
-INSTALLED_APPS = ['whitenoise.runserver_nostatic', *INSTALLED_APPS, 'debug_toolbar']
+INSTALLED_APPS = ['whitenoise.runserver_nostatic', *INSTALLED_APPS] # , 'debug_toolbar']
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'noreply@remy.network'
+EMAIL_HOST_PASSWORD = 'axnqjwqztjxzjygs'
+EMAIL_USE_TLS = True

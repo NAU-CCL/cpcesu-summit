@@ -19,10 +19,17 @@ from .shared import(
     STATIC_URL,
     STATICFILES_DIRS,
     STATIC_ROOT,
+    MEDIA_ROOT,
+    MEDIA_URL,
     APPEND_SLASH,
     LOGIN_URL,
+    LOGIN_REDIRECT_URL,
     LOGOUT_REDIRECT_URL,
     AUTH_USER_MODEL,
+    CELERY_BROKER_URL,
+    CELERY_RESULT_BACKEND,
+    DEFAULT_FROM_EMAIL,
+    REST_FRAMEWORK,
 )
 
 __all__ = [
@@ -48,18 +55,24 @@ __all__ = [
     'STATIC_ROOT',
     'APPEND_SLASH',
     'LOGIN_URL',
+    'LOGIN_REDIRECT_URL',
     'LOGOUT_REDIRECT_URL',
     'AUTH_USER_MODEL',
+    'CELERY_BROKER_URL',
+    'CELERY_RESULT_BACKEND',
+    'DEFAULT_FROM_EMAIL',
+    'REST_FRAMEWORK',
 ]
 
 DEBUG = False
-DATABASES['default'] = {
-    'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'summit_db',
-    'USER': 'summit_db_user',
-    'PASSWORD': '$umM1T_DB)',
-    'HOST': '127.0.0.1',
-    'PORT': '5432'
-}
 # SECRET_KEY = env('SECRET_KEY')
 ALLOWED_HOSTS = ['*']
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = False
+
+

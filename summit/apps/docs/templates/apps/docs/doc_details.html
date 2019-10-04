@@ -1,0 +1,31 @@
+{% extends 'layouts/widget.html' %}
+{% load static %}
+
+
+{% block content %}
+
+{% if doc%}
+    <h1 style="text-align: center">{{ doc.title }}</h1>
+    <h3 style="text-align: center">Document Details</h3>
+
+    <p>About the Document:</p>
+    <ul>
+        <li>Originally created: {{ doc.created_by }} on {{ doc.created_on }}</li>
+        <li>Updated by: {{ doc.last_edited_by }} on {{ doc.updated_at }}</li>
+    </ul>
+
+    <a href="{% url 'summit.apps.docs:all_docs' %}">View All Documents</a>
+    {% if request.user.is_authenticated and request.user.is_superuser %}
+    | <a href="{% url 'summit.apps.docs:doc_add_edit' %}?page_id={{doc.page_id }}">Edit This Document</a>
+    {% endif %}
+
+    <div>
+        {{ doc.html_body|safe }}
+    </div>
+{% else %}
+<script>
+    window.close();
+</script>
+{% endif %}
+
+{% endblock %}

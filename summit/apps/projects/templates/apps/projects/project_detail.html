@@ -1,0 +1,478 @@
+{% extends 'layouts/base.html' %}
+{% load common_tags %}
+{% load static %}
+{% block primary %}
+
+    <span>
+        <a href="{% get_url_from_app_link 'summit.apps.projects' 'project_edit' id=object.id %}">
+            <button type="button" class="btn btn-light">Edit Project</button>
+        </a>
+        <a href="{% get_url_from_app_link 'summit.apps.projects' 'project_mod_create' id=object.id %}">
+            <button type="button" class="btn btn-info">Add Modifications</button>
+        </a>
+    </span>
+
+<div class="card">
+    <div class="row1">
+        <div class="card-header col-sm-12">
+            <h1 align="center" class="card-header">{{ object.project_title }}</h1>
+        </div>
+    </div><br>
+</div><br>
+
+<div class="card">
+<h3 class="card-header">Details</h3>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-4">
+                <h5> <u>General Information: </u></h5>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td><b>Fiscal Year:</b></td>
+                        <td>{{ object.fiscal_year }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Federal Agency:</b></td>
+                        {% if object.federal_agency %}
+                        <td>
+                            <a href="{% get_url_from_app_link 'summit.libs.auth' 'manage_organization' group_id=object.federal_agency.id %}">
+                            {{ object.federal_agency }}
+                            </a>
+                        </td>
+                        {% else %}
+                            <td>None</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td><b>Award #:</b></td>
+                        <td>{{ object.p_num }} </td>
+                    </tr>
+                    <tr>
+                        <td><b>Awarding Office:</b></td>
+                        <td>{{ object.get_award_office_display }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Partner:</b></td>
+                        {% if object.partner %}
+                        <td>
+                            <a href="{% get_url_from_app_link 'summit.libs.auth' 'manage_organization' group_id=object.partner.id %}">
+                            {{ object.partner }}
+                            </a>
+                        </td>
+                        {% else %}
+                            <td>None</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td><b>Location:</b></td>
+                        <td>{{ object.location }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><b>Title:</b></td>
+                        <td>{{ object.project_title }} </td>
+                    </tr>
+                    <tr>
+                        <td><b>Type:</b></td>
+                        <td>{{ object.get_type_display }} </td>
+                    </tr>
+                    <tr>
+                        <td><b>Discipline:</b></td>
+                        <td>{{ object.get_discipline_display }} </td>
+                    </tr>
+                    <tr>
+                        <td><b>Vet/Youth Support:</b></td>
+                        <td>{{ object.get_vet_support_display }} </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-4">
+                <h5><u>Description: </u></h5>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <span class="text-danger sml">{{ object.description.errors }}</span>
+                            {{ object.description|default:"No description added" }}<br>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-4">
+                <h5><u>Administration: </u></h5>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td><b>Status:</b><br></td>
+                        <td>
+                            {{ object.get_status_display }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Sensitive:</b></td>
+                        <td>
+                            {% if  object.sensitive %}
+                                Yes
+                            {% else %}
+                                No
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Deliverable(s) Received?</b></td>
+                        <td>
+                            {% if  object.final_report %}
+                                Yes
+                            {% else %}
+                                No
+                            {% endif %}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <br><h5><u>Personnel: </u></h5>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><b>Agency Project Manager:</b></td>
+                            {% if object.project_manager %}
+                            <td>
+                                <a href="{% get_url_from_app_link 'summit.libs.auth' 'view_contact' profile_id=object.project_manager.id %}">
+                                {{ object.project_manager }}
+                                </a>
+                            </td>
+                            {% else %}
+                                <td>None</td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <td><b>Agency Agreements Tech Rep:</b></td>
+                            {% if object.tech_rep %}
+                            <td>
+                                <a href="{% get_url_from_app_link 'summit.libs.auth' 'view_contact' profile_id=object.tech_rep.id %}">
+                                {{ object.tech_rep }}
+                                </a>
+                            </td>
+                            {% else %}
+                                <td>None</td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <td><b>Partner Principal Investigator:</b></td>
+                            {% if object.pp_i %}
+                            <td>
+                                <a href="{% get_url_from_app_link 'summit.libs.auth' 'view_contact' profile_id=object.pp_i.id %}">
+                                {{ object.pp_i }}
+                                </a>
+                            </td>
+                            {% else %}
+                                <td>None</td>
+                            {% endif %}
+                        </tr>
+                    <tr>
+                            <td><b>Staff Member:</b></td>
+                            {% if object.staff_member %}
+                            <td>
+                                <a href="{% get_url_from_app_link 'summit.libs.auth' 'view_contact' profile_id=object.staff_member.id %}">
+                                {{ object.staff_member }}
+                                </a>
+                            </td>
+                            {% else %}
+                                <td>None</td>
+                            {% endif %}
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="col-sm-4">
+                <br><h5><u>Award Amount: </u></h5>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td><b>Budget:</b></td>
+                        <td>{{ object.budget }} </td>
+                    </tr>
+                    <tr>
+                        <td><b>Total Award Amt:</b></td>
+                        <td>{{ total_award_amount }} </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-4">
+                <br><h5><u>Notes: </u></h5>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>
+                            {{ object.notes|default:"None" }}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <br><h5><u>Dates: </u></h5>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td><b>Received:</b></td>
+                        <td>
+                            {{ object.init_start_date }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Reviewed:</b></td>
+                        <td>
+                            {{ object.reviewed }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Approved:</b></td>
+                        <td>
+                            {{ object.task_agreement_start_date }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Executed:</b></td>
+                        <td>
+                            {{ object.exec_start_date }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Start:</b></td>
+                        <td>
+                            {{ object.tent_start_date }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>End:</b></td>
+                        <td>
+                            {{ object.tent_end_date }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Extended:</b></td>
+                        <td>
+                            {% if object.status == "LEGACY" %}
+                                No extension date from legacy data.
+                            {% else %}
+                                {{ date_ext|default:'No extension added' }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <small>(from modifications)</small>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-4">
+                <br><h5><u>Research & Development: </u></h5>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td><b>Funding Source:</b></td>
+                        <td>
+                            {{ object.get_src_of_funding_display }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Monitoring:</b></td>
+                        <td>
+                            {{ object.monitoring }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Scientific Method:</b></td>
+                        <td>
+                            {{ object.sci_method }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Field of Science:</b></td>
+                        <td>
+                            {{ object.get_field_of_science_display }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Subfield:</b></td>
+                        <td>
+                            {{ object.get_field_of_science_sub_display }}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-4">
+                <br><h5><u>File(s): </u></h5>
+                <table>
+                    <tbody>
+                    {% for file in files %}
+                        <tr>
+                            <td><a href=" {{ file.file.url }} " target="_blank"> {{ file.file }}</a><br></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div><br>
+<div class="card">
+    <h3 class="card-header">Modifications</h3>
+    <div class="card-body">
+            <p class="card-subtitle">To view or edit modifications, click the blue highlighted 'Number'.</p>
+        <div class="row">
+            <a href="{% get_url_from_app_link 'summit.apps.projects' 'project_mod_create' id=object.id %}">
+                <button type="button" class="btn btn-sm btn-info">Add Modifications</button>
+            </a>
+        </div>
+        <div class="row">
+            {% for mod in mods %}
+            <div class="col-sm-4">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><b>Number:</b></td>
+                            <td><u><a href="{% get_url_from_app_link 'summit.apps.projects' 'project_mod_edit' id=object.id mod_id=mod.mod_num %}">
+                                {{ mod.mod_num }}
+                            </a></u></td>
+                        </tr>
+                        <tr>
+                            <td><b>Type:</b></td><td>{{ mod.get_mod_type_display }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Amount:</b></td><td>{{ mod.mod_amount}}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Approved:</b></td><td>{{ mod.mod_approved }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Executed:</b></td><td>{{ mod.mod_executed }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Extension:</b></td>
+                            <td>{{ mod.mod_extension|default:'No Extension' }}</td>
+                        </tr><br>
+                    </tbody>
+                </table>
+            </div>
+            <br>
+            {% endfor %}
+        </div>
+    </div>
+</div><br>
+
+
+{% if object.status == 'LEGACY' %}
+<div class="card">
+<h3 class="card-header">Legacy Details</h3>
+    <div class="card-body">
+        <h5>From Access Database Import | May 5, 2019</h5>
+        <div class="row">
+            <div class="col-sm-4">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td><b>Award Number:</b><br></td>
+                        <td>
+                            {{ object.legacy_award_number|default:"Blank" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Match Amount:</b><br></td>
+                        <td>
+                            {{ object.legacy_match_amount|default:"Blank" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>CA Account Number:</b><br></td>
+                        <td>
+                            {{ object.legacy_ca_account_number|default:"Blank" }}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-sm-4">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td><b>Account Number:</b><br></td>
+                        <td>
+                            {{ object.legacy_account_number|default:"Blank" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Area / Org:</b><br></td>
+                        <td>
+                            {{ object.legacy_area_org|default:"Blank" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>PWE:</b><br></td>
+                        <td>
+                            {{ object.legacy_pwe|default:"Blank" }}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-sm-4">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td><b>Project Products:</b><br></td>
+                        <td>
+                            {{ object.legacy_project_products|default:"Blank" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Received Report Date:</b><br></td>
+                        <td>
+                            {{ object.legacy_received_report_date|default:"Blank" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Sent to TIC:</b><br></td>
+                        <td>
+                            {{ object.legacy_sent_to_tic|default:"Blank" }}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            </div>
+        </div>
+    </div>
+</div><br>
+{% endif %}
+
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'apps/projects/partials/side_nav.html' %}
+{% endblock %}
+
+{% block layout_wrapper %}
+    {% with layout='left'  %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}

@@ -1,0 +1,162 @@
+{% extends 'layouts/base.html' %}
+{% load common_tags %}
+{% load static %}
+
+{% block primary %}
+    <h1 style="text-align: center">All Projects, All Fields</h1>
+
+    <div class="container-fluid">
+        <form action="{% get_url_from_app_link 'summit.apps.projects' 'project_export_csv' %}" method="post" enctype="multipart/form-data"
+              name="export_form">
+            {% csrf_token %}
+            <button class="btn btn-outline-success btn-sm m-0 waves-effect" type="submit" value="Submit"
+                    style="float: left;">
+                Export
+            </button>
+            <table class="dtBasicExample table-responsive-sm table-striped table-bordered" style="width: 100%;">
+                <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" id="select_all_1">
+                    </th>
+                    <th>award_office</th>
+                    <th>budget</th>
+                    <th>cesu_unit</th>
+                    <th>description</th>
+                    <th>discipline</th>
+                    <th>exec_start_date</th>
+                    <th>federal_agency</th>
+                    <th>field_of_science</th>
+                    <th>final_report</th>
+                    <th>fiscal_year</th>
+                    <th>location</th>
+                    <th>init_start_date</th>
+                    <th>monitoring</th>
+                    <th>notes</th>
+                    <th>num_of_students</th>
+                    <th>p_num</th>
+                    <th>partner</th>
+                    <th>pp_i</th>
+                    <th>project_manager</th>
+                    <th>project_title</th>
+                    <th>r_d</th>
+                    <th>reviewed</th>
+                    <th>sci_method</th>
+                    <th>sensitive</th>
+                    <th>short_summary</th>
+                    <th>src_of_funding</th>
+                    <th>staff_member</th>
+                    <th>status</th>
+                    <th>tech_rep</th>
+                    <th>tent_end_date</th>
+                    <th>tent_start_date</th>
+                    <th>type</th>
+                    <th>fed_poc</th>
+                    <th>funding</th>
+                    <th>comm_start_date</th>
+                    <th>task_agreement_start_date</th>
+                    <th>actual_start</th>
+                    <th>actual_end</th>
+                    <th>perm_share</th>
+                    <th>award_amt</th>
+                    <th>alt_coord</th>
+                    <th>req_iacuc</th>
+                    <th>youth_vets</th>
+                    <th>field_of_science_sub</th>
+                    <th>job_id</th>
+                    <th>legacy_award_number</th>
+                    <th>legacy_match_amount</th>
+                    <th>legacy_ca_account_number</th>
+                    <th>legacy_account_number</th>
+                    <th>legacy_area_org</th>
+                    <th>legacy_pwe</th>
+                    <th>legacy_project_products</th>
+                    <th>legacy_received_report_date</th>
+                    <th>legacy_sent_to_tic</th>
+                    <th>View Details</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for project in projects %}
+                    <tr>
+                        <th scope="row">
+                            <input class="export_list_1" type="checkbox" name="export_list" value="{{ project.id }}"/>
+                        </th>
+                        <td>{{ project.award_office }}</td>
+                        <td>{{ project.budget }}</td>
+                        <td>{{ project.cesu_unit }}</td>
+                        <td>{{ project.description }}</td>
+                        <td>{{ project.discipline }}</td>
+                        <td>{{ project.exec_start_date }}</td>
+                        <td>{{ project.federal_agency }}</td>
+                        <td>{{ project.field_of_science }}</td>
+                        <td>{{ project.final_report }}</td>
+                        <td>{{ project.fiscal_year }}</td>
+                        <td>{{ project.location }}</td>
+                        <td>{{ project.init_start_date }}</td>
+                        <td>{{ project.monitoring }}</td>
+                        <td>{{ project.notes }}</td>
+                        <td>{{ project.num_of_students }}</td>
+                        <td>{{ project.p_num }}</td>
+                        <td>{{ project.partner }}</td>
+                        <td>{{ project.pp_i }}</td>
+                        <td>{{ project.project_manager }}</td>
+                        <td>{{ project.project_title }}</td>
+                        <td>{{ project.r_d }}</td>
+                        <td>{{ project.reviewed }}</td>
+                        <td>{{ project.sci_method }}</td>
+                        <td>{{ project.sensitive }}</td>
+                        <td>{{ project.short_summary }}</td>
+                        <td>{{ project.src_of_funding }}</td>
+                        <td>{{ project.staff_member }}</td>
+                        <td>{{ project.status }}</td>
+                        <td>{{ project.tech_rep }}</td>
+                        <td>{{ project.tent_end_date }}</td>
+                        <td>{{ project.tent_start_date }}</td>
+                        <td>{{ project.type }}</td>
+                        <td>{{ project.fed_poc }}</td>
+                        <td>{{ project.funding }}</td>
+                        <td>{{ project.comm_start_date }}</td>
+                        <td>{{ project.task_agreement_start_date }}</td>
+                        <td>{{ project.actual_start }}</td>
+                        <td>{{ project.actual_end }}</td>
+                        <td>{{ project.perm_share }}</td>
+                        <td>{{ project.award_amt }}</td>
+                        <td>{{ project.alt_coord }}</td>
+                        <td>{{ project.req_iacuc }}</td>
+                        <td>{{ project.youth_vets }}</td>
+                        <td>{{ project.field_of_science_sub }}</td>
+                        <td>{{ project.job_id }}</td>
+                        <td>{{ project.legacy_award_number }}</td>
+                        <td>{{ project.legacy_match_amount }}</td>
+                        <td>{{ project.legacy_ca_account_number }}</td>
+                        <td>{{ project.legacy_account_number }}</td>
+                        <td>{{ project.legacy_area_org }}</td>
+                        <td>{{ project.legacy_pwe }}</td>
+                        <td>{{ project.legacy_project_products }}</td>
+                        <td>{{ project.legacy_received_report_date }}</td>
+                        <td>{{ project.legacy_sent_to_tic }}</td>
+                        <td>
+                            <a class="btn btn-outline-primary btn-sm m-0 waves-effect"
+                               href="{% get_url_from_app_link 'summit.apps.projects' 'project_detail' id=project.id %}">
+                                Details
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <br>
+        </form>
+    </div>
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'apps/projects/partials/side_nav.html' %}
+{% endblock %}
+
+{% block layout_wrapper %}
+    {% with layout='left'  %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}

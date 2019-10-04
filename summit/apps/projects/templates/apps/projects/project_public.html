@@ -1,0 +1,68 @@
+{% extends my_template %}
+
+{% load common_tags %}
+{% load static %}
+
+{% block content %}
+
+{% if not is_widget%}
+    {% if pagetitle %}
+        <h1 style="text-align: center">{{ pagetitle }}</h1>
+    {% else %}
+        <h1 style="text-align: center">Public Projects</h1>
+    {% endif %}
+
+
+    <p class="animated fadeIn text-muted">List for publicly viewable projects that are currently active or are formally
+        completed and are archived.</p>
+{% else %}
+    <p class="animated fadeIn text-muted">This is all publicly viewable project done with the CPCESU. For a better viewing experience,
+    we suggest you visit <a href="http://ryloth.ceias.nau.edu/projects/public_public" target="_blank">our Project Management System</a>.</p>
+{% endif %}
+    <div class="table-responsive">
+        <style>
+            tr td, tr th{
+                padding: 0.5rem 0 !important;
+                margin: 0 !important;
+                vertical-align: middle !important;
+            }
+        </style>
+
+        <table class="dtBasicExample table table-striped table-bordered" width="100%">
+            <thead>
+            <tr>
+                <th>Award Number</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Federal Agency</th>
+                <th>Non-Gov't Partner</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Total Funds</th>
+                <th>Details</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for project in projects %}
+            <tr>
+                <th scope="row">{{ project.p_num }}</th>
+                <td href="">{{ project.project_title }}</td>
+                <td>{{ project.get_status_display }}</td>
+                <td>{{ project.federal_agency}}</td>
+                <td>{{ project.partner }}</td>
+                <td>{{ project.tent_start_date }}</td>
+                <td>{{ project.tent_end_date}}</td>
+                <td>${{ project.budget}}</td>
+                <td>
+                    <a class="btn btn-outline-primary btn-sm m-0 waves-effect"
+                       href="{% get_url_from_app_link 'summit.apps.projects' 'project_public_detail' id=project.id %}"
+                       target="{{ link_target }}">
+                        View More
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

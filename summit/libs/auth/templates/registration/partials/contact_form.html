@@ -1,0 +1,45 @@
+<form method="post">
+    {% csrf_token %}
+    <div class="row">
+        <div class="card col-sm-12">
+            <table>
+                <tbody>
+                    <tr>
+                        <td><b>{{ profile_form.first_name.label }}:</b></td><td>{{ profile_form.first_name }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>{{ profile_form.last_name.label }}:</b></td><td>{{ profile_form.last_name }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>{{ profile_form.avatar.label }}:</b></td><td>{{ profile_form.avatar }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>{{ profile_form.department.label }}:</b></td><td>{{ profile_form.department }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>{{ profile_form.location.label }}:</b></td><td>{{ profile_form.location }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>{{ profile_form.address.label }}:</b></td><td>{{ profile_form.address }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>{{ profile_form.phone_number.label }}:</b></td><td>{{ profile_form.phone_number }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>{{ profile_form.fax_number.label }}:</b></td><td>{{ profile_form.fax_number }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>{{ profile_form.email_address.label }}:</b></td><td>{{ profile_form.email_address }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>{{profile_form.assigned_group.label }}:</b></td><td>{{ profile_form.assigned_group }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+            <input type="submit" value="Submit Contact" />
+        </div>
+    </div>
+</form>
+
+<hr>

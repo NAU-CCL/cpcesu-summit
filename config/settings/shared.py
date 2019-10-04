@@ -12,10 +12,6 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
-import environ
-
-env = environ.Env()
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 PROJ_DIR = os.path.join(BASE_DIR, 'summit')
@@ -24,11 +20,10 @@ PROJ_DIR = os.path.join(BASE_DIR, 'summit')
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY',
-                 default='u&f_a@de&t00=pdfqc6x6^nif^w-+1eb_cf_g03!^&ch&cavs9')
+SECRET_KEY = 'u&f_a@de&t00=pdfqc6x6^nif^w-+1eb_cf_g03!^&ch&cavs9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG', default=True)
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -43,8 +38,12 @@ DJANGO_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles'
+    'django.contrib.staticfiles',
     # Do not touch
+
+    # Other Django-related libraries (3rd party)
+    'django_celery_beat',
+    'rest_framework',
 ]
 
 PROJ_APPS = [
@@ -52,6 +51,7 @@ PROJ_APPS = [
     # Order alphabetically, first loading the libs over apps
     'summit.libs',
     'summit.libs.auth',
+    'summit.libs.notifications',
     'summit.apps.core',
     'summit.apps.docs',
     'summit.apps.projects'
@@ -74,6 +74,9 @@ DJANGO_MIDDLEWARES = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # Do not touch
+
+    # Other Django-related libraries (3rd party)
+    # None
 ]
 
 PROJ_MIDDLEWARES = [
@@ -99,6 +102,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'summit.libs.notifications.context_processors.notification_context_processor',
             ],
         },
     },
@@ -113,7 +117,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'summit_db',
+        'NAME': 'cpcesupm',
+        'USER': 'cpcesu',
+        'PASSWORD': 'HjMNGN4cJtQcg',
+        'HOST': '127.0.0.1',
+        'PORT': '5432'
     }
 }
 
@@ -122,10 +130,10 @@ DATABASES = {
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    { 'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator' },
-    { 'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator' },
-    { 'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator' },
-    { 'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator' }
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'}
 ]
 
 
@@ -133,7 +141,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Phoenix'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
@@ -144,17 +152,29 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# Media files (PDFs, Docx, Google Docs, etc.)
+
+MEDIA_URL = '/data/'
+
 
 # Custom Shared config
 STATICFILES_DIRS = ['%s/static' % PROJ_DIR]
 STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'data')
 APPEND_SLASH = True
 LOGIN_URL = '/accounts/login'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/projects/dashboard'
 LOGOUT_REDIRECT_URL = None
 AUTH_USER_MODEL = 'summit_auth.User'
 
 
 # TO DO STILL
-# EMAIL_BACKEND =
 # ADMINS
+CELERY_BROKER_URL = 'redis://localhost'
+CELERY_RESULT_BACKEND = 'redis'
+
+DEFAULT_FROM_EMAIL = 'CPCESU Project Management System <cpcesu@nau.edu>'
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}

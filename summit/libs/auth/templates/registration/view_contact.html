@@ -1,0 +1,80 @@
+{% extends 'layouts/base.html' %}
+{% load common_tags %}
+{% load static %}
+
+
+{% block primary %}
+    <h1 style="text-align: center">View Contact</h1>
+
+    {% if has_profile %}
+
+    {% if is_own %}
+    <a href="{% get_url_from_app_link 'summit.libs.auth' 'edit_my_contact' %}"
+       class="btn btn-primary btn-sm m-0 waves-effect">Edit Your Contact</a>
+    <a href="{% url 'password_change' %}"
+       class="btn btn-primary btn-sm m-0 waves-effect">Change Password</a>
+
+    {% elif can_edit %}
+    <a href="{% get_url_from_app_link 'summit.libs.auth' 'edit_contact' profile_id=profile.id %}"
+    class="btn btn-primary btn-sm m-0 waves-effect">Edit Contact</a>
+    {% endif %}
+
+    <div class="row">
+        <div class="card col-sm-12">
+        <table>
+            <tr>
+                <td><b>Avatar:</b></td>
+                <td>
+                    {% if profile.avatar is not "" %}
+                        {{ profile.avatar }}
+                    {% else %}
+                        No avatar
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td><b>Name (first and last): </b></td>
+                <td>{{ profile.first_name }} {{ profile.last_name }}</td>
+            </tr>
+            <tr>
+                <td><b>Email Address:</b></td>
+                <td>{{ profile.email_address }}</td>
+            </tr>
+            <tr>
+                <td><b>Phone Number:</b> {{ profile.phone_number }}</td>
+                <td><b>Fax Number:</b> {{ profile.fax_number }}</td>
+            </tr>
+            <tr>
+                <td><b>Title and Department:</b></td>
+                <td>{{ profile.title }} | {{ profile.department }}</td>
+            </tr>
+            <tr>
+                <td><b>Location and Address:<b/></td>
+                <td>{{ profile.location }} <br/> {{ profile.address|safe }}</td>
+            </tr>
+            <tr>
+                <td><b>Assigned Group:</b></td>
+                {% if profile.assigned_group and profile.assigned_group.id %}
+                    <td>{{ profile.assigned_group }} <a href="{% get_url_from_app_link 'summit.libs.auth' 'manage_organization' group_id=profile.assigned_group.id %}" class="btn btn-primary btn-sm m-0 waves-effect">Manage Org.</a></td>
+                {% else %}
+                    <td>No Group</td>
+                {% endif %}
+            </tr>
+        </table>
+
+        {% else %}
+        <a href="{% get_url_from_app_link 'summit.libs.auth' 'edit_contact' %}">Create Contact</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'registration/partials/side_nav.html' %}
+{% endblock %}
+
+{% block layout_wrapper %}
+    {% with layout='left'  %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}

@@ -54,9 +54,9 @@ sudo service postgresql start
 Now, create the user and database and add permissions:
 
 ```
-CREATE DATABASE summit_db;
-CREATE USER summit_db_user WITH PASSWORD '$umM1T_DB)';
-GRANT ALL PRIVILEGES ON DATABASE summit_db TO summit_db_user;
+CREATE DATABASE cpcesupm;
+CREATE USER cpcesu WITH PASSWORD 'HjMNGN4cJtQcg';
+GRANT ALL PRIVILEGES ON DATABASE cpcesupm TO cpcesu;
 ```
 
 To exit psql and the 'postgres' user:
@@ -135,7 +135,13 @@ virtualenv ./venv-dev -p /usr/bin/python3
 Call the following commands to start the virtual environment and update it with our current packages:
 
 ```
+LINUX:
 source venv-dev/bin/activate
+
+WINDOWS (CMD ONLY):
+.\venv-dev\Scripts\activate
+
+BOTH:
 pip install -r requirements/local.txt
 ```
 
@@ -167,7 +173,13 @@ virtualenv ./venv-production -p /usr/bin/python3
 Call the following commands to start the virtual environment and update it with our current packages:
 
 ```
-source ./venv-production/bin/activate
+LINUX:
+source venv-production/bin/activate
+
+WINDOWS (CMD ONLY):
+.\venv-production\Scripts\activate
+
+BOTH:
 pip install -r requirements/production.txt
 ```
 
@@ -342,4 +354,62 @@ git commit
 git commit -m "Commit message here"
 
 git push
+```
+
+#### Setting up Celery
+
+Install redis-server with 
+```
+sudo apt install redis-server
+```
+then in /etc/redis/redis.conf, change supervised to systemd
+```
+in /etc/redis/redis.conf
+
+# Note: these supervision methods only signal "process is ready."
+#       They do not enable continuous liveness pings back to your supervisor.
+supervised systemd
+```
+
+See [this link](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-18-04)
+for more info on testing the distro, or configuration for Windows, untested atm.
+
+Given celery pip installs correctly, activate it with the following command
+
+```
+celery -A summit worker -B -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+```
+
+to double check that tasks are being created and their status is correct, do
+```
+pip install flower
+celery flower -A summit --address=127.0.0.1 --port=5555
+```
+
+#### Setting up OCR on Windows
+
+The OCR system uses Google's Tessereact to perform the reading, ImageMagick to convert pdf's to images to be processed,
+and Ghostscript, requirement of ImageMagick, to convert pdf's to images. Both have wrappers that are pip installed
+through the requirements, but you need to install several programs for the wrappers to function correctly. 
++ [Google Tessereact Windows](https://github.com/UB-Mannheim/tesseract/wiki)
++ [ImageMagick](http://www.imagemagick.org/script/download.php)
++ [Ghostscript](https://www.ghostscript.com/download/gsdnld.html)
+
+In the test_ocr.py file(will be changed in the future), you will need to make sure the line
+```
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe"
+```
+
+is not commented for the system to work.
+
+For Ubuntu, ImageMagick and Ghostscript was already installed, so no need to get it.
+```
+sudo apt install tesseract-ocr
+```
+in etc/ImageMagick-6/policy.xml, change 
+
+```
+<policy domain="coder" rights="none" pattern="PDF" />
+to
+<policy domain="coder" rights="read" pattern="PDF" />
 ```

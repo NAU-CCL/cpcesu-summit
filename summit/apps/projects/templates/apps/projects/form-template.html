@@ -1,0 +1,86 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block primary %}
+    <form action="" method="post" enctype="multipart/form-data" name="form">
+        {% csrf_token %}
+        <div class="card">
+            <div class="card-header">
+                <h3>{% block form_title%}Project Form{% endblock %}</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {{ form.errors }}
+                </div>
+                <p><span style="color: red; ">NOTE:</span> If you leave this page you will lose progress.</p>
+                <div class="row">
+                    <div class="col-sm-4">
+                        {{ form.non_field_errors }}
+                        {% block row1_col1 %}{% endblock %}
+
+                    </div>
+                    <div class="col-sm-4">
+                        {{ form.non_field_errors }}
+                        {% block row1_col2 %}{% endblock %}
+                    </div>
+                    <div class="col-sm-4">
+                        {{ form.non_field_errors }}
+                        {% block row1_col3 %}{% endblock %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        {{ form.non_field_errors }}
+                        {% block row2_col1 %}{% endblock %}
+
+                    </div>
+                    <div class="col-sm-4">
+                        {{ form.non_field_errors }}
+                        {% block row2_col2 %}{% endblock %}
+                    </div>
+                    <div class="col-sm-4">
+                        {{ form.non_field_errors }}
+                        {% block row2_col3 %}{% endblock %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        {{ form.non_field_errors }}
+                        {% block row3_col1 %}{% endblock %}
+
+                    </div>
+                    <div class="col-sm-4">
+                        {{ form.non_field_errors }}
+                        {% block row3_col2 %}{% endblock %}
+                    </div>
+                    <div class="col-sm-4">
+                        {{ form.non_field_errors }}
+                        {% block row3_col3 %}{% endblock %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% block submission %}{% endblock %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-error">
+                <ul>
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+</form>
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'apps/projects/partials/side_nav.html' %}
+{% endblock %}
+
+{% block layout_wrapper %}
+    {% with layout='left'  %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'layouts/base.html' %}
+{% load common_tags %}
+{% load static %}
+
+{% block primary %}
+<h1 style="text-align: center">Locations</h1>
+<p>Locations added to Projects such as states, parks, etc.</p>
+
+<div>
+    <a href="{% get_url_from_app_link 'summit.apps.projects' 'location_create' %}" class="btn btn-primary btn-sm m-0 waves-effect">Create Location</a>
+</div>
+
+<table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="th-sm">#</th>
+            <th class="th-sm">Name</th>
+            <th class="th-sm">Abbrv.</th>
+            <th class="th-sm">Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for location in locations%}
+        <tr>
+            <th scope="row">{{ location.id }}</th>
+            <td href="">{{ location.name }}</td>
+            <td>{{ location.abbrv }}</td>
+            <td>
+                <a type="button" class="btn btn-outline-primary btn-sm m-0 waves-effect"
+                href="{% get_url_from_app_link 'summit.apps.projects' 'location_detail' id=location.id %}">
+                    View More
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'apps/projects/partials/side_nav.html' %}
+{% endblock %}
+
+{% block layout_wrapper %}
+    {% with layout='left'  %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}

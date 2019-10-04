@@ -1,0 +1,17 @@
+{% extends 'layouts/widget.html' %}
+{% load static %}
+
+
+{% block content %}
+    <h1 style="text-align: center">Document Index</h1>
+
+    <p>List view of all documentation.</p>
+
+    {% if docs %}
+    <ul>
+        {% for doc in docs %}
+            <li><a href="{% url 'summit.apps.docs:doc_detail' %}?page_id={{doc.page_id }}">{{doc.title}}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+{% endblock %}

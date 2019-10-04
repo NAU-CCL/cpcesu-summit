@@ -3,3 +3,8 @@ psycopg2<=2.7.6
 django-environ==0.4
 whitenoise
 pillow
+celery[redis]
+django_celery_beat
+pytesseract
+Wand
+djangorestframework
