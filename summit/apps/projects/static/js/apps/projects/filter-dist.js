@@ -1,0 +1,1 @@
+$(document).ready((function(){var e=document.getElementById("start_date").value,t=document.getElementById("end_date").value,a=document.getElementById("status"),n=a.options[a.selectedIndex].text;$("#filter").on("click",(function(){$.ajax({type:"GET",url:"/project_filter",data:{start_date:e,end_date:t,status:n},success:function(e){$("#replace").replaceWith(e)}})}))}));
