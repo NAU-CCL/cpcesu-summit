@@ -1,12 +1,13 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
 
 
 from .forms import ProfileForm, GroupForm
 from .models import User, UserProfile, UserGroup, CESUnit, FederalAgency, Partner
+from summit.apps.projects.models import Project
 
 
 def logged_out(request):
@@ -151,7 +152,8 @@ def all_contacts(request, name):
         ],
         'jsFiles': [
             'libs/mdb/js/addons/datatables.min.js',
-            'js/datatables/no_sort_datatable.js'
+            'js/datatables/no_sort_datatable.js',
+            'js/libs/auth/info_display.js'
         ],
         'query': profiles
     }
@@ -202,7 +204,8 @@ def all_organizations(request, name):
         ],
         'jsFiles': [
             'libs/mdb/js/addons/datatables.min.js',
-            'js/libs/auth/group_sort.js'
+            'js/datatables/no_sort_datatable.js',
+            'js/libs/auth/org_info.js'
         ],
         'query': groups
     }
@@ -418,3 +421,25 @@ def edit_organization(request, name="summit.libs.auth:edit_organization", group_
     }
 
     return render(request, template_name, context)
+
+def info_display(request):
+    if request.is_ajax():
+        print(request.GET)
+        userID = request.GET.get('userID')
+        userInfo = UserProfile.objects.filter(id = userID).values()
+        return JsonResponse({"user": list(userInfo)})
+
+    userInfo = UserProfile.objects.get(id = 0).values()
+    groupInfo = UserGroup.objects.filter(id = 0).values()
+    return JsonResponse({"user": list(userInfo)})
+
+def org_info(request):
+    if request.is_ajax():
+        print(request.GET)
+        groupID = request.GET.get('groupID')
+        people = UserProfile.objects.filter(assigned_group_id = groupID).values()
+        projects = Project.objects.filter(partner_id = groupID).values() | Project.objects.filter(federal_agency_id = groupID).values()
+        return JsonResponse({"people": list(people), "projects": list(projects)})
+    people = UserProfile.objects.all().values()
+    projects = Project.objects.all().values()
+    return JsonResponse({"people": list(people), "projects": list(projects)})

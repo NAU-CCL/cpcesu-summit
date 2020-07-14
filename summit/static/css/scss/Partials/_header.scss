@@ -7,7 +7,7 @@ header{
     padding: 0 0 0 0;
     background-color: #fff;
     overflow: hidden;
-    margin-bottom: 50px;
+    margin-bottom: 1px;
 
     &.fullscreen > .headerCnt {
         width: 100%;
@@ -18,7 +18,7 @@ header{
     }
 
     &.none {
-        margin-bottom: 150px;
+        margin-bottom: 10px;
         > .headerCnt {
             display: none;
         }
@@ -41,7 +41,7 @@ header{
                 transition: border-bottom .2s ease-in-out;
                 border-bottom: 0 $colorNAUGold solid;
                 &:hover{
-                    border-bottom: 5px $colorNAUGold solid;
+                    border-bottom: 0px $colorNAUGold solid;
                 }
             }
         }

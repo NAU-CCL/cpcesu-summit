@@ -1,5 +1,5 @@
 {% extends 'apps/projects/form-template.html' %}
-{% block form_title %}Create Project Form{% endblock %}
+{% block form_title %}Edit Project {% endblock %}
 
 {% block row1_col1 %}
 
@@ -110,73 +110,6 @@
 {% endblock %}
 
 {% block row1_col2 %}
-    <h5><u>Description: </u></h5>
-    <div class="form-group">
-        <table>
-            <tbody>
-            <tr>
-                <td>
-                    <span class="text-danger sml">{{ form.description.errors }}</span>
-                    {{ form.description }}<br>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-{% endblock %}
-
-{% block row1_col3 %}
-    <h5><u>Administration: </u></h5>
-<div class="form-group">
-    <table>
-        <tr>
-            <td>
-                <span class="text-danger sml">{{ form.status.errors }}</span>
-                <h6><label class="control-label col-sm-auto"><b>{{ form.status.label_tag }}</b></label></h6>
-            </td>
-            <td>
-                {{ form.status }}<br><br>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <span class="text-danger sml">{{ form.sensitve.errors }}</span>
-                <h6><label class="control-label col-sm-auto"><b>
-                    {{ form.sensitive.label_tag }}</b><br>
-                </label></h6>
-            </td>
-            <td>
-                {{ form.sensitive }}<br>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <span class="text-danger sml">{{ form.final_report.errors }}</span>
-                <h6><label class="control-label col-sm-auto"><b>Deliverable(s) Received?</b><br></label></h6>
-            </td>
-            <td>
-                {{ form.final_report }}<br>
-            </td>
-        </tr>
-    </table>
-    <br><h5><u>Notes: </u></h5>
-    <table>
-        <tbody>
-        <tr>
-            <td>
-                <span class="text-danger sml">{{ form.notes.errors }}</span>
-                {{ form.notes }}<br>
-            </td>
-            <td>
-
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-{% endblock %}
-
-{% block row2_col1 %}
     <h5><u>Personnel: </u></h5>
     <table>
         <tbody>
@@ -228,7 +161,7 @@
     </table>
 {% endblock %}
 
-{% block row2_col2 %}
+{% block row1_col3 %}
     <h5><u>Award Amount: </u></h5>
     <table>
         <tbody>
@@ -245,12 +178,8 @@
     </table>
 {% endblock %}
 
-{% block row2_col3 %}
-    <h5><u>Modifications: </u></h5>
-    <p>To create modifications, submit project and add them via the 'Project Details' page.</p>
-{% endblock %}
 
-{% block row3_col1 %}
+{% block row1_col4 %}
     <h5><u>Dates: </u></h5>
     <table>
         <tbody>
@@ -312,7 +241,90 @@
     </table>
 {% endblock %}
 
-{% block row3_col2 %}
+
+{% block row2_col1 %}
+    <h5><u>Administration: </u></h5>
+<div class="form-group">
+    <table>
+        <tr>
+            <td>
+                <span class="text-danger sml">{{ form.status.errors }}</span>
+                <h6><label class="control-label col-sm-auto"><b>{{ form.status.label_tag }}</b></label></h6>
+            </td>
+            <td>
+                {{ form.status }}<br><br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="text-danger sml">{{ form.sensitve.errors }}</span>
+                <h6><label class="control-label col-sm-auto"><b>
+                    {{ form.sensitive.label_tag }}</b><br>
+                </label></h6>
+            </td>
+            <td>
+                {{ form.sensitive }}<br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="text-danger sml">{{ form.final_report.errors }}</span>
+                <h6><label class="control-label col-sm-auto"><b>Deliverable(s) Received?</b><br></label></h6>
+            </td>
+            <td>
+                {{ form.final_report }}<br>
+            </td>
+        </tr>
+    </table>
+    <br>
+</div>
+{% endblock %}
+
+{% block row2_col2 %}
+    <h5><u>Description: </u></h5>
+    <div class="form-group">
+        <table>
+            <tbody>
+            <tr>
+                <td>
+                    <span class="text-danger sml">{{ form.description.errors }}</span>
+                    {{ form.description }}<br>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+
+{% block row2_col3 %}
+    <h5><u>Notes: </u></h5>
+    <div class="form-group">
+    <table>
+        <tbody>
+        <tr>
+            <td>
+                <span class="text-danger sml">{{ form.notes.errors }}</span>
+                {{ form.notes }}<br>
+            </td>
+            <td>
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+{% endblock %}
+
+
+
+<!--
+    <h5><u>Modifications: </u></h5>
+    <p>To create modifications, submit project and add them via the 'Project Details' page.</p>
+-->
+
+
+<!--
     <h5><u>Research and Development: </u></h5>
     <table>
         <tbody>
@@ -363,9 +375,9 @@
         </tr>
         </tbody>
     </table>
-{% endblock %}
+-->
 
-{% block row3_col3 %}
+{% block row2_col4 %}
     <h5><u>Files: </u></h5>
     <table>
         <tbody>

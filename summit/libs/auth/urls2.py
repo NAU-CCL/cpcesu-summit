@@ -14,6 +14,7 @@ urlpatterns = [
     url_wrapper(vars.AppLinks.view_my_contact),
     url_wrapper(vars.AppLinks.view_contact),
 
+
     app_link(vars.AppLinks.all_contacts),
     app_link(vars.AppLinks.all_organizations),
     app_link(vars.AppLinks.create_contact),
@@ -22,5 +23,7 @@ urlpatterns = [
 
     url_wrapper(vars.AppLinks.manage_organization),
     url_wrapper(vars.AppLinks.edit_organization),
-    url_wrapper(vars.AppLinks.create_contact_in_group)
+    url_wrapper(vars.AppLinks.create_contact_in_group),
+    url_wrapper(vars.AppLinks.info_display),
+    url_wrapper(vars.AppLinks.org_info),
 ]

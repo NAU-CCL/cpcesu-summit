@@ -1,6 +1,6 @@
 import csv
 import datetime
-from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.http import HttpResponse, Http404, HttpResponseRedirect, JsonResponse
 
 from django.shortcuts import get_object_or_404, render
 from django.core.exceptions import ObjectDoesNotExist
@@ -129,8 +129,9 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
     raise_exception = False
 
     def get_context_data(self, **kwargs):
-        all_projects = self.get_queryset()
-
+        all_projects = Project.objects.only("id", "status", "federal_agency", "partner", "fiscal_year", "p_num",
+                                            "project_title", "award_amt", "tent_start_date", "tent_end_date",
+                                            "project_manager", "pp_i")
         user = self.request.user
 
         try:
@@ -159,8 +160,8 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
             proj.total_award_amount = (proj.budget or 0) + total_mod_amount
             dashboard_projects.append(proj)
 
-        start_date = datetime.datetime.now() + datetime.timedelta(-30)
-        recent_projects = all_projects.filter(created_on__range=[start_date, datetime.datetime.now()]).exclude(status="LEGACY")
+
+
         context = {
             'name': self.kwargs['name'],
             'pagetitle': 'Your Dashboard',
@@ -177,10 +178,10 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/datatables/dashboard.js'
+                'js/datatables/dashboard.js',
+                'js/apps/projects/filter.js'
             ],
-            'projects': dashboard_projects,
-            'recent_projects': recent_projects,
+            'projects': all_projects,
         }
         ctx = super(ProjectDashboardView, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
@@ -231,7 +232,9 @@ class ProjectDetail(LoginRequiredMixin, DetailView):
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/datatables/dashboard.js'
+                'js/datatables/dashboard.js',
+                'js/apps/projects/editProject.js'
+
             ],
             'total_award_amount': self.total_award_amount(),
             'date_ext': self.update_extension()
@@ -1149,3 +1152,23 @@ def export_to_csv(request):
                  project.field_of_science_sub, project.status, project.sensitive, project.final_report, project.notes])
 
     return response
+
+def project_filter(request):
+    if request.is_ajax():
+        print(request.GET)
+        start = int(request.GET.get('start_date'))
+        end = int(request.GET.get('end_date'))
+        desiredstatus = request.GET.get('status')
+        partners = Partner.objects.all().values()
+        agencies = FederalAgency.objects.all().values()
+        projects = Project.objects.only("project_id", "status", "federal_agency", "partner", "fiscal_year", "p_num",
+                                        "project_title", "total_award_amount", "tent_start_date", "tent_end_date",
+                                        "project_manager", "pp_i")
+        projects = projects.filter(fiscal_year__range=[start, end], status=desiredstatus.upper()).values()
+        managers = UserProfile.objects.all().values()
+        return JsonResponse({'projects': list(projects), 'agencies': list(agencies), 'partners': list(partners),
+                             'managers': list(managers)})
+
+    projects = Project.objects.filter()
+    return JsonResponse({'projects': list(projects)})
+

@@ -11,28 +11,62 @@
     <a href="{% get_url_from_app_link 'summit.libs.auth' 'create_contact' %}" class="btn btn-primary btn-sm m-0 waves-effect">Create Contact</a>
 </div>
 
-<table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+<div style="width:50%; display: inline-block">
+<table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0">
     <thead>
         <tr>
-            <th class="th-sm">#</th>
             <th class="th-sm">Group</th>
             <th class="th-sm">Type</th>
-            <th class="th-sm">Details</th>
+            <!--<th class="th-sm">Details</th>-->
         </tr>
     </thead>
     <tbody>
         {% for key, group in query.items %}
-        <tr>
-            <th scope="row">{{ group.id }}</th>
-            <td>{{ group.name }}</td>
+        <tr id="{{group.id}}" onclick="loadDetails({{group.id}})">
+            <!--<th scope="row">{{ group.id }}</th>-->
+            <td id="a{{group.id}}">{{ group.name }}</td>
             <td>{{ group.type }}</td>
-            <td>
+            <!--<td>
                 <a href="{% get_url_from_app_link 'summit.libs.auth' 'manage_organization' group_id=group.id %}" class="btn btn-outline-primary btn-sm m-0 waves-effect">Manage Org.</a>
-            </td>
+            </td>-->
         </tr>
         {% endfor %}
     </tbody>
 </table>
+</div>
+<div style="display:none; width:50%; float: right; margin-top: 100px;" id="info">
+    <div style="background-color: gray;">
+        <div id="org_info" style="width: 74%; display: inline-block"></div>
+        <div id="org_logo" style="width: 25%; display: inline-block"><img
+                src="https://dcassetcdn.com/design_img/1559024/551167/551167_7840631_1559024_911ff84c_image.png" style="max-height: 100%; max-width: 100%"></div>
+    </div>
+    <h3 style="display: block">People</h3>
+    <table class="table table-striped table-bordered table-sm" id="table_1" style="display: block; width: 100%; table-layout: fixed" cellspacing="0"><thead>
+        <tr>
+            <th class="th-sm">First Name</th>
+            <th class="th-sm">Last Name</th>
+            <th class="th-sm">Email</th>
+        </tr>
+        </thead>
+        <tbody id="table1">
+
+        </tbody>
+    </table>
+    <br>
+    <h3 style="display: block; margin-left:0px">Projects</h3>
+    <table class="table table-striped table-bordered table-sm" id="table_2" style="display: block; width: 100%; table-layout: fixed" cellspacing="0"><thead>
+        <tr>
+            <th class="th-sm">Status</th>
+            <th class="th-sm">Title</th>
+            <th class="th-sm">Start Date</th>
+            <th class="th-sm">End Date</th>
+        </tr>
+        </thead>
+        <tbody id="table2">
+
+        </tbody>
+    </table>
+</div>
 {% endblock %}
 
 {% block sidebar %}

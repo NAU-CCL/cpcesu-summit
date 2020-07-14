@@ -9,7 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from summit.apps.projects.models import Project, Location
 from summit.libs.auth.models import UserProfile, FederalAgency, Partner, CESUnit
 
-with open('_import/Task Agreements.csv') as csv_file:
+with open('_import/projects.csv') as csv_file:
     # Global vars
     DISCIPLINES = ['None', 'Natural', 'Cultural', 'Social', 'Interdisciplinary']
     SRC_OF_FUNDING = ['None', 'Park Base', 'Region Base', 'NR Project Fund Source', 'I&M Program', 'Other Service-wide Project Source', '80% REA Fee', '20% REA Fee', 'Other NPS Appropriated Source', 'OTHER-non-NPS']

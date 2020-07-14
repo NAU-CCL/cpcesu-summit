@@ -4,6 +4,47 @@ footer {
 .top-nav-collapse {
   background-color: #000; }
 
+.pull-left{
+  float: left !important;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.tab-background{
+  background-color: rgba(215,239,252,.8) !important;
+}
+
+.shrink{
+display: block !important;
+
+}
+
+.info-background{
+background-color: rgba(215,239,252,.5) !important;
+backgroun-size: 100%;
+}
+.center{
+text-align: center;
+}
+
+.tabs{
+background-color: rgba(241,213,146,.7);
+text-align: center;
+display: flex;
+width: 100%;
+border: 1px;
+border-color: black;
+color: black;
+position: fixed;
+z-index: 1000000;
+
+}
+
+.tab-items{
+    width: 33%;
+    border: 3px;
+}
+
 header {
   position: relative;
   padding: 0 0 0 0;
@@ -16,7 +57,7 @@ header {
     header.fullscreen > .headerCnt .backgroundImg {
       display: block; }
   header.none {
-    margin-bottom: 150px; }
+    margin-bottom: 75px; }
     header.none > .headerCnt {
       display: none; }
   header > .bannerCnt {

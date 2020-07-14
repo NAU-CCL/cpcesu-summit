@@ -24,7 +24,12 @@
     <div class="collapse navbar-collapse" id="basicExampleNav">
 
       <!-- Links -->
-      {% nav_links %}
+      <ul class="navbar-nav mr-auto">
+      <li class="nav-item About"><a class="nav-link waves-effect waves-light" href="/about/" target="">About</a></li>
+      <li class="nav-item Contact"><a class="nav-link waves-effect waves-light" href="https://in.nau.edu/cpesu/cpcesu-contact/" target="_blank">Contact</a></li>
+      </ul>
+
+      <!--{% nav_links %}!-->
 
       <!-- Links -->
       <ul class="navbar-nav justify-content-center">
@@ -100,6 +105,7 @@
       {% endif %}
     </div>
   </div>
+
 
   {% endwith %}
 </header>

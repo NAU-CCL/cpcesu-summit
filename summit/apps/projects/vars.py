@@ -83,6 +83,7 @@ class AppLinks:
                                        views.request_project_info, app_name)
     project_public_widget = DjangoURL('project_public_widget', r'^public-widget/',
                                       views.ProjectPublicListView.as_view(), app_name, kwargs={"is_widget": True})
+    project_filter = DjangoURL('project_filter', r'^filter/', views.project_filter, app_name)
 
     # Location Related Links/URLs
     # States, Parks, etc. in one model/object

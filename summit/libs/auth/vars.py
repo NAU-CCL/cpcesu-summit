@@ -67,5 +67,7 @@ class AppLinks:
 
     create_contact_in_group = DjangoURL('create_contact_in_group', r'^create_contact/(?P<group_id>[-\w]+)/$',
                                         views.create_contact, app_name)
+    info_display = DjangoURL('info_display', r'^info_display/$', views.info_display, app_name)
+    org_info = DjangoURL('org_info', r'^org_info/$', views.org_info, app_name)
 
 

@@ -3,19 +3,12 @@
 {% load static %}
 {% block primary %}
 
-    <span>
-        <a href="{% get_url_from_app_link 'summit.apps.projects' 'project_edit' id=object.id %}">
-            <button type="button" class="btn btn-light">Edit Project</button>
-        </a>
-        <a href="{% get_url_from_app_link 'summit.apps.projects' 'project_mod_create' id=object.id %}">
-            <button type="button" class="btn btn-info">Add Modifications</button>
-        </a>
-    </span>
+
 
 <div class="card">
     <div class="row1">
         <div class="card-header col-sm-12">
-            <h1 align="center" class="card-header">{{ object.project_title }}</h1>
+            <h1 align="center" class="card-header">CESU: {{object.p_num}} - {{ object.project_title }}</h1>
         </div>
     </div><br>
 </div><br>
@@ -24,7 +17,7 @@
 <h3 class="card-header">Details</h3>
     <div class="card-body">
         <div class="row">
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <h5> <u>General Information: </u></h5>
                 <table>
                     <tbody>
@@ -88,56 +81,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-sm-4">
-                <h5><u>Description: </u></h5>
-                <table>
-                    <tbody>
-                    <tr>
-                        <td>
-                            <span class="text-danger sml">{{ object.description.errors }}</span>
-                            {{ object.description|default:"No description added" }}<br>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-sm-4">
-                <h5><u>Administration: </u></h5>
-                <table>
-                    <tbody>
-                    <tr>
-                        <td><b>Status:</b><br></td>
-                        <td>
-                            {{ object.get_status_display }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><b>Sensitive:</b></td>
-                        <td>
-                            {% if  object.sensitive %}
-                                Yes
-                            {% else %}
-                                No
-                            {% endif %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><b>Deliverable(s) Received?</b></td>
-                        <td>
-                            {% if  object.final_report %}
-                                Yes
-                            {% else %}
-                                No
-                            {% endif %}
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <br><h5><u>Personnel: </u></h5>
                 <table>
                     <tbody>
@@ -193,7 +137,7 @@
                 </table>
 
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <br><h5><u>Award Amount: </u></h5>
                 <table>
                     <tbody>
@@ -208,21 +152,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-sm-4">
-                <br><h5><u>Notes: </u></h5>
-                <table>
-                    <tbody>
-                    <tr>
-                        <td>
-                            {{ object.notes|default:"None" }}
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <br><h5><u>Dates: </u></h5>
                 <table>
                     <tbody>
@@ -280,7 +210,84 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-sm-4">
+
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <h5><u>Administration: </u></h5>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td><b>Status:</b><br></td>
+                        <td>
+                            {{ object.get_status_display }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Sensitive:</b></td>
+                        <td>
+                            {% if  object.sensitive %}
+                                Yes
+                            {% else %}
+                                No
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Deliverable(s) Received?</b></td>
+                        <td>
+                            {% if  object.final_report %}
+                                Yes
+                            {% else %}
+                                No
+                            {% endif %}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="col-sm-3">
+                <h5><u>Description: </u></h5>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <span class="text-danger sml">{{ object.description.errors }}</span>
+                            {{ object.description|default:"No description added" }}<br>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-3">
+                <br><h5><u>Notes: </u></h5>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>
+                            {{ object.notes|default:"None" }}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-3">
+                <br><h5><u>File(s): </u></h5>
+                <table>
+                    <tbody>
+                    {% for file in files %}
+                        <tr>
+                            <td><a href=" {{ file.file.url }} " target="_blank"> {{ file.file }}</a><br></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <!--<div class="col-sm-4">
                 <br><h5><u>Research & Development: </u></h5>
                 <table>
                     <tbody>
@@ -316,23 +323,45 @@
                     </tr>
                     </tbody>
                 </table>
-            </div>
-            <div class="col-sm-4">
-                <br><h5><u>File(s): </u></h5>
-                <table>
-                    <tbody>
-                    {% for file in files %}
-                        <tr>
-                            <td><a href=" {{ file.file.url }} " target="_blank"> {{ file.file }}</a><br></td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            </div>-->
+            <h3>Modifications</h3>
+        </div>
+        <div class="row">
+            {% for mod in mods %}
+            <table>
+                <tr>
+                    <th>Number</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>RC Approved</th>
+                    <th>Executed</th>
+                    <th>Mod Files</th>
+                </tr>
+                <tbody>
+                <tr>
+                    <td>{{ mod.mod_num }}</td>
+                    <td>{{ mod.get_mod_type_display }}</td>
+                    <td>{{ mod.mod_amount}}</td>
+                    <td>{{ mod.mod_approved }}</td>
+                    <td>{{ mod.mod_executed }}</td>
+                </tr>
+                </tbody>
+            </table>
+            {% endfor %}
+
         </div>
     </div>
-</div><br>
-<div class="card">
+</div>
+<span>
+        <a href="{% get_url_from_app_link 'summit.apps.projects' 'project_edit' id=object.id %}">
+            <button type="button" class="btn btn-light">Edit Project</button>
+        </a>
+        <a href="{% get_url_from_app_link 'summit.apps.projects' 'project_mod_create' id=object.id %}">
+            <button type="button" class="btn btn-info">Add Modifications</button>
+        </a>
+    </span>
+<br>
+<!--<div class="card">
     <h3 class="card-header">Modifications</h3>
     <div class="card-body">
             <p class="card-subtitle">To view or edit modifications, click the blue highlighted 'Number'.</p>
@@ -375,7 +404,7 @@
             {% endfor %}
         </div>
     </div>
-</div><br>
+</div><br>-->
 
 
 {% if object.status == 'LEGACY' %}
@@ -476,3 +505,4 @@
         {{ block.super }}
     {% endwith %}
 {% endblock %}
+
