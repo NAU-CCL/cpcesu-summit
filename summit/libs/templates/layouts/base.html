@@ -12,26 +12,20 @@
 
     {% block layout_wrapper %}
       {% if layout %}
-      <div class="container-fluid">
-        <div class="row" style="margin-bottom: 75px;">
-          <div class="tabs">
-              <a class="nav-link waves-effect waves-light" id="project" href="/projects/dashboard/" target=""
-                 style="display: inline-block; border: solid; width: 33%; border-width: 1px; border-color: black; color: black;">
+        <div class="row" id="contentBody" style="margin-top: 0px">
+            <div class="container-fluid" style="background-color: white; margin-bottom: 0px">
+        <div class="tab-container">
+              <a class="nav-link waves-effect waves-light tabs" id="project" href="/projects/dashboard/" style="width: 200px;" target="">
                 Projects</a>
-              <a class="nav-link waves-effect waves-light" id="contact" href="/accounts/all_contacts/"  target=""
-                 style="display: inline-block; border: solid; width: 33%; border-width: 1px; border-color: black; color: black;">
+              <a class="nav-link waves-effect waves-light tabs" id="contact" href="/accounts/all_contacts/"  target="">
                 People</a>
-              <a class="nav-link waves-effect waves-light" id="organization" href="/accounts/all_groups/" target=""
-                 style="display: inline-block; border-style: solid; width: 33%; border-width: 1px; border-color: black; color: black;">
+              <a class="nav-link waves-effect waves-light tabs" id="organization" href="/accounts/all_groups/" target="">
                 Organizations</a>
               <!--<a class="nav-link waves-effect waves-light" href="/projects/dashboard/" target="" style="display: inline">Projects</a>
               <a class="nav-link waves-effect waves-light" href="/accounts/all_contacts/" target="" style="display: inline">All Contacts</a>
               <a class="nav-link waves-effect waves-light" href="/accounts/all_groups/" target="" style="display: inline">All Organizations</a>!-->
             </div>
-
-  </div>
         </div>
-        <div class="row">
           {% if layout == 'left' %}
             <div class="{{ main_class|default:'col-md-12 col-lg-12' }}">
               {% block primary %}{{ primary|safe|default:"No content"}}{% endblock %}

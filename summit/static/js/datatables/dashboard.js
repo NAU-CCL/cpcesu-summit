@@ -2,7 +2,7 @@ function pageify(){
     $('.dtBasicExample').DataTable({
         'pageLength': 100,
         'lengthMenu': [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, "All"]],
-        "dom": '<"top"f>r<"bottom"litp><"clear">'
+        "dom": '<"top">r<"bottom"litp><"clear">'
     });
     $('.dataTables_length').addClass('bs-select');
     $('.dataTables_filter').addClass('pull-left');
@@ -10,6 +10,9 @@ function pageify(){
 }
 $(document).ready(function ()
 {
+
+$(document.getElementById("project")).addClass("tab-background")
+$(document.getElementById("contentBody")).addClass("content-background");
 
     pageify();
 

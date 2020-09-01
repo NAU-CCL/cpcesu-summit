@@ -21,7 +21,8 @@
                     style="float: left;">
                 Export
             </button>
-        <button class="dropdown-item Create Project waves-effect waves-light"> <a href="/projects/create">Create Project</a></button>
+        <button class="btn btn-outline-success btn-sm m-0 waves-effect"> <a href="/projects/create">Create Project</a></button>
+        <br>
             <label for="start_date">From(year): </label>
             <input type="number" id="start_date" name="start_date">
             <label for="end_date">To(year): </label>
@@ -34,51 +35,59 @@
                 <option value="LEGACY">Legacy</option>
             </select>
             <button id="filter">Submit</button>
+
+            <div id ="advancedSearch">
+                <label for="FY">Fiscal Year: </label>
+                <input type="number" id="FY" value="1900">
+                <label for="AwardNum">Award Number: </label>
+                <input type="text" id="AwardNum" name="AwardNum" value="">
+                <label for="Partner">Partner: </label>
+                <input type="text" id="Partner" name="Partner" value="">
+                <button id="searchButton">Submit</button>
+            </div>
             <table id="replace" class="dtBasicExample table-responsive-sm table-striped table-bordered" style="width: 100%;">
                 <thead>
                 <tr>
-                    <th>
+                    <th style="max-width: 30px">
                         <input type="checkbox" id="select_all_1">
                     </th>
-                    <th>Status</th>
-                    <th>Agency</th>
-                    <th>Partner</th>
-                    <th>FY</th>
-                    <th>Award #</th>
-                    <th>Title</th>
-                    <th>Total Amount</th>
-                    <th>Start</th>
-                    <th>End</th>
-                    <th>PM</th>
-                    <th>PI</th>
+                    <th style="max-width: 75px">Status</th>
+                    <th style="max-width: 200px">Agency</th>
+                    <th style="max-width: 200px">Partner</th>
+                    <th style="max-width: 75px">FY</th>
+                    <th style="max-width: 100px">Award #</th>
+                    <th style="max-width: 400px">Title</th>
+                    <th style="max-width: 50px">Total Amount</th>
+                    <th style="max-width: 100px">Start</th>
+                    <th style="max-width: 100px">End</th>
+                    <th style="max-width: 100px">PM</th>
+                    <th style="max-width: 100px">PI</th>
                     <!--<th>View Details</th>!-->
                 </tr>
                 </thead>
                 <tbody id="filterable">
-                {% for project in projects %}
                         <tr class="project">
                             <th scope="row">
-                                <input class="export_list_1" type="checkbox" name="export_list" value="{{ project.id }}"/>
+                                <input class="export_list_1" type="checkbox" name="export_list" value=" project.id "/>
                             </th>
-                            <td>{{ project.get_status_display }}</td>
-                            <td>{{ project.federal_agency }}</td>
-                            <td>{{ project.partner }}</td>
-                            <td>{{ project.fiscal_year }}</td>
-                            <td>{{ project.p_num }}</td>
-                            <td><a href="{% get_url_from_app_link 'summit.apps.projects' 'project_detail' id=project.id %}">{{ project.project_title }}</a></td>
-                            <td>{{ project.total_award_amount }}</td>
-                            <td>{{ project.tent_start_date }}</td>
-                            <td>{{ project.tent_end_date }}</td>
-                            <td>{{ project.project_manager }}</td>
-                            <td>{{ project.pp_i }}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><!--<a href=" get_url_from_app_link 'summit.apps.projects' 'project_detail' id=project.id "></a>--></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                             <!--<td>
                                 <a class="btn btn-outline-primary btn-sm m-0 waves-effect"
-                                   href="{% get_url_from_app_link 'summit.apps.projects' 'project_detail' id=project.id %}">
+                                   href=" get_url_from_app_link 'summit.apps.projects' 'project_detail' id=project.id ">
                                     Details
                                 </a>
                             </td>!-->
                         </tr>
-                {% endfor %}
                 </tbody>
             </table>
             <br>

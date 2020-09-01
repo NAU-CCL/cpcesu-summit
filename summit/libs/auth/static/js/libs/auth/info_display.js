@@ -1,5 +1,6 @@
 $(document).ready(function(){
-$(document.getElementById("contact")).addClass("tab-background")
+$(document.getElementById("contact")).addClass("tab-background");
+$(document.getElementById("contentBody")).addClass("content-background");
 })
 
 function loadDetails(id, group){

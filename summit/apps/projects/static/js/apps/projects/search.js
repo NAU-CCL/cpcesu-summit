@@ -1,20 +1,15 @@
-$(document).ready(function(){
-    $(document.getElementById("project")).addClass("tab-background")
-    $('#filter').on('click', function() {
-    let start_date = document.getElementById('start_date').value;
-    //console.log(start_date)
-    let end_date = document.getElementById('end_date').value;
-    //console.log(end_date)
-    let ddl = document.getElementById('status');
-    let status = ddl.options[ddl.selectedIndex].text;
-    status.toUpperCase()
-    //console.log(status)
+$('#searchButton').on('click', function(){
+    let FY = document.getElementById('FY').value
+    let AwardNumber = document.getElementById('AwardNum').value
+    let Partner = document.getElementById('Partner').value
+    console.log(FY);
+
     $.ajax({
         type: "GET",
-        url: '/projects/filter',
-        data: {'start_date': start_date,
-        "end_date": end_date,
-        "status": status},
+        url: '/projects/search',
+        data: {'FY': FY,
+        "AwardNumber": AwardNumber,
+        "partner_name": Partner},
         success: function(resp){
             console.log(resp)
             table = $('#replace').DataTable();
@@ -71,7 +66,7 @@ $(document).ready(function(){
                 let no_man = "None"
                 $.each(managers, function(index,manager){
                     if(manager.id == project_manager_id){
-                    pM = manager.first_name + manager.last_name
+                    pM = manager.first_name + " " + manager.last_name
                     no_man = "Exists"
                     }
                 })
@@ -83,7 +78,7 @@ $(document).ready(function(){
 
                 $.each(managers, function(index,manager){
                     if(manager.id == project_pp_i_id){
-                    pI = manager.first_name + manager.last_name
+                    pI = manager.first_name + " " + manager.last_name
                     no_man = "Exists"
                     }
                 })
@@ -105,6 +100,9 @@ $(document).ready(function(){
                 pM,
                 pI
                 ]).draw()
+
+
+
                 /*table_row.append(`<td>
                                 <a class="btn btn-outline-primary btn-sm m-0 waves-effect"
                                    href="/projects/detail/${project.id}/">
@@ -116,6 +114,4 @@ $(document).ready(function(){
 
         }
     })
-    });
-
-});
+})

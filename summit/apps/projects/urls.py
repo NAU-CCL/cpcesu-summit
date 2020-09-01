@@ -25,6 +25,7 @@ urlpatterns = [
     url_wrapper(vars.AppLinks.project_public_request),
     url_wrapper(vars.AppLinks.project_public_widget),
     url_wrapper(vars.AppLinks.project_filter),
+    url_wrapper(vars.AppLinks.project_search),
 
     # Locations Links and URLs
     # States, Parks, etc. in one model/object

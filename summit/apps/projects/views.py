@@ -129,9 +129,7 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
     raise_exception = False
 
     def get_context_data(self, **kwargs):
-        all_projects = Project.objects.only("id", "status", "federal_agency", "partner", "fiscal_year", "p_num",
-                                            "project_title", "award_amt", "tent_start_date", "tent_end_date",
-                                            "project_manager", "pp_i")
+        all_projects = Project.objects.only("id")
         user = self.request.user
 
         try:
@@ -179,7 +177,8 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
                 'js/datatables/dashboard.js',
-                'js/apps/projects/filter.js'
+                'js/apps/projects/filter.js',
+                'js/apps/projects/search.js'
             ],
             'projects': all_projects,
         }
@@ -1165,6 +1164,45 @@ def project_filter(request):
                                         "project_title", "total_award_amount", "tent_start_date", "tent_end_date",
                                         "project_manager", "pp_i")
         projects = projects.filter(fiscal_year__range=[start, end], status=desiredstatus.upper()).values()
+        managers = UserProfile.objects.all().values()
+        return JsonResponse({'projects': list(projects), 'agencies': list(agencies), 'partners': list(partners),
+                             'managers': list(managers)})
+
+    projects = Project.objects.filter()
+    return JsonResponse({'projects': list(projects)})
+
+
+def project_search(request):
+    if request.is_ajax():
+        FY = int(request.GET.get('FY'))
+        print(type(FY))
+        Partner_name = request.GET.get('partner_name')
+        Partner_name.strip()
+        print(Partner_name)
+        print(type(Partner_name))
+        AwardNum = request.GET.get('AwardNumber')
+        AwardNum.strip()
+        print(type(AwardNum))
+        partners = Partner.objects.all().values()
+        agencies = FederalAgency.objects.all().values()
+        projects = Project.objects.only("project_id", "status", "federal_agency", "partner", "fiscal_year", "p_num",
+                                        "project_title", "total_award_amount", "tent_start_date", "tent_end_date",
+                                        "project_manager", "pp_i")
+
+        print("\n\n\n\n\n")
+        partner_ids = Partner.objects.filter(name__contains=Partner_name).values_list("id", flat=True)
+        agency_ids= FederalAgency.objects.filter(name__contains=Partner_name).values_list("id", flat=True)
+        if(FY != 1900):
+            print(1)
+            projects = projects.filter(fiscal_year__contains=FY)
+        if (AwardNum != ""):
+            print(1)
+            projects = projects.filter(p_num__contains=AwardNum)
+        if (Partner_name != ""):
+            print(1)
+            projects = projects.filter(partner_id__in=partner_ids) | projects.filter(federal_agency_id__in=agency_ids)
+
+        projects = projects.values()
         managers = UserProfile.objects.all().values()
         return JsonResponse({'projects': list(projects), 'agencies': list(agencies), 'partners': list(partners),
                              'managers': list(managers)})
