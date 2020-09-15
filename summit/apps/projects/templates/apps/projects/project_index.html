@@ -23,6 +23,7 @@
             </button>
         <button class="btn btn-outline-success btn-sm m-0 waves-effect"> <a href="/projects/create">Create Project</a></button>
         <br>
+        <div id="search" class ="visible">
             <label for="start_date">From(year): </label>
             <input type="number" id="start_date" name="start_date">
             <label for="end_date">To(year): </label>
@@ -35,15 +36,23 @@
                 <option value="LEGACY">Legacy</option>
             </select>
             <button id="filter">Submit</button>
-
-            <div id ="advancedSearch">
+            <br>
+            <button id = "advancedSearchButton" class="btn btn-outline-success btn-sm m-0 waves-effect" style="float: left;">
+                Advanced Search
+            </button>
+        </div>
+            <div id ="advancedSearch"  class="invisible">
                 <label for="FY">Fiscal Year: </label>
-                <input type="number" id="FY" value="1900">
+                <input type="number" id="FY" value="">
                 <label for="AwardNum">Award Number: </label>
                 <input type="text" id="AwardNum" name="AwardNum" value="">
                 <label for="Partner">Partner: </label>
                 <input type="text" id="Partner" name="Partner" value="">
                 <button id="searchButton">Submit</button>
+                <br>
+                <button id = "basicSearchButton" class="btn btn-outline-success btn-sm m-0 waves-effect" style="float: left;">
+                Basic Search
+            </button>
             </div>
             <table id="replace" class="dtBasicExample table-responsive-sm table-striped table-bordered" style="width: 100%;">
                 <thead>

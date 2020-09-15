@@ -10,6 +10,14 @@ footer {
   display: block;
 }
 
+.invisible{
+display: none !important;
+}
+
+.visible{
+display: block !important;
+}
+
 .tab-background{
   background-color: rgba(253, 221, 230,.8) !important;
 }

@@ -1,8 +1,28 @@
+$('#advancedSearchButton').on('click', function(){
+$(document.getElementById('advancedSearch')).removeClass("invisible");
+ $(document.getElementById('advancedSearch')).addClass("visible");
+ $(document.getElementById('search')).removeClass("visible");
+   $(document.getElementById('search')).addClass("invisible");
+
+
+})
+
+$('#basicSearchButton').on('click', function(){
+$(document.getElementById('search')).addClass("visible");
+$(document.getElementById('search')).removeClass("invisible");
+   $(document.getElementById('advancedSearch')).addClass("invisible")
+   $(document.getElementById('advancedSearch')).removeClass("visible")
+
+
+})
+
 $('#searchButton').on('click', function(){
     let FY = document.getElementById('FY').value
     let AwardNumber = document.getElementById('AwardNum').value
     let Partner = document.getElementById('Partner').value
     console.log(FY);
+    console.log(AwardNumber)
+    console.log(Partner)
 
     $.ajax({
         type: "GET",
@@ -41,6 +61,7 @@ $('#searchButton').on('click', function(){
                 $.each(agencies, function(index,agency){
                     if(agency.id == project_federal_agency_id){
                     agency_name = agency.name
+                    return false;
                     }
                 })
                 let p_case = "None"
@@ -48,6 +69,7 @@ $('#searchButton').on('click', function(){
                     if(partner.id == project_partner_id){
                     partner_name = partner.name
                     p_case = "Exists"
+                    return false;
                     }
                 })
                 if(p_case == "None"){
@@ -68,6 +90,7 @@ $('#searchButton').on('click', function(){
                     if(manager.id == project_manager_id){
                     pM = manager.first_name + " " + manager.last_name
                     no_man = "Exists"
+                    return false;
                     }
                 })
                 if(no_man == "None"){
@@ -80,6 +103,7 @@ $('#searchButton').on('click', function(){
                     if(manager.id == project_pp_i_id){
                     pI = manager.first_name + " " + manager.last_name
                     no_man = "Exists"
+                    return false;
                     }
                 })
                 if(no_man == "None"){
@@ -110,6 +134,10 @@ $('#searchButton').on('click', function(){
                                 </a>
                             </td>`)*/
             })
+            if(resp['projects'].length == 0)
+            {
+                alert("No projects match given search")
+            }
 
 
         }

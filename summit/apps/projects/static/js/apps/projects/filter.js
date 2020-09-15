@@ -112,6 +112,10 @@ $(document).ready(function(){
                                 </a>
                             </td>`)*/
             })
+            if(resp['projects'].length == 0)
+            {
+                alert("No projects match given search")
+            }
 
 
         }

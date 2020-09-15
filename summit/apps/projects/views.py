@@ -162,12 +162,12 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
 
         context = {
             'name': self.kwargs['name'],
-            'pagetitle': 'Your Dashboard',
-            'table1_header': 'Your Assigned Projects',
-            'table1_desc': 'A table of all projects in the drafting stage, either assigned to you or unassigned.',
+            'pagetitle': 'Project Dashboard',
+            'table1_header': 'Project Search',
+            'table1_desc': 'A table to be filled with projects matching your search criteria',
             'table2_header': 'All Recent Projects',
             'table2_desc': 'A table of all of the projects that have been created in the last 30 days',
-            'title': 'Your Dashboard',
+            'title': 'Project Dashboard',
             'bannerTemplate': 'none',
             'header': {},
             'cssFiles': [
@@ -1174,33 +1174,27 @@ def project_filter(request):
 
 def project_search(request):
     if request.is_ajax():
-        FY = int(request.GET.get('FY'))
-        print(type(FY))
+        FY = request.GET.get('FY')
+        print(FY)
         Partner_name = request.GET.get('partner_name')
         Partner_name.strip()
-        print(Partner_name)
-        print(type(Partner_name))
         AwardNum = request.GET.get('AwardNumber')
         AwardNum.strip()
-        print(type(AwardNum))
         partners = Partner.objects.all().values()
         agencies = FederalAgency.objects.all().values()
         projects = Project.objects.only("project_id", "status", "federal_agency", "partner", "fiscal_year", "p_num",
                                         "project_title", "total_award_amount", "tent_start_date", "tent_end_date",
                                         "project_manager", "pp_i")
 
-        print("\n\n\n\n\n")
         partner_ids = Partner.objects.filter(name__contains=Partner_name).values_list("id", flat=True)
         agency_ids= FederalAgency.objects.filter(name__contains=Partner_name).values_list("id", flat=True)
-        if(FY != 1900):
-            print(1)
+        if(FY != ""):
             projects = projects.filter(fiscal_year__contains=FY)
         if (AwardNum != ""):
-            print(1)
             projects = projects.filter(p_num__contains=AwardNum)
         if (Partner_name != ""):
-            print(1)
             projects = projects.filter(partner_id__in=partner_ids) | projects.filter(federal_agency_id__in=agency_ids)
+            partners = partners.filter(name__contains = Partner_name)
 
         projects = projects.values()
         managers = UserProfile.objects.all().values()
