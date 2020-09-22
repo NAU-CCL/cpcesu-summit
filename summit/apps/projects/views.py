@@ -1195,6 +1195,7 @@ def project_search(request):
         if (Partner_name != ""):
             projects = projects.filter(partner_id__in=partner_ids) | projects.filter(federal_agency_id__in=agency_ids)
             partners = partners.filter(name__contains = Partner_name)
+            agencies = FederalAgency.objects.filter(name__contains=Partner_name)
 
         projects = projects.values()
         managers = UserProfile.objects.all().values()

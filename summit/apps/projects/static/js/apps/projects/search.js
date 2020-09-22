@@ -23,7 +23,7 @@ $('#searchButton').on('click', function(){
     console.log(FY);
     console.log(AwardNumber)
     console.log(Partner)
-
+    $(document.getElementById('overlay')).removeClass("invisible")
     $.ajax({
         type: "GET",
         url: '/projects/search',
@@ -106,6 +106,7 @@ $('#searchButton').on('click', function(){
                     return false;
                     }
                 })
+
                 if(no_man == "None"){
                     pI = " "
                 }
@@ -124,6 +125,8 @@ $('#searchButton').on('click', function(){
                 pM,
                 pI
                 ]).draw()
+                $(document.getElementById('overlay')).addClass("invisible")
+                //$(document.getElementById('overlay')).removeClass("visible");
 
 
 

@@ -8,7 +8,6 @@
 {% else %}
     <h1 style="text-align: center">PROJECT PAGE</h1>
 {% endif %}
-
     <div class="container-fluid">
         <!--<form action="{% get_url_from_app_link 'summit.apps.projects' 'project_export_csv' %}" method="post" enctype="multipart/form-data"
               name="export_form"> -->
@@ -53,6 +52,10 @@
                 <button id = "basicSearchButton" class="btn btn-outline-success btn-sm m-0 waves-effect" style="float: left;">
                 Basic Search
             </button>
+            </div>
+        <div id="load-container">
+            <div id="overlay" class="invisible">
+            <div class ="spinner"></div>
             </div>
             <table id="replace" class="dtBasicExample table-responsive-sm table-striped table-bordered" style="width: 100%;">
                 <thead>
@@ -99,10 +102,8 @@
                         </tr>
                 </tbody>
             </table>
+        </div>
             <br>
-
-                </tbody>
-            </table>
     </div>
 {% endblock %}
 
