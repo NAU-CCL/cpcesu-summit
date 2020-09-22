@@ -80,9 +80,6 @@ padding-right: 20px;
     height: 100%;
     background-color: rgba(168,167,167,.7);
 }
-#load-container{
-position: relative;
-}
 .spinner {
    position: absolute;
    left: 50%;
