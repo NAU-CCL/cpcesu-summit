@@ -20,6 +20,12 @@ $('#searchButton').on('click', function(){
     let FY = document.getElementById('FY').value
     let AwardNumber = document.getElementById('AwardNum').value
     let Partner = document.getElementById('Partner').value
+    let Place = document.getElementById('Place').value
+    let Status = document.getElementById('Status').value
+    let Agency = document.getElementById('Agency').value
+    let Title = document.getElementById('Title').value
+    let PI = document.getElementById('PI').value
+    let PM = document.getElementById('PM').value
     console.log(FY);
     console.log(AwardNumber)
     console.log(Partner)
@@ -29,7 +35,13 @@ $('#searchButton').on('click', function(){
         url: '/projects/search',
         data: {'FY': FY,
         "AwardNumber": AwardNumber,
-        "partner_name": Partner},
+        "partner_name": Partner,
+        "place": Place,
+        "status": Status,
+        "agency": Agency,
+        "title": Title,
+        "pi": PI,
+        "pm": PM},
         success: function(resp){
             console.log(resp)
             table = $('#replace').DataTable();
@@ -140,6 +152,7 @@ $('#searchButton').on('click', function(){
             if(resp['projects'].length == 0)
             {
                 alert("No projects match given search")
+                $(document.getElementById('overlay')).addClass("invisible")
             }
 
 

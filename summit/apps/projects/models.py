@@ -71,7 +71,7 @@ class Project(AuditModel):
                                         verbose_name="Field of Science",
                                         choices=FIELD_OF_SCIENCE, default=FIELD_OF_SCIENCE[0][0])
     final_report = models.BooleanField(verbose_name="Final Report", default=False, blank=True)
-    fiscal_year = models.PositiveSmallIntegerField(null=True, blank=True, default=2019,
+    fiscal_year = models.PositiveSmallIntegerField(null=True, blank=True, default=2021,
                                                    verbose_name="Fiscal Year")
     location = models.ForeignKey(Location, on_delete=models.SET_NULL,
                                  related_name='location', default=None,

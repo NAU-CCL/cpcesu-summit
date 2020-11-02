@@ -301,6 +301,10 @@ class ProjectCreate(CreateView):
         return reverse('summit.apps.projects:project_detail', args=[str(self.object.id)])
 
     def get(self, request, *args, **kwargs):
+        people = UserProfile.objects.all()
+        parks = Location.objects.all()
+        agencies = FederalAgency.objects.all()
+        partners = Partner.objects.all()
         if 'job' in request.GET:
             job_id = request.GET['job']
             project = Project.objects.get(job_id=job_id)
@@ -323,10 +327,18 @@ class ProjectCreate(CreateView):
                     'css/apps/projects/autofill.css',
                 ],
                 'jsFiles': [
+                    'libs/mdb/js/addons/datatables.min.js',
+                    'js/datatables/no_sort_datatable.js',
                     'js/apps/projects/autocomplete.js',
+                    'js/apps/projects/form-autofill-select.js',
                 ],
                 'form': form,
-                'file_form': ProjectFileForm()
+                'file_form': ProjectFileForm(),
+                'people': people,
+                'parks': parks,
+                'agencies': agencies,
+                'partners': partners,
+
             }
             return render(request, self.template_name, context)
 
@@ -342,7 +354,8 @@ class ProjectCreate(CreateView):
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
-                'js/datatables/dashboard.js'
+                'js/datatables/dashboard.js',
+                'js/apps/projects/form-autofill-select.js',
             ],
             'form': self.get_form(),
             'file_form': ProjectFileForm(),
@@ -1180,25 +1193,55 @@ def project_search(request):
         Partner_name.strip()
         AwardNum = request.GET.get('AwardNumber')
         AwardNum.strip()
+        place = request.GET.get('place')
+        place.strip()
+        status = request.GET.get('status')
+        status.strip()
+        status.upper()
+        agency_name = request.GET.get('agency')
+        agency_name.strip()
+        title = request.GET.get('title')
+        title.strip()
+        p_i = request.GET.get('pi')
+        p_i.strip();
+        p_m= request.GET.get('pm')
+        p_m.strip();
         partners = Partner.objects.all().values()
-        agencies = FederalAgency.objects.all().values()
+        agencies = FederalAgency.objects.all()
         projects = Project.objects.only("project_id", "status", "federal_agency", "partner", "fiscal_year", "p_num",
                                         "project_title", "total_award_amount", "tent_start_date", "tent_end_date",
                                         "project_manager", "pp_i")
 
         partner_ids = Partner.objects.filter(name__contains=Partner_name).values_list("id", flat=True)
-        agency_ids= FederalAgency.objects.filter(name__contains=Partner_name).values_list("id", flat=True)
+        agency_ids= FederalAgency.objects.filter(name__contains=agency_name).values_list("id", flat=True)
+        pm_id = UserProfile.objects.filter(first_name__contains=p_m) | UserProfile.objects.filter(last_name__contains=p_m)
+        pm_id = pm_id.values_list("id", flat=True)
+        pi_id = UserProfile.objects.filter(first_name__contains=p_i) | UserProfile.objects.filter(
+            last_name__contains=p_i)
+        pi_id = pi_id.values_list("id", flat=True)
+        park_id = Location.objects.filter(name__contains=place).values_list("id", flat=True)
         if(FY != ""):
             projects = projects.filter(fiscal_year__contains=FY)
         if (AwardNum != ""):
             projects = projects.filter(p_num__contains=AwardNum)
         if (Partner_name != ""):
-            projects = projects.filter(partner_id__in=partner_ids) | projects.filter(federal_agency_id__in=agency_ids)
-            partners = partners.filter(name__contains = Partner_name)
-            agencies = FederalAgency.objects.filter(name__contains=Partner_name)
+            projects = projects.filter(partner_id__in=partner_ids)
+        if (place != ""):
+            projects = projects.filter(location_id__in=park_id)
+        if (agency_name != ""):
+            projects = projects.filter(federal_agency_id__in=agency_ids)
+        if (status != ""):
+            projects = projects.filter(status__contains=status)
+        if (title != ""):
+            projects = projects.filter(project_title__contains=title)
+        if (p_i != ""):
+            projects = projects.filter(pp_i__in=pi_id)
+        if (p_m != ""):
+            projects = projects.filter(project_manager__in=pm_id)
 
         projects = projects.values()
         managers = UserProfile.objects.all().values()
+        agencies = agencies.values()
         return JsonResponse({'projects': list(projects), 'agencies': list(agencies), 'partners': list(partners),
                              'managers': list(managers)})
 

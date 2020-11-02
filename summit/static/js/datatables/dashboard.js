@@ -1,6 +1,6 @@
 function pageify(){
     $('.dtBasicExample').DataTable({
-        'pageLength': 10,
+        'pageLength': 25,
         'lengthMenu': [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, "All"]],
         "dom": '<"top">r<"bottom"litp><"clear">'
     });

@@ -23,7 +23,35 @@
             </td>
             <td>
                 <div class="autocomplete">
-                    <input class="form-control" id="federal_agency" type="text" name="federal_agency" placeholder="Federal Agency" value="{{ form.federal_agency.value|default:'' }}" autocomplete="off" value="{{federal_agency.name}}">
+                    <input class="form-control" id="federal_agency" type="text" name="federal_agency" placeholder="Federal Agency" value="{{ form.federal_agency.value|default:'' }}" autocomplete="off" value="{{federal_agency.name}}" data-toggle="modal" data-target="#agencyModal">
+                    <div class="modal" id="agencyModal" tabindex="-1" role="dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <div class="modal-body">
+                                    <table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th class="th-sm">Organization</th>
+                                                <!--<th class="th-sm">Details</th>!-->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for agency in agencies %}
+                                        <tr id="{{agency.id}}" onclick="selectAgency({{ agency.id }})">
+                                            <td id="{{agency.id}}agency">{{ agency.name }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" id="submit-agency" class="btn btn-default" data-dismiss="modal">Submit</button>
+                                    <button type="button" id="create-new-agency" class="btn btn-default" data-dismiss="modal">Create New Agency</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div><br/>
             </td>
         </tr>
@@ -52,7 +80,35 @@
             </td>
             <td>
                 <div class="autocomplete">
-                    <input class="form-control" id="partner" type="text" name="partner" placeholder="Partner" value="{{ form.partner.value|default:'' }}" autocomplete="off">
+                    <input class="form-control" id="partner" type="text" name="partner" placeholder="Partner" value="{{ form.partner.value|default:'' }}" autocomplete="off" data-toggle="modal" data-target="#partnerModal">
+                    <div class="modal" id="partnerModal" tabindex="-1" role="dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <div class="modal-body">
+                                    <table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th class="th-sm">Organization</th>
+                                                <!--<th class="th-sm">Details</th>!-->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for partner in partners %}
+                                        <tr id="{{partner.id}}" onclick="selectPartner({{ partner.id }})">
+                                            <td id="{{partner.id}}partner">{{ partner.name }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" id="submit-partner" class="btn btn-default" data-dismiss="modal">Submit</button>
+                                    <button type="button" id="create-new-partner" class="btn btn-default" data-dismiss="modal">Create New Partner</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div><br/>
             </td>
         </tr>
@@ -63,7 +119,35 @@
             </td>
             <td>
                 <div class="autocomplete">
-                    <input class="form-control" id="location" type="text" name="location" placeholder="Location" value="{{ form.location.value|default:''}}" autocomplete="off">
+                    <input class="form-control" id="location" type="text" name="location" placeholder="Location" value="{{ form.location.value|default:''}}" autocomplete="off" data-toggle="modal" data-target="#locationModal">
+                    <div class="modal" id="locationModal" tabindex="-1" role="dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <div class="modal-body">
+                                    <table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th class="th-sm">Park Name</th>
+                                                <!--<th class="th-sm">Details</th>!-->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for park in parks %}
+                                        <tr id="{{park.id}}" onclick="selectPark({{ park.id }})">
+                                            <td id="{{park.id}}park">{{park.name}}</td>
+                                        </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" id="submit-park" class="btn btn-default" data-dismiss="modal">Submit</button>
+                                    <button type="button" id="create-new-park" class="btn btn-default" data-dismiss="modal">Create New Park</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div><br/>
 <!--                {{ form.location }}<br><br>-->
             </td>
@@ -187,7 +271,39 @@
             </td>
             <td>
                 <div class="autocomplete">
-                    <input class="form-control" id="project_manager" type="text" name="project_manager" placeholder="Fed. Project Manager" value="{{ form.project_manager.value|default:'' }}" autocomplete="off">
+                    <input class="form-control" id="project_manager" type="text" name="project_manager" placeholder="Fed. Project Manager" value="{{ form.project_manager.value|default:'' }}" autocomplete="off" data-toggle="modal" data-target="#myModal">
+                    <div class="modal" id="myModal" tabindex="-1" role="dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <div class="modal-body">
+                                    <table class="dtBasicExample table table-striped table-bordered table-sm" id="ppl_table" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th class="th-sm">First Name</th>
+                                                <th class="th-sm">Last Name</th>
+                                                <th class="th-sm">Organization</th>
+                                                <!--<th class="th-sm">Details</th>!-->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for person in people %}
+                                        <tr id="{{person.id}}" onclick="selectPerson({{ person.id }}, 'm')">
+                                            <td id="{{person.id}}first">{{ person.first_name }}</td>
+                                            <td id="{{person.id}}last">{{ person.last_name }}</td>
+                                            <td>{{ person.assigned_group }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" id="submit-person" class="btn btn-default" data-dismiss="modal">Submit</button>
+                                    <button type="button" id="create-new" class="btn btn-default" data-dismiss="modal"><a href="{% get_url_from_app_link 'summit.libs.auth' 'create_contact' %}">Create New Person</a></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div><br/>
             </td>
         </tr>
@@ -198,7 +314,7 @@
             </td>
             <td>
                 <div class="autocomplete">
-                    <input class="form-control" id="tech_rep" type="text" name="tech_rep" placeholder="Fed. Technical Rep." value="{{ form.tech_rep.value|default:'' }}" autocomplete="off">
+                    <input class="form-control" id="tech_rep" type="text" name="tech_rep" placeholder="Fed. Technical Rep." value="{{ form.tech_rep.value|default:'' }}" autocomplete="off" stlye="display: none" data-toggle="modal" data-target="#myModal">
                 </div><br/>
             </td>
         </tr>
@@ -209,7 +325,7 @@
             </td>
             <td>
                 <div class="autocomplete">
-                    <input class="form-control" id="pp_i" type="text" name="pp_i" placeholder="Partner PI" value="{{ form.pp_i.value|default:'' }}" autocomplete="off">
+                    <input class="form-control" id="pp_i" type="text" name="pp_i" placeholder="Partner PI" value="{{ form.pp_i.value|default:'' }}" autocomplete="off" data-toggle="modal" data-target="#myModal">
                 </div><br/>
             </td>
         </tr>
@@ -366,6 +482,43 @@
 {% endblock %}
 
 {% block row3_col3 %}
+    <h5><u>Files: </u></h5>
+    <table>
+        <tbody>
+        <tr>
+            <td>
+                <span class="text-danger sml">{{ file_form.file.errors }}</span>
+                <label class="control-label col-sm-auto"><b>{{ file_form.file.label_tag }}</b></label>
+            </td>
+            <td>
+                {{ file_form.file }}<br><br>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <table>
+        <tbody>
+        <tr>
+            <td>
+                <b><u><p>Current Files</p></u></b>
+            </td>
+        </tr>
+        <tr>
+            {% if files %}
+                <td>
+                    {% for file in files %}
+                        <br><a href=" {{ file.file.url }} " target="_blank"> {{ file.file }}</a><br>
+                    {% endfor %}
+                </td>
+            {% else %}
+                <td><p>No files have been added</p></td>
+            {% endif %}
+        </tr>
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block row2_col4 %}
     <h5><u>Files: </u></h5>
     <table>
         <tbody>

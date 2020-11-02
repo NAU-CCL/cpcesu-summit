@@ -427,7 +427,9 @@ def info_display(request):
         print(request.GET)
         userID = request.GET.get('userID')
         userInfo = UserProfile.objects.filter(id = userID).values()
-        return JsonResponse({"user": list(userInfo)})
+        ProjectInfo = Project.objects.filter(pp_i_id = userID) | Project.objects.filter(project_manager_id = userID)
+        ProjectInfo = ProjectInfo.values()
+        return JsonResponse({"user": list(userInfo) , "projects": list(ProjectInfo)})
 
     userInfo = UserProfile.objects.get(id = 0).values()
     groupInfo = UserGroup.objects.filter(id = 0).values()

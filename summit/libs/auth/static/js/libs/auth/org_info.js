@@ -14,7 +14,7 @@ $("tr").each(function(index){
     let table = $('#org_info')
     table.empty();
     let group = document.getElementById("a" + id).innerText
-    table.append(`<h2 style="align: center">${group}</h2>`)
+    table.append(`<h2 style="align: center"><a href="/accounts/edit_organization/${id}/">${group}</a></h2>`)
     table.append(`<h4 style="align: center">Contact Info</h4>`)
     let groupID = id;
     //let groupName = document.getElementById("a" + groupID).innerText;
@@ -30,19 +30,6 @@ $("tr").each(function(index){
         table2 = $('#table2')
         table_1.clear();
         table_2.clear();
-        $.each(resp['people'],function(index,contact){
-            table_1.row.add( [
-                contact.first_name,
-                contact.last_name,
-                contact.email_address]
-                /*<tr>
-                    <td>${contact.first_name}</td>
-                    <td>${contact.last_name}</td>
-                    <td>${contact.email_address}</td>
-                </tr>*/
-            ).draw()
-        })
-
         $.each(resp['projects'], function(index,project){
             let start = new Date(project.tent_start_date)
             let start_date = start.toDateString()
