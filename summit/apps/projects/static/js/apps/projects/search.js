@@ -51,6 +51,9 @@ $('#searchButton').on('click', function(){
                 console.log("hi")
             }
             $.each(resp['projects'],function(index,project,partners=resp['partners'],agencies=resp['agencies'],managers=resp['managers']){
+                if(project.p_num == ""){
+                    return;
+                }
                 project_federal_agency_id = project.federal_agency_id
                 project_partner_id = project.partner_id
                 project_manager_id = project.project_manager_id

@@ -1212,18 +1212,18 @@ def project_search(request):
                                         "project_title", "total_award_amount", "tent_start_date", "tent_end_date",
                                         "project_manager", "pp_i")
 
-        partner_ids = Partner.objects.filter(name__contains=Partner_name).values_list("id", flat=True)
-        agency_ids= FederalAgency.objects.filter(name__contains=agency_name).values_list("id", flat=True)
-        pm_id = UserProfile.objects.filter(first_name__contains=p_m) | UserProfile.objects.filter(last_name__contains=p_m)
+        partner_ids = Partner.objects.filter(name__icontains=Partner_name).values_list("id", flat=True)
+        agency_ids= FederalAgency.objects.filter(name__icontains=agency_name).values_list("id", flat=True)
+        pm_id = UserProfile.objects.filter(first_name__icontains=p_m) | UserProfile.objects.filter(last_name__icontains=p_m)
         pm_id = pm_id.values_list("id", flat=True)
-        pi_id = UserProfile.objects.filter(first_name__contains=p_i) | UserProfile.objects.filter(
-            last_name__contains=p_i)
+        pi_id = UserProfile.objects.filter(first_name__icontains=p_i) | UserProfile.objects.filter(
+            last_name__icontains=p_i)
         pi_id = pi_id.values_list("id", flat=True)
-        park_id = Location.objects.filter(name__contains=place).values_list("id", flat=True)
+        park_id = Location.objects.filter(name__icontains=place).values_list("id", flat=True)
         if(FY != ""):
             projects = projects.filter(fiscal_year__contains=FY)
         if (AwardNum != ""):
-            projects = projects.filter(p_num__contains=AwardNum)
+            projects = projects.filter(p_num__icontains=AwardNum)
         if (Partner_name != ""):
             projects = projects.filter(partner_id__in=partner_ids)
         if (place != ""):
@@ -1231,9 +1231,9 @@ def project_search(request):
         if (agency_name != ""):
             projects = projects.filter(federal_agency_id__in=agency_ids)
         if (status != ""):
-            projects = projects.filter(status__contains=status)
+            projects = projects.filter(status__icontains=status)
         if (title != ""):
-            projects = projects.filter(project_title__contains=title)
+            projects = projects.filter(project_title__icontains=title)
         if (p_i != ""):
             projects = projects.filter(pp_i__in=pi_id)
         if (p_m != ""):
