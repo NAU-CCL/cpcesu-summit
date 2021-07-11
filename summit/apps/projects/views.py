@@ -4,7 +4,7 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect, JsonRespons
 
 from django.shortcuts import get_object_or_404, render
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, View
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -178,7 +178,8 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
                 'libs/mdb/js/addons/datatables.min.js',
                 'js/datatables/dashboard.js',
                 'js/apps/projects/filter.js',
-                'js/apps/projects/search.js'
+                'js/apps/projects/search.js',
+                'js/apps/projects/show_more.js'
             ],
             'projects': all_projects,
         }
@@ -1130,7 +1131,7 @@ def export_to_csv(request):
         export_list = request.POST.getlist("export_list")
 
         if len(export_list) <= 0:
-            return HttpResponse('')
+            return response
 
         for project_id in export_list:
             project = Project.objects.get(pk=project_id)
@@ -1203,9 +1204,9 @@ def project_search(request):
         title = request.GET.get('title')
         title.strip()
         p_i = request.GET.get('pi')
-        p_i.strip();
+        p_i.strip()
         p_m= request.GET.get('pm')
-        p_m.strip();
+        p_m.strip()
         partners = Partner.objects.all().values()
         agencies = FederalAgency.objects.all()
         projects = Project.objects.only("project_id", "status", "federal_agency", "partner", "fiscal_year", "p_num",

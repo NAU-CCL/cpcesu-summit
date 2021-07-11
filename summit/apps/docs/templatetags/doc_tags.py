@@ -1,6 +1,6 @@
 from django import template
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from summit.apps.docs.models import Document
 from summit.apps.docs.vars import AppLinks, app_name

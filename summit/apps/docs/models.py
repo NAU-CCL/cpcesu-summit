@@ -7,8 +7,9 @@ from summit.libs.auth.models import UserProfile
 
 
 class Document(AuditModel):
-    created_by = models.ForeignKey(UserProfile, verbose_name="Created By", related_name='%(class)s_doc_created')
-    last_edited_by = models.ForeignKey(UserProfile, verbose_name="Last Edited By", related_name='%(class)s_last_edit_by')
+    # Added on_delete=models.DO_NOTHING since on_delete is now required
+    created_by = models.ForeignKey(UserProfile, verbose_name="Created By", related_name='%(class)s_doc_created', on_delete=models.DO_NOTHING)
+    last_edited_by = models.ForeignKey(UserProfile, verbose_name="Last Edited By", related_name='%(class)s_last_edit_by', on_delete=models.DO_NOTHING)
 
     page_id = models.CharField(max_length=255, unique=True, blank=False, verbose_name="Page ID")
     title = models.CharField(max_length=64, default="No Title")
