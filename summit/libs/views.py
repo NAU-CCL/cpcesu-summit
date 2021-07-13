@@ -1,7 +1,8 @@
 from django.shortcuts import render
 
-
-def error400(request):
+# for 400, 403, and 404
+# added *args and **argv to remove system check errors
+def error400(request, *args, **argv):
     template_name = 'libs/error.html'
 
     context = {
@@ -19,7 +20,7 @@ def error400(request):
     return render(request, template_name, context=context, status=400)
 
 
-def error403(request):
+def error403(request, *args, **argv):
     template_name = 'libs/error.html'
 
     context = {
@@ -37,7 +38,7 @@ def error403(request):
     return render(request, template_name, context=context, status=403)
 
 
-def error404(request):
+def error404(request, *args, **argv):
     template_name = 'libs/error.html'
 
     context = {

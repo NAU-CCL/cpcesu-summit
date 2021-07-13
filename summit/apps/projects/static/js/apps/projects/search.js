@@ -16,7 +16,8 @@ $(document.getElementById('search')).removeClass("invisible");
 
 })
 
-$('#searchButton').on('click', function(){
+// code that does the actual search
+var search = function(){
     let FY = document.getElementById('FY').value
     let AwardNumber = document.getElementById('AwardNum').value
     let Partner = document.getElementById('Partner').value
@@ -51,9 +52,10 @@ $('#searchButton').on('click', function(){
                 console.log("hi")
             }
             $.each(resp['projects'],function(index,project,partners=resp['partners'],agencies=resp['agencies'],managers=resp['managers']){
-                if(project.p_num == ""){
+                //commented this out so we can see all projects regardless of award#
+                /**if(project.p_num == "" || project.p_num == null){
                     return;
-                }
+                }**/
                 project_federal_agency_id = project.federal_agency_id
                 project_partner_id = project.partner_id
                 project_manager_id = project.project_manager_id
@@ -91,7 +93,9 @@ $('#searchButton').on('click', function(){
                 partner_name = " "
                 }
                 FY = project.fiscal_year
-                AwardNum = project.p_num.toUpperCase()
+                if (project.p_num != null|| project.p_num != "") {
+                    AwardNum = project.p_num.toUpperCase()
+                }
                 title = '<a href="/projects/detail/'+ project.id + '/">'+ project.project_title + '</a>'
                 totalAmount = project.award_amt
                 let start = new Date(project.tent_start_date)
@@ -161,4 +165,7 @@ $('#searchButton').on('click', function(){
 
         }
     })
-})
+}
+
+
+$('#searchButton').on('click', search)

@@ -55,7 +55,10 @@
             <tr>
                 <td><b>Assigned Group:</b></td>
                 {% if profile.assigned_group and profile.assigned_group.id %}
-                    <td>{{ profile.assigned_group }} <a href="{% get_url_from_app_link 'summit.libs.auth' 'manage_organization' group_id=profile.assigned_group.id %}" class="btn btn-primary btn-sm m-0 waves-effect">Manage Org.</a></td>
+                    <td>
+                        {{ profile.assigned_group }} 
+                        <a class="link-primary" href="{% get_url_from_app_link 'summit.libs.auth' 'manage_organization' group_id=profile.assigned_group.id %}">Manage Org.</a>
+                    </td>
                 {% else %}
                     <td>No Group</td>
                 {% endif %}

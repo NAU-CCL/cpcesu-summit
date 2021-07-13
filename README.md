@@ -45,6 +45,12 @@ sudo su postgres
 psql
 ```
 
+If you are on Mac, instead run the following:
+
+```
+psql -d postgres
+```
+
 If psql errors out for Postgres not running, run the following:
 
 ```

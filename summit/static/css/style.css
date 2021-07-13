@@ -39,7 +39,7 @@ display: block !important;
 
 .info-background{
 background-color: rgba(215,239,252,.5) !important;
-backgroun-size: 100%;
+background-size: 100%;
 }
 .center{
 text-align: center;
@@ -81,7 +81,7 @@ padding-right: 20px;
     background-color: rgba(168,167,167,.7);
 }
 .spinner {
-   position: absolute;
+   position: fixed;
    left: 50%;
    top: 50%;
    height:60px;
@@ -276,3 +276,7 @@ header {
     @media only screen and (max-width: 767px) {
       .imgContainer img {
         display: none; } }
+
+#searchButton {
+  margin-top: 50px;
+}

@@ -109,8 +109,10 @@ class Project(AuditModel):
                                      blank=True, related_name='staff_member', default=None, null=True)
     status = models.CharField(max_length=50, choices=STATUS, default=STATUS[0], blank=True)
 
+    # I got an error "__init__() missing 1 required positional argument: 'on_delete'" 
+    # so I added on_delete=models.SET_NULL since that is what other foreign keys in here use
     tech_rep = models.ForeignKey(UserProfile, help_text=_help_text['tech_rep'], blank=True,
-                                 verbose_name="Agreements Tech Representative", null=True)
+                                 verbose_name="Agreements Tech Representative", on_delete=models.SET_NULL, null=True)
     tent_end_date = models.DateField(blank=True, default=None, null=True,
                                      verbose_name="Tentative End Date")
     tent_start_date = models.DateField(blank=True, default=None, null=True,
