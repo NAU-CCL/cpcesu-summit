@@ -8,10 +8,15 @@
     <!--Div that contains the search bar-->
     <div id ="advancedSearch" class="container-fluid">
         {% if pagetitle %}
-        <h1 style="text-align: center">{{ pagetitle }}</h1>
+        <h1 style="text-align: center">
+            {{ pagetitle }}
+            <br>
+            <a class="btn btn-outline-success m-0 waves-effect" href="/projects/create">Create Project</a>
+        </h1>
         {% else %}
         <h1 style="text-align: center">PROJECT PAGE</h1>
         {% endif %}
+        
         <div>
             <h5><b>{{ table1_header }}</b></h5>
             <p class="animated fadeIn text-muted">{{ table1_desc }}</p>
@@ -21,8 +26,9 @@
         <input type="number" id="FY" value="">
         <label for="Title">Title: </label>
         <input type="text" id="Title" value="">
-        <label for="Partner">Partner: </label>
-        <input type="text" id="Partner" name="Partner" value="">
+        <label for="AwardNum">Award Number: </label>
+        <input type="text" id="AwardNum" name="AwardNum" value="">
+        
 
         <div id="search-show-more" class="invisible">
             <label for="Place">Place: </label>
@@ -32,21 +38,21 @@
             <label for="Agency">Agency: </label>
             <input type="text" id="Agency" name="AwardNum" value="">
             <br>
-            <label for="AwardNum">Award Number: </label>
-            <input type="text" id="AwardNum" name="AwardNum" value="">
+            <label for="Partner">Partner: </label>
+            <input type="text" id="Partner" name="Partner" value="">
             <label for="PI">PI: </label>
             <input type="text" id="PI" name="AwardNum" value="">
             <label for="PM">PM: </label>
             <input type="text" id="PM" name="Partner" value="">
         </div>
-        <br>
-        <button id="search-show-more-button" class="btn btn-outline-secondary btn-sm m-0">
-            Show More
-        </button>
-        <button id="search-show-less-button" class="btn btn-outline-secondary btn-sm m-0 invisible">
-            Show Less
-        </button>
-        <br>
+        <div>
+            <button id="search-show-more-button" class="btn btn-outline-secondary btn-sm m-0">
+                Show More
+            </button>
+            <button id="search-show-less-button" class="btn btn-outline-secondary btn-sm m-0 invisible">
+                Show Less
+            </button>
+        </div>
         <button type="button" id="searchButton" class="btn btn-outline-success btn-sm m-0 waves-effect">Submit</button>
         <br>
         
@@ -63,11 +69,10 @@
         <form action="{% get_url_from_app_link 'summit.apps.projects' 'project_export_csv' %}" method="post" enctype="multipart/form-data"
               name="export_form">
             {% csrf_token %}
-            <button class="btn btn-outline-success btn-sm m-0 waves-effect" type="submit" value="Submit"
-                    style="float: left;">
+            <button class="btn btn-outline-primary btn-sm m-0 waves-effect" type="submit" value="Submit">
                 Export Selected Projects
             </button>
-            <button class="btn btn-outline-success btn-sm m-0 waves-effect"> <a href="/projects/create">Create Project</a></button>
+            
         <br>
         <!--The below was likely part of an old advanced search-->
         <!--<div id="search" class ="visible">

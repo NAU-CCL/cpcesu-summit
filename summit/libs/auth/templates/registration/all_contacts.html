@@ -6,11 +6,11 @@
 {% block primary %}
 <h1 style="text-align: center">Contact Book</h1>
 
-<div>
+<div class="container-fluid">
     <!--<a href="{% get_url_from_app_link 'summit.libs.auth' 'create_organization' %}" class="btn btn-primary btn-sm m-0 waves-effect">Create Organization</a>!-->
     <a href="{% get_url_from_app_link 'summit.libs.auth' 'create_contact' %}" class="btn btn-primary btn-sm m-0 waves-effect">Create Contact</a>
 </div>
-<div style="width:60%; display: inline-block">
+<div style="width:60%; display: inline-block" class="container-fluid">
     <table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0">
         <thead>
             <tr>

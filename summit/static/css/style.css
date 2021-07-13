@@ -276,3 +276,7 @@ header {
     @media only screen and (max-width: 767px) {
       .imgContainer img {
         display: none; } }
+
+#searchButton {
+  margin-top: 50px;
+}
