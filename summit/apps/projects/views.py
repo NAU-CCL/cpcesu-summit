@@ -14,6 +14,8 @@ from django.core.files import File
 from celery.result import AsyncResult
 import json
 
+from summit.apps.generic_views import *
+
 from .tasks import read_pdf
 from summit.libs.auth.models import UserProfile, CESUnit, FederalAgency, Partner, UserGroup
 from .models import Project, File, Location, Modification, ModFile
@@ -129,6 +131,10 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
     raise_exception = False
 
     def get_context_data(self, **kwargs):
+        people = UserProfile.objects.all()
+        parks = Location.objects.all()
+        agencies = FederalAgency.objects.all()
+        partners = Partner.objects.all()
         all_projects = Project.objects.only("id")
         user = self.request.user
 
@@ -159,7 +165,8 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
             dashboard_projects.append(proj)
 
 
-
+        #
+        #'js/datatables/no_sort_datatable.js',
         context = {
             'name': self.kwargs['name'],
             'pagetitle': 'Project Dashboard',
@@ -172,16 +179,23 @@ class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView
             'header': {},
             'cssFiles': [
                 'libs/mdb/css/addons/datatables.min.css',
-                'css/datatables/dashboard.css'
+                'css/datatables/dashboard.css',
+                'css/apps/projects/autofill.css',
             ],
             'jsFiles': [
                 'libs/mdb/js/addons/datatables.min.js',
                 'js/datatables/dashboard.js',
                 'js/apps/projects/filter.js',
                 'js/apps/projects/search.js',
-                'js/apps/projects/show_more.js'
+                'js/apps/projects/show_more.js',
+                'js/apps/projects/form-autofill-select.js',
+                'js/apps/projects/autocomplete.js'
             ],
-            'projects': all_projects,
+            'people': people,
+            'parks': parks,
+            'agencies': agencies,
+            'partners': partners,
+
         }
         ctx = super(ProjectDashboardView, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
@@ -504,13 +518,11 @@ def check_fields(project_form):
     if location and len(location) > 0:
         name_parts = location.split(" ")
         if len(name_parts) >= 2:
-            name = ' '.join(name_parts[:-1])
-            abrev = name_parts[-1].strip('()')
-            print(name, abrev)
+            name = ' '.join(name_parts)
             try:
                 location = Location.objects.get(name=name)
             except ObjectDoesNotExist:
-                location = Location(name=name, abbrv=abrev)
+                location = Location(name=name, abbrv=(None))
                 location.save()
     else:
         location = None
@@ -1189,7 +1201,6 @@ def project_filter(request):
 def project_search(request):
     if request.is_ajax():
         FY = request.GET.get('FY')
-        print(FY)
         Partner_name = request.GET.get('partner_name')
         Partner_name.strip()
         AwardNum = request.GET.get('AwardNumber')
@@ -1205,8 +1216,10 @@ def project_search(request):
         title.strip()
         p_i = request.GET.get('pi')
         p_i.strip()
+        p_i_list = p_i.split()
         p_m= request.GET.get('pm')
         p_m.strip()
+        p_m_list = p_m.split()
         partners = Partner.objects.all().values()
         agencies = FederalAgency.objects.all()
         projects = Project.objects.only("project_id", "status", "federal_agency", "partner", "fiscal_year", "p_num",
@@ -1215,30 +1228,49 @@ def project_search(request):
 
         partner_ids = Partner.objects.filter(name__icontains=Partner_name).values_list("id", flat=True)
         agency_ids= FederalAgency.objects.filter(name__icontains=agency_name).values_list("id", flat=True)
-        pm_id = UserProfile.objects.filter(first_name__icontains=p_m) | UserProfile.objects.filter(last_name__icontains=p_m)
-        pm_id = pm_id.values_list("id", flat=True)
-        pi_id = UserProfile.objects.filter(first_name__icontains=p_i) | UserProfile.objects.filter(
-            last_name__icontains=p_i)
-        pi_id = pi_id.values_list("id", flat=True)
         park_id = Location.objects.filter(name__icontains=place).values_list("id", flat=True)
         if(FY != ""):
+            print("FY")
             projects = projects.filter(fiscal_year__contains=FY)
         if (AwardNum != ""):
+            print("awardnum")
             projects = projects.filter(p_num__icontains=AwardNum)
         if (Partner_name != ""):
+            print("partner")
             projects = projects.filter(partner_id__in=partner_ids)
         if (place != ""):
+            print("place")
             projects = projects.filter(location_id__in=park_id)
         if (agency_name != ""):
+            print("agency")
             projects = projects.filter(federal_agency_id__in=agency_ids)
         if (status != ""):
+            print("status")
             projects = projects.filter(status__icontains=status)
         if (title != ""):
+            print("title")
             projects = projects.filter(project_title__icontains=title)
         if (p_i != ""):
+            print("p_i")
+            if p_i_list:
+                if len (p_i_list) == 1:
+                    pi_id = UserProfile.objects.filter(first_name__icontains=p_i_list[0]) | UserProfile.objects.filter(
+                        last_name__icontains=p_i_list[0])
+                else:
+                    pi_id = UserProfile.objects.filter(first_name__icontains=p_i_list[0]) & UserProfile.objects.filter(
+                        last_name__icontains=p_i_list[1])
+                pi_id = pi_id.values_list("id", flat=True)
             projects = projects.filter(pp_i__in=pi_id)
         if (p_m != ""):
+            print("p_m")
+            if p_m_list:
+                if len (p_m_list) == 1:
+                    pm_id = UserProfile.objects.filter(first_name__icontains=p_m_list[0]) & UserProfile.objects.filter(last_name__icontains=p_m_list[0])
+                else:
+                    pm_id = UserProfile.objects.filter(first_name__icontains=p_m_list[0]) & UserProfile.objects.filter(last_name__icontains=p_m_list[1])
+                pm_id = pm_id.values_list("id", flat=True)
             projects = projects.filter(project_manager__in=pm_id)
+
 
         projects = projects.values()
         managers = UserProfile.objects.all().values()

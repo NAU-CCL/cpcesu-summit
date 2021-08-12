@@ -1,0 +1,72 @@
+.query-modal-list-container {
+  background: #2c4477;
+  border-radius: 25px;
+  padding: 1% 1%;
+  margin: 1% 1%;
+  height: 100%;
+}
+
+#modal-new-button {
+  float: right;
+  font-weight: bold;
+  color: #ffeb72;
+  background-color: #2c4477;
+  border: #ffeb72 2px solid;
+  transition: all 0.5s ease;
+}
+
+#modal-new-button:hover {
+    background: #ffeb72;
+    color: #2c4477;
+    cursor: pointer;
+}
+
+.query-modal-list {
+  overflow-x: hidden;
+  overflow-y: scroll;
+  border-radius: .5em;
+  max-height: 50vh;
+}
+
+.query-list-item {
+  padding: 0 5px;
+  color: black;
+}
+
+.query-list-item:nth-child(2n+1) {
+  background: #898986;
+}
+
+.query-list-item:nth-child(2n) {
+  background: #82827f;
+}
+
+.query-entry {
+  cursor: pointer;
+}
+
+.query-entry.selected {
+  /* color: #fffcc8; */
+  color: #ffeb72;
+  background: #62625f;
+}
+
+.query-entry:hover {
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+}
+
+.query-entry.hidden {
+  display: none;
+}
+
+a.col_link {
+  color: black;
+}
+
+a.col_link:hover {
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+}

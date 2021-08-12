@@ -14,8 +14,8 @@ $("tr").each(function(index){
     let table = $('#org_info')
     table.empty();
     let group = document.getElementById("a" + id).innerText
-    table.append(`<h2 style="align: center"><a href="/accounts/edit_organization/${id}/">${group}</a></h2>`)
-    table.append(`<h4 style="align: center">Contact Info</h4>`)
+    table.append(`<h5 class="center" style="align: block"><a href="/accounts/edit_organization/${id}/">${group}</a></h2>`)
+    table.append(`<h5 class="center">Contact Info</h4>`)
     let groupID = id;
     //let groupName = document.getElementById("a" + groupID).innerText;
     $.ajax({
@@ -32,9 +32,16 @@ $("tr").each(function(index){
         table_2.clear();
         $.each(resp['projects'], function(index,project){
             let start = new Date(project.tent_start_date)
-            let start_date = start.toDateString()
+            let start_date_day = start.getDate();
+            let start_date_month = start.getMonth() + 1;
+            let start_date_year = start.getFullYear();
+            let start_date = start_date_month + "/" + start_date_day + "/" + start_date_year;
+
             let end = new Date(project.tent_end_date)
-            let end_date = end.toDateString()
+            let end_date_day = end.getDate();
+            let end_date_month = end.getMonth() + 1;
+            let end_date_year = end.getFullYear();
+            let end_date = end_date_month + "/" + end_date_day + "/" + end_date_year;
             let status = project.status.charAt(0).toUpperCase() + project.status.toLowerCase().slice(1)
             table_2.row.add([
                     status,

@@ -1,0 +1,68 @@
+{% load static %}
+{% block stylesheets %}
+  <link rel="stylesheet" href="{% static 'base/generic_query_modal.css' %}">
+{% endblock %}
+{% block javascripts %}
+  <script src="{% static 'base/generic_query_modal.js' %}"></script>
+{% endblock %}
+{% block content %}
+  {% if error %}
+    Something went wrong and the query could not be completed and displayed
+  {% else %}
+    <div class="query-modal-list-container">
+
+      {% if search_field %}
+        <label for="modal-search">🔎</label>
+        <input type="text" placeholder="Search modal" name="modal-search" class="modal-search"
+                onchange="filterQueryModalList( $(this), $(this).val() )">
+      {% endif %}
+      {% if new_onclick %}
+        <button id="modal-new-button" onclick="{{ new_onclick }}">+</button>
+      {% endif %}
+
+      <div class="query-modal-list">
+
+        <div class="query-list-item row">
+          {% for field in fields %}
+            <span class="col">{{ field }}</span>
+          {% endfor %}
+          {% if links and link_as_column %}
+            <span class="col"></span>
+          {% endif %}
+        </div>
+
+        {% for object in objects %}
+          {% if links and not link_as_column %}
+            <a class="query-entry query-list-item row" href="{{ object.link }}" onclick="{% if onclick %}{{object.onclick}}{% endif %}">
+          {% else %}
+            <div class="query-entry query-list-item row" onclick="{% if onclick %}{{object.onclick}}{% endif %}">
+          {% endif %}
+
+          {% for key, value in object.items %}
+            {% if key != "link" and key != "onclick" %}
+              {% if key == search_field %}
+                <span class="col search_field">{{ value }}</span>
+              {% else %}
+                <span class="col">{{ value }}</span>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+
+          {% if links and link_as_column %}
+            <a class="col col_link" href="{{ object.link }}">
+              Visit page
+            </a>
+          {% endif %}
+
+          {% if links and not link_as_column %}
+            </a>
+          {% else %}
+            </div>
+          {% endif %}
+        {% endfor %}
+
+
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}

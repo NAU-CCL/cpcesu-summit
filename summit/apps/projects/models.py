@@ -32,7 +32,7 @@ class Location(models.Model):
 
     def __str__(self):
         if self.abbrv:
-            return self.name + " (" + self.abbrv + ")"
+            return self.name
         else:
             return self.name
 

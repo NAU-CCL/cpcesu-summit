@@ -28,21 +28,26 @@ function loadDetails(id, group){
             header.empty()
             table_2.clear()
             $.each(resp['user'],function(index,user, orgs=resp['orgs'], projects=resp['projects']){
-            header.append(`<div style="background-color: gray;">
-            <div style="width: 89%; display: inline-block">
-            <h3 class="center" style="display: block">${user.first_name} ${user.last_name}</h3>
-            <h4 class="center"><a href="/accounts/manage_organization/${user.assigned_group_id}/"
-        >${groupName}</a></h4>
-        </div>
-        <div style="width: 10%; display: inline-block">
-            <img src="http://s3.amazonaws.com/37assets/svn/765-default-avatar.png" style="max-height: 100%; max-width: 100px">
+            header.append(`<div style="background-color: #bab4b5">
+            <div style="width: 100%; display: inline-block">
+            <h5 class="center" style="display: block; font-weight:bold">${user.first_name} ${user.last_name}</h5>
+            <h5 class="center"><a href="/accounts/manage_organization/${user.assigned_group_id}/"
+        >${groupName}</a></h5>
         </div>
         </div>`)
         $.each(projects, function(index,project){
             let start = new Date(project.tent_start_date)
-            let start_date = start.toDateString()
+            let start_date_day = start.getDate();
+            let start_date_month = start.getMonth() + 1;
+            let start_date_year = start.getFullYear();
+            let start_date = start_date_month + "/" + start_date_day + "/" + start_date_year;
+
             let end = new Date(project.tent_end_date)
-            let end_date = end.toDateString()
+            let end_date_day = end.getDate();
+            let end_date_month = end.getMonth() + 1;
+            let end_date_year = end.getFullYear();
+            let end_date = end_date_month + "/" + end_date_day + "/" + end_date_year;
+
             let status = project.status.charAt(0).toUpperCase() + project.status.toLowerCase().slice(1)
             table_2.row.add([
                     status,
@@ -52,13 +57,23 @@ function loadDetails(id, group){
             ]).draw()
 
         })
+        if($.fn.DataTable.isDataTable('#table_2')){
+            table_2.destroy()
+            $('#table_2').DataTable({
+                retrieve: true,
+                'ordering': true,
+                "dom": '<"top"f>r<"bottom"litp><"clear">'
+            });
+            $('.dataTables_filter').addClass('pull-left');
+            $('.dataTables_paginate').addClass('pull-left');
+        }
         })
 
 
         }
 
      })
-     document.getElementById('info').style.display = "inline-block"
+     document.getElementById('contact-info').style.display = "inline-block"
 }
 
 

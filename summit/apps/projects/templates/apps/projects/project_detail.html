@@ -19,7 +19,7 @@
         <div class="row">
             <div class="col-sm-3">
                 <h5> <u>General Information: </u></h5>
-                <table>
+                <table class="table table-bordered">
                     <tbody>
                     <tr>
                         <td><b>Fiscal Year:</b></td>
@@ -82,8 +82,21 @@
                 </table>
             </div>
             <div class="col-sm-3">
+                <h5><u>Award Amount: </u></h5>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td><b>Budget:</b></td>
+                        <td>{{ object.budget }} </td>
+                    </tr>
+                    <tr>
+                        <td><b>Total Award Amt:</b></td>
+                        <td>{{ total_award_amount }} </td>
+                    </tr>
+                    </tbody>
+                </table>
                 <br><h5><u>Personnel: </u></h5>
-                <table>
+                <table class="table table-bordered">
                     <tbody>
                         <tr>
                             <td><b>Agency Project Manager:</b></td>
@@ -135,26 +148,10 @@
                         </tr>
                     </tbody>
                 </table>
-
             </div>
             <div class="col-sm-3">
-                <br><h5><u>Award Amount: </u></h5>
-                <table>
-                    <tbody>
-                    <tr>
-                        <td><b>Budget:</b></td>
-                        <td>{{ object.budget }} </td>
-                    </tr>
-                    <tr>
-                        <td><b>Total Award Amt:</b></td>
-                        <td>{{ total_award_amount }} </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-sm-3">
-                <br><h5><u>Dates: </u></h5>
-                <table>
+                <h5><u>Dates: </u></h5>
+                <table class="table table-bordered">
                     <tbody>
                     <tr>
                         <td><b>Received:</b></td>
@@ -209,13 +206,11 @@
                     </tr>
                     </tbody>
                 </table>
+                
             </div>
-
-        </div>
-        <div class="row">
             <div class="col-sm-3">
                 <h5><u>Administration: </u></h5>
-                <table>
+                <table class="table table-bordered">
                     <tbody>
                     <tr>
                         <td><b>Status:</b><br></td>
@@ -247,9 +242,13 @@
                 </table>
 
             </div>
+
+        </div>
+        <div class="row">
+            
             <div class="col-sm-3">
                 <h5><u>Description: </u></h5>
-                <table>
+                <table class="table table-bordered">
                     <tbody>
                     <tr>
                         <td>
@@ -261,8 +260,8 @@
                 </table>
             </div>
             <div class="col-sm-3">
-                <br><h5><u>Notes: </u></h5>
-                <table>
+                <h5><u>Notes: </u></h5>
+                <table class="table table-bordered">
                     <tbody>
                     <tr>
                         <td>
@@ -273,8 +272,8 @@
                 </table>
             </div>
             <div class="col-sm-3">
-                <br><h5><u>File(s): </u></h5>
-                <table>
+                <h5><u>File(s): </u></h5>
+                <table class="table table-bordered">
                     <tbody>
                     {% for file in files %}
                         <tr>
