@@ -128,28 +128,30 @@ function autocomplete(inp, arr, inp2, inp2_list, inp3) {
 var agencies = [];
 $.getJSON("/api/federal_agencies/", function(data){
     $.each( data, function(key, agency){
-        console.log(agency);
         agencies.push(agency.name);
     });
-
-    autocomplete(document.getElementById("federal_agency"), agencies, 'project_manager', "feds", "tech_rep");
+    if (document.getElementById("federal_agency")) {
+        autocomplete(document.getElementById("federal_agency"), agencies, 'project_manager', "feds", "tech_rep");
+    }
+    else if (document.getElementById("Agency")){
+        autocomplete(document.getElementById("Agency"), agencies);
+    }
 });
 
 var partners = [];
 $.getJSON("/api/partners/", function(data){
     $.each( data, function(key, partner){
-        console.log(partner);
         partners.push(partner.name);
     });
 
-    autocomplete(document.getElementById("partner"), partners, 'pp_i', "partners" );
+    autocomplete(document.getElementById("partner"), partners);
+    
 });
 
 $.getJSON("/api/locations/", function(data){
     var locations = [];
     $.each( data, function(key, location){
-        console.log(location);
-        locations.push(location.name + " (" + location.abbrv + ")");
+        locations.push(location.name);
     });
 
     autocomplete(document.getElementById("location"), locations);
@@ -193,11 +195,12 @@ $.getJSON("/api/contacts/", function(data){
 
     fedContacts = contacts['all'];
     autocomplete(document.getElementById("project_manager"), fedContacts);
-    autocomplete(document.getElementById("tech_rep"), fedContacts);
+    if (document.getElementById("tech_rep")) {
+        autocomplete(document.getElementById("tech_rep"), fedContacts);
+    }
 
     partnerContacts = contacts['all'];
     autocomplete(document.getElementById("pp_i"), partnerContacts);
 
-    autocomplete(document.getElementById("staff_member"), contacts['other']);
+    //autocomplete(document.getElementById("staff_member"), contacts['other']);
 });
-

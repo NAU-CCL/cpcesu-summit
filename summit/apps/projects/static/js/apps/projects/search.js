@@ -20,17 +20,27 @@ $(document.getElementById('search')).removeClass("invisible");
 var search = function(){
     let FY = document.getElementById('FY').value
     let AwardNumber = document.getElementById('AwardNum').value
-    let Partner = document.getElementById('Partner').value
-    let Place = document.getElementById('Place').value
+    let Partner = document.getElementById('partner').value
+    let Place = document.getElementById('location').value
     let Status = document.getElementById('Status').value
     let Agency = document.getElementById('Agency').value
     let Title = document.getElementById('Title').value
-    let PI = document.getElementById('PI').value
-    let PM = document.getElementById('PM').value
-    console.log(FY);
-    console.log(AwardNumber)
-    console.log(Partner)
+    let PI = document.getElementById('pp_i').value
+    let PM = document.getElementById('project_manager').value
     $(document.getElementById('overlay')).removeClass("invisible")
+    /*$.getJSON("/api/contacts/", function(data){    
+        $.each( data, function(key, contact){
+            if (PM == contact.first_name + " " + contact.last_name){
+                console.log(contact.first_name + " " + contact.last_name);
+                
+                PM = contact.pk;
+                console.log(PM);
+            }
+            
+        });
+        
+    });*/
+    
     $.ajax({
         type: "GET",
         url: '/projects/search',
@@ -93,16 +103,23 @@ var search = function(){
                 partner_name = " "
                 }
                 FY = project.fiscal_year
-                if (project.p_num != null|| project.p_num != "") {
+                if (project.p_num != null && project.p_num != "" ) {
                     AwardNum = project.p_num.toUpperCase()
                 }
                 title = '<a href="/projects/detail/'+ project.id + '/">'+ project.project_title + '</a>'
                 totalAmount = project.award_amt
                 let start = new Date(project.tent_start_date)
-                let start_date = start.toDateString()
-                startDate = start_date
+                let start_date_day = start.getDate();
+                let start_date_month = start.getMonth() + 1;
+                let start_date_year = start.getFullYear();
+                let start_date = start_date_month + "/" + start_date_day + "/" + start_date_year;
+
                 let end = new Date(project.tent_end_date)
-                let end_date = end.toDateString()
+                let end_date_day = end.getDate();
+                let end_date_month = end.getMonth() + 1;
+                let end_date_year = end.getFullYear();
+                let end_date = end_date_month + "/" + end_date_day + "/" + end_date_year;
+                startDate = start_date
                 endDate = end_date
                 let no_man = "None"
                 $.each(managers, function(index,manager){
@@ -151,7 +168,7 @@ var search = function(){
 
                 /*table_row.append(`<td>
                                 <a class="btn btn-outline-primary btn-sm m-0 waves-effect"
-                                   href="/projects/detail/${project.id}/">
+                                href="/projects/detail/${project.id}/">
                                     Details
                                 </a>
                             </td>`)*/

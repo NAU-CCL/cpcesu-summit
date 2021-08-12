@@ -1,10 +1,11 @@
 function pageify(){
     $('.dtBasicExample').DataTable({
+        retrieve: true,
+        'ordering': true,
+        "dom": '<"top"f>r<"bottom"litp><"clear">',
         'pageLength': 25,
         'lengthMenu': [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, "All"]],
-        "dom": '<"top">r<"bottom"litp><"clear">'
     });
-    $('.dataTables_length').addClass('bs-select');
     $('.dataTables_filter').addClass('pull-left');
     $('.dataTables_paginate').addClass('pull-left');
 }

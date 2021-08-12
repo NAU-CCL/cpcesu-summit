@@ -19,7 +19,7 @@ display: block !important;
 }
 
 .tab-background{
-  background-color: rgba(253, 221, 230,.8) !important;
+  background-color: #fff5f8 !important;
 }
 
 .content-background{
@@ -59,10 +59,6 @@ border: 4px;
 border-color: black;
 border-radius: 30px 30px 1px 1px;
 color: black;
-bottom-margin: 0px;
-left-margin: 0px;
-right-margin: 0px;
-top-margin: 20px;
 padding-left: 20px;
 padding-right: 20px;
 }
@@ -279,4 +275,22 @@ header {
 
 #searchButton {
   margin-top: 50px;
+}
+
+.right-button {
+  position: relative;
+  float:right;
+}
+
+.all-header {
+  width: 100%;
+  background-color: #fff5f8;
+  font-weight: bold;
+  overflow: hidden;
+  box-sizing: border-box;
+  border-left: 1px solid gray;
+  border-right: 1px solid gray;
+  border-bottom: 1px solid gray;
+  padding-right: 0;
+  padding-left: 0;
 }

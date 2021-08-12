@@ -13,13 +13,14 @@
     {% block layout_wrapper %}
       {% if layout %}
         <div class="row" id="contentBody" style="margin-top: 0px">
-          <div class="container-fluid" style="background-color: white; margin-bottom: 0px">
+          <div class="container-fluid" style="background-color: white; margin-bottom: 0px;">
             <div class="tab-container">
-                  <a class="nav-link waves-effect waves-light tabs" id="project" href="/projects/dashboard/" style="width: 200px;" target="">
+                  <a class="nav-link tabs" id="project" href="/projects/dashboard/" style="width: 200px;" target="">
                     Projects</a>
-                  <a class="nav-link waves-effect waves-light tabs" id="contact" href="/accounts/all_contacts/"  target="">
-                    People</a>
-                  <a class="nav-link waves-effect waves-light tabs" id="organization" href="/accounts/all_groups/" target="">
+                  <a class="nav-link tabs" id="contact" href="/accounts/all_contacts/"  target="">
+                    People
+                  </a>
+                  <a class="nav-link tabs" id="organization" href="/accounts/all_groups/" target="">
                     Organizations</a>
                   <!--<a class="nav-link waves-effect waves-light" href="/projects/dashboard/" target="" style="display: inline">Projects</a>
                   <a class="nav-link waves-effect waves-light" href="/accounts/all_contacts/" target="" style="display: inline">All Contacts</a>
@@ -27,7 +28,7 @@
             </div>
           </div>
           {% if layout == 'left' %}
-            <div class="{{ main_class|default:'col-md-12 col-lg-12' }}">
+            <div style="background-color: white;" class="{{ main_class|default:'col-md-12 col-lg-12' }}">
               {% block primary %}{{ primary|safe|default:"No content"}}{% endblock %}
             </div>
           {% endif %}

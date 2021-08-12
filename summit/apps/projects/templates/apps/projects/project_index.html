@@ -5,56 +5,138 @@
 
 
 
+    {% if pagetitle %}
+    <h1 style="text-align: center" class="all-header">
+        Project Manager
+        <a class="btn btn-primary btm-sm waves-effect right-button" href="/projects/create">Create Project</a>
+    </h1>
+    {% else %}
+    <h1 style="text-align: center">PROJECT PAGE</h1>
+    {% endif %}
     <!--Div that contains the search bar-->
-    <div id ="advancedSearch" class="container-fluid">
-        {% if pagetitle %}
-        <h1 style="text-align: center">
-            {{ pagetitle }}
-            <br>
-            <a class="btn btn-outline-success m-0 waves-effect" href="/projects/create">Create Project</a>
-        </h1>
-        {% else %}
-        <h1 style="text-align: center">PROJECT PAGE</h1>
-        {% endif %}
+    <div id ="advancedSearch" class="container-fluid form-group">
         
         <div>
             <h5><b>{{ table1_header }}</b></h5>
             <p class="animated fadeIn text-muted">{{ table1_desc }}</p>
         </div>
-
+        
         <label for="FY">Fiscal Year: </label>
         <input type="number" id="FY" value="">
         <label for="Title">Title: </label>
         <input type="text" id="Title" value="">
         <label for="AwardNum">Award Number: </label>
         <input type="text" id="AwardNum" name="AwardNum" value="">
+        <span>
+            <button id="search-show-more-button" class="btn btn-outline-dark btn-sm m-0">
+                Show More &#9660
+            </button>
+            <button id="search-show-less-button" class="btn btn-outline-dark btn-sm m-0 invisible">
+                Show Less &#9650
+            </button>
+        </span>
         
 
         <div id="search-show-more" class="invisible">
             <label for="Place">Place: </label>
-            <input type="text" id="Place" name="Place" value="">
+            <span class="autocomplete">
+                <input id="location" type="text" name="place" placeholder="Place" value="{{ form.location.value|default:'' }}" autocomplete="off" value="{{location.name}}">
+            </span>
             <label for="Status">Status: </label>
-            <input type="text" id="Status" value="">
+            <input id="Status" type="text" name="Status" placeholder="Status" value="{{ form.Status.value|default:'' }}" autocomplete="off" value="{{Status.name}}">
             <label for="Agency">Agency: </label>
-            <input type="text" id="Agency" name="AwardNum" value="">
-            <br>
-            <label for="Partner">Partner: </label>
-            <input type="text" id="Partner" name="Partner" value="">
+            <span class="autocomplete">
+                <input id="Agency" type="text" name="federal_agency" placeholder="Federal Agency" value="{{ form.federal_agency.value|default:'' }}" autocomplete="off" value="{{federal_agency.name}}">
+            </span><br/>
+            </td>
+            <label for="partner">Partner: </label>
+            <span class="autocomplete">
+                <input id="partner" type="text" name="partner" placeholder="Partner" value="{{ form.partner.value|default:'' }}" autocomplete="off" value="{{partner.name}}">
+            </span>
             <label for="PI">PI: </label>
-            <input type="text" id="PI" name="AwardNum" value="">
+            <span class="autocomplete">
+                <input id="pp_i" type="text" name="pp_i" placeholder="Principal Investigator" value="{{ form.pp_i.value|default:'' }}" autocomplete="off" value="{{pp_i.name}}">
+            </span>
+            
             <label for="PM">PM: </label>
-            <input type="text" id="PM" name="Partner" value="">
+            <span class="autocomplete">
+                <input id="project_manager" type="text" name="project_manager" placeholder="Project Manager" value="{{ form.project_manager.value|default:'' }}" autocomplete="off" value="{{project_manager.name}}">
+            </span>
         </div>
         <div>
-            <button id="search-show-more-button" class="btn btn-outline-secondary btn-sm m-0">
-                Show More
-            </button>
-            <button id="search-show-less-button" class="btn btn-outline-secondary btn-sm m-0 invisible">
-                Show Less
-            </button>
+            <button type="button" id="searchButton" class="btn btn-outline-success btn-sm m-0 waves-effect">Submit</button>
         </div>
-        <button type="button" id="searchButton" class="btn btn-outline-success btn-sm m-0 waves-effect">Submit</button>
+        
         <br>
+
+        <!--Modals go down hwere-->
+        <div class="modal" id="placeModal" tabindex="-1" role="dialog">
+            <div class="modal-dialogue modal-dialogue-scrollable modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="dtBasicExample table table-responsive-sm table-striped table-bordered table-sm" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th class="th-sm">Park Name</th>
+                                    <!--<th class="th-sm">Details</th>!-->
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for park in parks %}
+                            <tr id="{{park.id}}" onclick="selectPark({{ park.id }})">
+                                <td id="{{park.id}}park">{{park.name}}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="submit-park" class="btn btn-default" data-dismiss="modal">Submit</button>
+                        <button type="button" id="create-new-park" class="btn btn-default" data-dismiss="modal">Create New Park</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="personModal" tabindex="-1" role="dialog">
+            <div class="modal-dialogue modal-dialogue-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="dtBasicExample table table-responsive-sm table-striped table-bordered table-sm" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th class="th-sm">First Name</th>
+                                    <th class="th-sm">Last Name</th>
+                                    <th class="th-sm">Organization</th>
+                                    <!--<th class="th-sm">Details</th>!-->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for person in people %}
+                                <tr id="{{person.id}}" onclick="selectPerson({{ person.id }}, 'm')">
+                                    <td id="{{person.id}}first">{{ person.first_name }}</td>
+                                    <td id="{{person.id}}last">{{ person.last_name }}</td>
+                                    <td>{{ person.assigned_group }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="submit-park" class="btn btn-default" data-dismiss="modal">Submit</button>
+                        <button type="button" id="create-new-park" class="btn btn-default" data-dismiss="modal">Create New Park</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
         
 
         <!--<button type="button" id = "basicSearchButton" class="btn btn-outline-success btn-sm m-0 waves-effect" style="float: left;">
@@ -65,15 +147,13 @@
     <hr />
     
     <div class="container-fluid">
-
         <form action="{% get_url_from_app_link 'summit.apps.projects' 'project_export_csv' %}" method="post" enctype="multipart/form-data"
               name="export_form">
             {% csrf_token %}
-            <button class="btn btn-outline-primary btn-sm m-0 waves-effect" type="submit" value="Submit">
+            <button style="float: right;"class="btn btn-outline-primary btn-sm m-0 waves-effect" type="submit" value="Submit">
                 Export Selected Projects
             </button>
             
-        <br>
         <!--The below was likely part of an old advanced search-->
         <!--<div id="search" class ="visible">
             <label for="start_date">From(year): </label>
@@ -97,7 +177,7 @@
             <div id="overlay" class="invisible">
                 <div class="spinner"></div>
             </div>
-            <table id="replace" class="dtBasicExample table-responsive-sm table-striped table-bordered" style="width: 100%;">
+            <table id="replace" class="dtBasicExample table-responsive-sm table-striped table-bordered" style="width: 100%; float:left;">
                 <thead>
                 <tr>
                     <th style="max-width: 30px">

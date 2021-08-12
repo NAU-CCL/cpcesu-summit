@@ -4,13 +4,20 @@
 
 
 {% block primary %}
-<h1 style="text-align: center">Contact Book</h1>
+<div>
+    <h1 style="text-align: center" class="all-header">
+        Contact Book
+        <a href="{% get_url_from_app_link 'summit.libs.auth' 'create_contact' %}" class="btn btn-primary waves-effect right-button">Create Contact</a>
+    </h1>
+   
+</div>
+
 
 <div class="container-fluid">
     <!--<a href="{% get_url_from_app_link 'summit.libs.auth' 'create_organization' %}" class="btn btn-primary btn-sm m-0 waves-effect">Create Organization</a>!-->
-    <a href="{% get_url_from_app_link 'summit.libs.auth' 'create_contact' %}" class="btn btn-primary btn-sm m-0 waves-effect">Create Contact</a>
+    
 </div>
-<div style="width:60%; display: inline-block" class="container-fluid">
+<div style="width:50%; float:left;" class="container-fluid">
     <table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0">
         <thead>
             <tr>
@@ -42,22 +49,20 @@
         </tbody>
     </table>
 </div>
-<div style="display:none; width:40%; float: right; margin-top: 100px;" id="info">
-    <div style="background-color: gray;" id = "header">
+<div style="display:none; width:49%; float: left; margin-top: 100px; border: 1px solid grey;" id="contact-info">
+    <div style="background-color: #bab4b5;" id ="header">
     </div>
     <br>
     <h3 style="display: block; margin-left:0px">Projects</h3>
-    <table class="table table-striped table-bordered table-sm" id="table_2" style="display: block; width: 100%; table-layout: fixed" cellspacing="0"><thead>
-        <tr>
-            <th class="th-sm">Status</th>
-            <th class="th-sm">Title</th>
-            <th class="th-sm">Start Date</th>
-            <th class="th-sm">End Date</th>
-        </tr>
+    <table class="table table-striped table-bordered table-sm" id="table_2" cellspacing="0">
+        <thead>
+            <tr>
+                <th class="th-sm">Status</th>
+                <th class="th-sm">Title</th>
+                <th class="th-sm">Start Date</th>
+                <th class="th-sm">End Date</th>
+            </tr>
         </thead>
-        <tbody id="table2">
-
-        </tbody>
     </table>
 </div>
 {% endblock %}
