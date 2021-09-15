@@ -201,6 +201,10 @@ $.getJSON("/api/contacts/", function(data){
 
     partnerContacts = contacts['all'];
     autocomplete(document.getElementById("pp_i"), partnerContacts);
+    
 
     //autocomplete(document.getElementById("staff_member"), contacts['other']);
 });
+
+var statuses = ['Drafting', 'Approved', 'Executed', 'Closed', 'Legacy']
+autocomplete(document.getElementById("Status"), statuses);

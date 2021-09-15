@@ -29,7 +29,6 @@
                         <td><b>Federal Agency:</b></td>
                         {% if object.federal_agency %}
                         <td>
-                            <a href="{% get_url_from_app_link 'summit.libs.auth' 'manage_organization' group_id=object.federal_agency.id %}">
                             {{ object.federal_agency }}
                             </a>
                         </td>
@@ -49,7 +48,6 @@
                         <td><b>Partner:</b></td>
                         {% if object.partner %}
                         <td>
-                            <a href="{% get_url_from_app_link 'summit.libs.auth' 'manage_organization' group_id=object.partner.id %}">
                             {{ object.partner }}
                             </a>
                         </td>
@@ -78,6 +76,10 @@
                         <td><b>Vet/Youth Support:</b></td>
                         <td>{{ object.get_vet_support_display }} </td>
                     </tr>
+                    <tr>
+                        <td><b>CESU Unit:</b></td>
+                        <td>{{ object.cesu_unit }} </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -87,11 +89,11 @@
                     <tbody>
                     <tr>
                         <td><b>Budget:</b></td>
-                        <td>{{ object.budget }} </td>
+                        <td>${{ object.budget }} </td>
                     </tr>
                     <tr>
                         <td><b>Total Award Amt:</b></td>
-                        <td>{{ total_award_amount }} </td>
+                        <td>${{ total_award_amount }} </td>
                     </tr>
                     </tbody>
                 </table>
@@ -327,6 +329,9 @@
         </div>
         <div>
             {% for mod in mods %}
+            <script>
+                console.log({{mod.files}})
+            </script>
             <table class="table table-bordered">
                 <tr>
                     <th>Number</th>
@@ -335,14 +340,24 @@
                     <th>RC Approved</th>
                     <th>Executed</th>
                     <th>Mod Files</th>
+                    <th>Mod Status</th>
                 </tr>
                 <tbody>
                 <tr>
                     <td>{{ mod.mod_num }}</td>
                     <td>{{ mod.get_mod_type_display }}</td>
-                    <td>{{ mod.mod_amount}}</td>
+                    <td>${{ mod.mod_amount}}</td>
                     <td>{{ mod.mod_approved }}</td>
                     <td>{{ mod.mod_executed }}</td>
+                    <td>
+                        
+                        <!--DOES NOT WORK!-->
+                        {% for file in mod.files %}
+                        
+                            <td><a href=" {{ file.file.url }} " target="_blank"> {{ file.file }}</a><br></td>
+                        {% endfor %}
+                    </td>
+                    <td>{{ mod.mod_status }}</td>
                 </tr>
                 </tbody>
             </table>

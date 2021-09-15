@@ -107,7 +107,7 @@ var search = function(){
                     AwardNum = project.p_num.toUpperCase()
                 }
                 title = '<a href="/projects/detail/'+ project.id + '/">'+ project.project_title + '</a>'
-                totalAmount = project.award_amt
+                totalAmount = "$" + project.budget
                 let start = new Date(project.tent_start_date)
                 let start_date_day = start.getDate();
                 let start_date_month = start.getMonth() + 1;

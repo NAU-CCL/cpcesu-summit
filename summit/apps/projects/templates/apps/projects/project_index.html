@@ -43,7 +43,14 @@
                 <input id="location" type="text" name="place" placeholder="Place" value="{{ form.location.value|default:'' }}" autocomplete="off" value="{{location.name}}">
             </span>
             <label for="Status">Status: </label>
-            <input id="Status" type="text" name="Status" placeholder="Status" value="{{ form.Status.value|default:'' }}" autocomplete="off" value="{{Status.name}}">
+            <select id="Status" class="form-select">
+                <option selected value="">Status</option>
+                <option value="DRAFT">Draft</option>
+                <option value="EXECUTED">Executed</option>
+                <option value="CLOSED">Closed</option>
+                <option value="APPROVED">Approved</option>
+                <option value="LEGACY">Legacy</option>
+            </select>
             <label for="Agency">Agency: </label>
             <span class="autocomplete">
                 <input id="Agency" type="text" name="federal_agency" placeholder="Federal Agency" value="{{ form.federal_agency.value|default:'' }}" autocomplete="off" value="{{federal_agency.name}}">
@@ -66,8 +73,6 @@
         <div>
             <button type="button" id="searchButton" class="btn btn-outline-success btn-sm m-0 waves-effect">Submit</button>
         </div>
-        
-        <br>
 
         <!--Modals go down hwere-->
         <div class="modal" id="placeModal" tabindex="-1" role="dialog">
@@ -142,7 +147,27 @@
         <!--<button type="button" id = "basicSearchButton" class="btn btn-outline-success btn-sm m-0 waves-effect" style="float: left;">
         Basic Search
     </button>-->
+    <div class="modal fade" id="duplicateModal" tabindex="-1" role="dialog" aria-labelledby="duplicateModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="duplicateModalLabel">Delete Duplicates</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
     <!--Div that contains the search results-->
     <hr />
     
@@ -160,13 +185,7 @@
             <input type="number" id="start_date" name="start_date">
             <label for="end_date">To(year): </label>
             <input type="number" id="end_date" name="end_date">
-            <select id="status">
-                <option value="DRAFT">Draft</option>
-                <option value="EXECUTED">Executed</option>
-                <option value="CLOSED">Closed</option>
-                <option value="APPROVED">Approved</option>
-                <option value="LEGACY">Legacy</option>
-            </select>
+            
             <button type="button" id="filter">Submit</button>
             <br>
             <button type="button" id = "advancedSearchButton" class="btn btn-outline-success btn-sm m-0 waves-effect" style="float: left;">
