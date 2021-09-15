@@ -27,7 +27,7 @@ class ProjectForm(forms.ModelForm):
                   'status',
                   # 'tech_rep',
                   'tent_end_date', 'tent_start_date',
-                  'task_agreement_start_date', 'type', 'field_of_science_sub', 'youth_vets']
+                  'task_agreement_start_date', 'type', 'field_of_science_sub', 'youth_vets', 'cesu_unit']
         widgets = {
             'award_office': forms.Select(attrs={'class': 'custom-select custom-select'}),
             'project_title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter title here...'}),
@@ -82,7 +82,7 @@ class ProjectFileForm(forms.ModelForm):
 class ModificationForm(forms.ModelForm):
     class Meta:
         model = Modification
-        fields = ['mod_type', 'mod_num', 'mod_desc', 'mod_amount',
+        fields = ['mod_type', 'mod_num', 'mod_desc', 'mod_amount', 'mod_status',
                   'mod_approved', 'mod_executed', 'mod_notes', 'mod_extension']
         widgets = {
             'mod_approved': forms.SelectDateWidget(years=list(range(1998, 2100)),

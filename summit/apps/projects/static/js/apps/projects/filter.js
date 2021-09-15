@@ -61,7 +61,7 @@ $(document).ready(function(){
                 FY = project.fiscal_year
                 AwardNum = project.p_num.toUpperCase()
                 title = '<a href="/projects/detail/'+ project.id + '/">'+ project.project_title + '</a>'
-                totalAmount = project.award_amt
+                totalAmount = project.budget
                 let start = new Date(project.tent_start_date)
                 let start_date = start.toDateString()
                 startDate = start_date

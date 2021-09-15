@@ -40,6 +40,7 @@ class ProjectChoices:
     CLOSED = 'CLOSED'
     APPROVED = 'APPROVED'
     LEGACY = 'LEGACY'
+    ARCHIVED = 'ARCHIVED'
 
     NATURAL = 'NATURAL'
     CULTURAL = 'CULTURAL'
@@ -133,6 +134,7 @@ class ProjectChoices:
         (EXECUTED, 'Executed'),
         (CLOSED, 'Closed'),
         (LEGACY, 'Legacy'),
+        (ARCHIVED, 'Archived'),
     )
     DISCIPLINE = (
         (NONE, 'None'),

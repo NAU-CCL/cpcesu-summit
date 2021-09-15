@@ -416,9 +416,10 @@
 
 {% block submission %}
     {% if confirm_status is False %}
-        <input class="btn btn-primary" type="submit" value="Submit">
+        <input style="float:left" class="btn btn-primary" type="submit" value="Submit">
     {% else %}
-        <input class="btn btn-primary" type="submit" value="Submit" onclick="return confirm('If the status of this project is EXECUTED or CLOSED,\n' +
+        <input style="float:left" class="btn btn-primary" type="submit" value="Submit" onclick="return confirm('If the status of this project is EXECUTED or CLOSED,\n' +
      'make sure all fields are filled out properly.')">
     {% endif %}
+    <button style="float:right" class="btn btn-danger" id="deleteButton" type="button" onclick="">Archive Project</button>
 {% endblock %}

@@ -395,6 +395,10 @@ class ProjectCreate(CreateView):
             project_form = check_fields(project_form)
 
             self.object = project_form.save()
+            
+            #checks to see if staff member already exists
+            project_manager_split = self.object.project_manager.split()
+
             if self.object.status != 'DRAFT':
                 self.confirm_status = True
             if project_file_form.is_valid():
@@ -455,6 +459,7 @@ class ProjectEdit(UpdateView):
             ],
             'jsFiles': [
                 'js/apps/projects/autocomplete.js',
+                'js/apps/projects/deleteProject.js',
             ],
             'files': File.objects.filter(project=self.object),
             'file_form': ProjectFileForm(),
@@ -1244,7 +1249,7 @@ def project_search(request):
         if (agency_name != ""):
             print("agency")
             projects = projects.filter(federal_agency_id__in=agency_ids)
-        if (status != ""):
+        if (status != "" and status !=""):
             print("status")
             projects = projects.filter(status__icontains=status)
         if (title != ""):
@@ -1271,7 +1276,7 @@ def project_search(request):
                 pm_id = pm_id.values_list("id", flat=True)
             projects = projects.filter(project_manager__in=pm_id)
 
-
+        projects = projects.filter().exclude(status__icontains="archived")
         projects = projects.values()
         managers = UserProfile.objects.all().values()
         agencies = agencies.values()

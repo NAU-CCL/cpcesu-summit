@@ -172,11 +172,13 @@ class Project(AuditModel):
 
 class Modification(models.Model):
     MOD_TYPE = choices.ProjectChoices.MOD_TYPE
+    STATUS = choices.ProjectChoices.STATUS
 
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True)
     mod_desc = models.TextField(max_length=1000, blank=True, null=True, verbose_name="Description")
     mod_num = models.CharField(verbose_name="Modification #", max_length=500, help_text=_help_text['mod_num'],
                                blank=False, null=True)
+    mod_status = models.CharField(max_length=50, choices=STATUS, default=STATUS[0], blank=True)
     mod_type = models.CharField(max_length=50, verbose_name="Modification Type",
                                 choices=MOD_TYPE, default=MOD_TYPE[0], null=True, blank=True)
     mod_notes = models.TextField(blank=True, verbose_name="Modification Notes")

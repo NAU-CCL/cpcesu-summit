@@ -27,12 +27,48 @@ function loadDetails(id, group){
             header = $('#header')
             header.empty()
             table_2.clear()
+            
             $.each(resp['user'],function(index,user, orgs=resp['orgs'], projects=resp['projects']){
-            header.append(`<div style="background-color: #bab4b5">
+            header.append(`<div style="background-color: #ebf7fd">
             <div style="width: 100%; display: inline-block">
-            <h5 class="center" style="display: block; font-weight:bold">${user.first_name} ${user.last_name}</h5>
+            <h4 class="center" style="display: block; font-weight:bold;">${user.first_name} ${user.last_name}</a></h5>
+            
             <h5 class="center"><a href="/accounts/manage_organization/${user.assigned_group_id}/"
         >${groupName}</a></h5>
+        <table class="table table-bordered"> 
+                <tr>
+                    <td><b>Title:</b><br></td>
+                    <td>
+                        ${user.title}
+                    </td>
+                </tr>
+                <tr>
+                    <td><b>Email:</b><br></td>
+                    <td>
+                        ${user.email_address}
+                    </td>
+                </tr>
+                <tr>
+                    <td><b>Phone Number:</b><br></td>
+                    <td>
+                        ${user.phone_number}
+                    </td>
+                </tr>
+                <tr>
+                    <td><b>Fax Number:</b><br></td>
+                    <td>
+                        ${user.fax_number}
+                    </td>
+                </tr>
+                <tr>
+                    <td><b>Address:</b><br></td>
+                    <td>
+                        ${user.address}
+                    </td>
+                </tr>
+                
+            </table>
+            <a href="/accounts/edit_contact/${id}/" style="float:right" class="btn btn-light">Edit Contact</a>
         </div>
         </div>`)
         $.each(projects, function(index,project){
