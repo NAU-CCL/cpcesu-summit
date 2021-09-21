@@ -31,7 +31,12 @@ function loadDetails(id, group){
             $.each(resp['user'],function(index,user, orgs=resp['orgs'], projects=resp['projects']){
             header.append(`<div style="background-color: #ebf7fd">
             <div style="width: 100%; display: inline-block">
-            <h4 class="center" style="display: block; font-weight:bold;">${user.first_name} ${user.last_name}</a></h5>
+            <h4 class="center" style="display: block; font-weight:bold;">${user.first_name} ${user.last_name}
+
+            <a href="/accounts/edit_contact/${id}/" title="Edit Contact" 
+                style="float:right; font-size:24px"> <i class="fas fa-edit"></i> </a>
+            
+            </h4>
             
             <h5 class="center"><a href="/accounts/manage_organization/${user.assigned_group_id}/"
         >${groupName}</a></h5>
@@ -68,7 +73,7 @@ function loadDetails(id, group){
                 </tr>
                 
             </table>
-            <a href="/accounts/edit_contact/${id}/" style="float:right" class="btn btn-light">Edit Contact</a>
+            
         </div>
         </div>`)
         $.each(projects, function(index,project){

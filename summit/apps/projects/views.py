@@ -121,14 +121,14 @@ class ProjectPublicListView(ListView):
         return get_object_or_404(Project, pk=pk_)
 
 
-class ProjectDashboardView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+class ProjectDashboardView(LoginRequiredMixin, ListView):
     template_name = 'apps/projects/project_index.html'
     model = Project
     context_object_name = 'projects'
 
-    permission_required = 'summit_projects.add_project'
-    permission_denied_message = 'You do not have the correction permissions to access this page.'
-    raise_exception = False
+    #permission_required = 'summit_projects.add_project'
+    #permission_denied_message = 'You do not have the correction permissions to access this page.'
+    #raise_exception = False
 
     def get_context_data(self, **kwargs):
         people = UserProfile.objects.all()

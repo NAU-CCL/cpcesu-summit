@@ -384,26 +384,21 @@ def edit_organization(request, name="summit.libs.auth:edit_organization", group_
                 is_partner = False
 
             if is_cesu:
-                is_cesu.clear()
+                is_cesu.name=group.name
+                is_cesu.description=group.description
+                is_cesu.save()
             elif is_federal:
-                is_federal.clear()
+                is_federal.name=group.name
+                is_federal.description=group.description
+                is_federal.save()
             elif is_partner:
-                is_partner.clear()
+                is_partner.name=group.name
+                is_partner.description=group.description
+                is_partner.save()
             else:
-                UserGroup.objects.get(id=group.id).clear()
-
-            if new_group_type == 1:
-                cesu = CESUnit.objects.create(pk=group.id, created_on=group.created_on, name=group.name,
-                                              description=group.description, avatar=group.avatar)
-                cesu.save()
-            elif new_group_type == 2:
-                federal = FederalAgency.objects.create(pk=group.id, created_on=group.created_on, name=group.name,
-                                                       description=group.description, avatar=group.avatar)
-                federal.save()
-            elif new_group_type == 3:
-                partner = Partner.objects.create(pk=group.id, created_on=group.created_on, name=group.name,
-                                                 description=group.description, avatar=group.avatar)
-                partner.save()
+                UserGroup.objects.get(id=group.id).name=group.name
+                UserGroup.objects.get(id=group.id).name=group.description
+                UserGroup.objects.get(id=group.id).save()
 
             return HttpResponseRedirect(reverse('summit.libs.auth:manage_organization', kwargs={'group_id': group_id}))
     else:
