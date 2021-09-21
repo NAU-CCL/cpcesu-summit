@@ -64,14 +64,12 @@ __all__ = [
     'DEFAULT_FROM_EMAIL',
     'REST_FRAMEWORK',
 ]
-import sys 
-sys.modules['fontawesome_free'] = __import__('fontawesome-free')
 
 # MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
 
 DEBUG = True
 INTERNAL_IPS = ['127.0.0.1', 'localhost']
-INSTALLED_APPS = ['whitenoise.runserver_nostatic', 'fontawesome_free', *INSTALLED_APPS] # , 'debug_toolbar']
+INSTALLED_APPS = ['whitenoise.runserver_nostatic', *INSTALLED_APPS] # , 'debug_toolbar']
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
