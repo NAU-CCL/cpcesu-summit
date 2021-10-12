@@ -229,6 +229,7 @@ def manage_organization(request, name='summit.libs.auth.manage_organization', gr
 
     if group is not None:
         profiles = UserProfile.objects.filter(assigned_group=group).order_by('last_name', 'first_name')
+        projects = Project.objects.filter(partner_id = group_id) | Project.objects.filter(federal_agency_id = group_id)
 
     # Group Type
     try:
@@ -266,10 +267,12 @@ def manage_organization(request, name='summit.libs.auth.manage_organization', gr
         ],
         'jsFiles': [
             'libs/mdb/js/addons/datatables.min.js',
-            'js/datatables/no_sort_datatable.js'
+            'js/datatables/no_sort_datatable.js',
+            'js/libs/auth/manage_org.js'
         ],
         'query': profiles,
-        'group': group
+        'group': group,
+        'projects': projects
     }
 
     return render(request, template_name, context)
@@ -355,9 +358,9 @@ def edit_organization(request, name="summit.libs.auth:edit_organization", group_
 
     group_id = int(group_id)
     group = get_object_or_404(UserGroup, id=group_id)
+    print(group)
 
     if request.method == "POST" and request.POST:
-
         group_form = GroupForm(request.POST, request.FILES, instance=group)
 
         if group_form.is_valid():

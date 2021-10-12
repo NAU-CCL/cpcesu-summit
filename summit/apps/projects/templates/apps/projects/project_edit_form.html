@@ -278,6 +278,9 @@
     </table>
     <br>
 </div>
+<div style="display:none">
+    {{ form.last_status }}
+</div>
 {% endblock %}
 
 {% block row2_col2 %}
@@ -419,7 +422,7 @@
         <input style="float:left" class="btn btn-primary" type="submit" value="Submit">
     {% else %}
         <input style="float:left" class="btn btn-primary" type="submit" value="Submit" onclick="return confirm('If the status of this project is EXECUTED or CLOSED,\n' +
-     'make sure all fields are filled out properly.')">
+    'make sure all fields are filled out properly.')">
     {% endif %}
     <button style="float:right" class="btn btn-danger" id="deleteButton" type="button" onclick="">Archive Project</button>
 {% endblock %}

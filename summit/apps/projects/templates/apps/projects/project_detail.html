@@ -9,6 +9,9 @@
     <div class="row1">
         <div class="card-header col-sm-12">
             <h1 align="center" class="card-header">CESU: {{object.p_num}} - {{ object.project_title }}</h1>
+            {% if object.status == 'ARCHIVED' %}
+            <h3 align="center" class="card-header" style="color: red;">This project is archived and cannot be edited. Please unarchive to edit.</h1>
+            {% endif %}
         </div>
     </div><br>
 </div><br>
@@ -367,12 +370,19 @@
     </div>
 </div>
 <span>
+        {% if object.status != 'ARCHIVED' %}
         <a href="{% get_url_from_app_link 'summit.apps.projects' 'project_edit' id=object.id %}">
             <button type="button" class="btn btn-light">Edit Project</button>
         </a>
         <a href="{% get_url_from_app_link 'summit.apps.projects' 'project_mod_create' id=object.id %}">
             <button type="button" class="btn btn-info">Add Modifications</button>
         </a>
+        {% else %}
+        <a href="{% get_url_from_app_link 'summit.apps.projects' 'project_edit' id=object.id %}">
+            <button type="button" class="btn btn-danger">Unarchive Project</button>
+        </a>
+        {% endif %}
+        
     </span>
 <br>
 <!--<div class="card">

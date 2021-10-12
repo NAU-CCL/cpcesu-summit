@@ -448,7 +448,8 @@ class ProjectEdit(UpdateView):
             "project_manager": proj.project_manager,
             "tech_rep": proj.tech_rep,
             "pp_i": proj.pp_i,
-            "staff_member": proj.staff_member
+            "staff_member": proj.staff_member,
+            "last_status": proj.status
         })
         context = {
             'pagetitle': 'Edit Project',

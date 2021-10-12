@@ -14,9 +14,11 @@ $("tr").each(function(index){
     let table = $('#org_info')
     table.empty();
     let group = document.getElementById("a" + id).innerText
-    table.append(`<h5 class="center" style="align: block; font-weight:bold;">${group}</h5>`)
+    table.append(`<a href="/accounts/edit_organization/${id}/" style="float:right; 
+        font-size:24px"> <i class="fas fa-edit"></i></a>`)
+    table.append(`<h5 class="center" style="align: block; font-weight:bold;"><a href="/accounts/manage_organization/${id}/">${group}</a></h5>`)
     table.append(`<h5 class="center"></h4>`)
-    table.append(`<a href="/accounts/edit_organization/${id}/" style="float:right" class="btn btn-light">Edit Organization</a>`)
+    
     let groupID = id;
     //let groupName = document.getElementById("a" + groupID).innerText;
     $.ajax({

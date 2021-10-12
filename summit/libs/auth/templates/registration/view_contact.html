@@ -4,20 +4,22 @@
 
 
 {% block primary %}
-    <h1 style="text-align: center">View Contact</h1>
+    <h1 style="text-align: center" class="all-header">View Contact
+        {% if has_profile %}
 
-    {% if has_profile %}
+        {% if is_own %}
+        <a href="{% get_url_from_app_link 'summit.libs.auth' 'edit_my_contact' %}"
+           class="btn btn-primary waves-effect right-button">Edit Your Contact</a>
+        <a href="{% url 'password_change' %}"
+           class="btn btn-primary waves-effect right-button">Change Password</a>
+    
+        {% elif can_edit %}
+        <a href="{% get_url_from_app_link 'summit.libs.auth' 'edit_contact' profile_id=profile.id %}"
+        class="btn btn-primary waves-effect right-button">Edit Contact</a>
+        {% endif %}
+    </h1>
 
-    {% if is_own %}
-    <a href="{% get_url_from_app_link 'summit.libs.auth' 'edit_my_contact' %}"
-       class="btn btn-primary btn-sm m-0 waves-effect">Edit Your Contact</a>
-    <a href="{% url 'password_change' %}"
-       class="btn btn-primary btn-sm m-0 waves-effect">Change Password</a>
-
-    {% elif can_edit %}
-    <a href="{% get_url_from_app_link 'summit.libs.auth' 'edit_contact' profile_id=profile.id %}"
-    class="btn btn-primary btn-sm m-0 waves-effect">Edit Contact</a>
-    {% endif %}
+    
 
     <div class="row">
         <div class="card col-sm-12">

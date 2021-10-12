@@ -24,6 +24,7 @@ def index(request):
                              else "summit.apps.projects:project_public_list"),
                     'uses_reverse': True
                 }
+                
             ]
         },
         'cssFiles': [
