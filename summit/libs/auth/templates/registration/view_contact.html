@@ -20,57 +20,95 @@
     </h1>
 
     
+<h3 class="card-header">Details</h3>
+    <div class="card-body">
+        <div class="row">
+            <div class="card col-sm-4">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <td><b>Headshot:</b></td>
+                        <td>
+                            {% if profile.avatar is not "" %}
+                                {{ profile.avatar }}
+                            {% else %}
+                                No avatar
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Name (first and last): </b></td>
+                        <td>{{ profile.first_name }} {{ profile.last_name }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Email Address:</b></td>
+                        <td>{{ profile.email_address }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Phone Number:</b></td>
+                        <td>{{ profile.phone_number }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Fax Number:</b></td>
+                        <td> {{ profile.fax_number }}</td>
+                    </tr>
+                </tbody>
+            </table>
 
-    <div class="row">
-        <div class="card col-sm-12">
-        <table>
-            <tr>
-                <td><b>Avatar:</b></td>
-                <td>
-                    {% if profile.avatar is not "" %}
-                        {{ profile.avatar }}
-                    {% else %}
-                        No avatar
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <td><b>Name (first and last): </b></td>
-                <td>{{ profile.first_name }} {{ profile.last_name }}</td>
-            </tr>
-            <tr>
-                <td><b>Email Address:</b></td>
-                <td>{{ profile.email_address }}</td>
-            </tr>
-            <tr>
-                <td><b>Phone Number:</b> {{ profile.phone_number }}</td>
-                <td><b>Fax Number:</b> {{ profile.fax_number }}</td>
-            </tr>
-            <tr>
-                <td><b>Title and Department:</b></td>
-                <td>{{ profile.title }} | {{ profile.department }}</td>
-            </tr>
-            <tr>
-                <td><b>Location and Address:<b/></td>
-                <td>{{ profile.location }} <br/> {{ profile.address|safe }}</td>
-            </tr>
-            <tr>
-                <td><b>Assigned Group:</b></td>
-                {% if profile.assigned_group and profile.assigned_group.id %}
-                    <td>
-                        {{ profile.assigned_group }} 
-                        <a class="link-primary" href="{% get_url_from_app_link 'summit.libs.auth' 'manage_organization' group_id=profile.assigned_group.id %}">Manage Org.</a>
-                    </td>
-                {% else %}
-                    <td>No Group</td>
-                {% endif %}
-            </tr>
-        </table>
-
-        {% else %}
-        <a href="{% get_url_from_app_link 'summit.libs.auth' 'edit_contact' %}">Create Contact</a>
-        {% endif %}
+            {% else %}
+            <a href="{% get_url_from_app_link 'summit.libs.auth' 'edit_contact' %}">Create Contact</a>
+            {% endif %}
+        </div>
+        <div class="card col-sm-4">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <td><b>Title and Department:</b></td>
+                        <td>{{ profile.title }} | {{ profile.department }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Location and Address:<b/></td>
+                        <td>{{ profile.location }} <br/> {{ profile.address|safe }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Organization:</b></td>
+                        {% if profile.assigned_group and profile.assigned_group.id %}
+                            <td>
+                                <a class="link-primary" href="{% get_url_from_app_link 'summit.libs.auth' 'manage_organization' group_id=profile.assigned_group.id %}">{{ profile.assigned_group }}</a>
+                            </td>
+                        {% else %}
+                            <td>No Group</td>
+                        {% endif %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card col-sm-4">
+            <h4>Projects:</h4>
+            <table id="table_2" class="table table-striped table-bordered table-sm" cellspacing="0" >
+                <thead>
+                    <tr>
+                        <th class="th-sm">Title</th>
+                        <th class="th-sm">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in projects %}
+                    <tr>
+        
+                        <td>
+                            <a href="/projects/detail/{{project.id}}"> 
+                                {{ project.project_title }}
+                            </a>
+                        </td>
+                        <td>{{ project.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
+</h3>
 </div>
 {% endblock %}
 

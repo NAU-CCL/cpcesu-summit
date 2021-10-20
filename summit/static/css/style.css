@@ -298,3 +298,7 @@ header {
   padding-right: 0;
   padding-left: 0;
 }
+
+.clicked-background {
+  background-color: aliceblue !important;
+}

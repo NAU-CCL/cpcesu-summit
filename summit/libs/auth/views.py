@@ -54,6 +54,8 @@ def view_contact(request, profile_id=-1):
         else:
             user_profile = UserProfile.objects.get(id=profile_id)
         profile_details = user_profile
+        projects = (Project.objects.filter(pp_i_id = profile_id) | Project.objects.filter(project_manager_id = profile_id) \
+            | Project.objects.filter(staff_member_id = profile_id) | Project.objects.filter(tech_rep_id = profile_id))
 
         if request.user == user_profile.user:
             is_own = True
@@ -77,10 +79,14 @@ def view_contact(request, profile_id=-1):
         'cssFiles': [
             # 'css/apps/core/testing.css'
         ],
+        'jsFiles': [
+            'js/libs/auth/add_people_tab_bg.js'
+        ],
         'profile': profile_details,
         'has_profile': has_profile,
         'is_own': is_own,
-        'can_edit': can_edit
+        'can_edit': can_edit,
+        'projects': projects
     }
 
     return render(request, template_name, context)
@@ -268,7 +274,9 @@ def manage_organization(request, name='summit.libs.auth.manage_organization', gr
         'jsFiles': [
             'libs/mdb/js/addons/datatables.min.js',
             'js/datatables/no_sort_datatable.js',
-            'js/libs/auth/manage_org.js'
+            'js/libs/auth/manage_org.js',
+            'js/libs/auth/add_org_tab_bg.js',
+            'js/libs/auth/filter_org_projects.js'
         ],
         'query': profiles,
         'group': group,

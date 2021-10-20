@@ -7,6 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, View
 
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.files import File
@@ -126,8 +127,8 @@ class ProjectDashboardView(LoginRequiredMixin, ListView):
     model = Project
     context_object_name = 'projects'
 
-    #permission_required = 'summit_projects.add_project'
-    #permission_denied_message = 'You do not have the correction permissions to access this page.'
+    permission_required = 'summit_projects.add_project'
+    permission_denied_message = 'You do not have the correction permissions to access this page.'
     #raise_exception = False
 
     def get_context_data(self, **kwargs):

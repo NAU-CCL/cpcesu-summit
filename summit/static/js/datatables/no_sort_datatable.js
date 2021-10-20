@@ -9,4 +9,3 @@ $(document).ready(function ()
         $('.dataTables_paginate').addClass('pull-left');
     });
 
-

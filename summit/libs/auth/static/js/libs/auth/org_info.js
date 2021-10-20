@@ -4,6 +4,8 @@ $(document.getElementById("contentBody")).addClass("content-background");
 })
 
 function loadDetails(id){
+    $(document.getElementsByClassName("clicked-background")).removeClass("clicked-background");
+    $(document.getElementById(id)).addClass("clicked-background");
 $("tr").each(function(index){
         if($(this).hasClass("info-background")){
             $(this).removeClass("info-background");
@@ -34,24 +36,26 @@ $("tr").each(function(index){
         table_1.clear();
         table_2.clear();
         $.each(resp['projects'], function(index,project){
-            let start = new Date(project.tent_start_date)
-            let start_date_day = start.getDate();
-            let start_date_month = start.getMonth() + 1;
-            let start_date_year = start.getFullYear();
-            let start_date = start_date_month + "/" + start_date_day + "/" + start_date_year;
+            if (project.status != 'ARCHIVED'){
+                let start = new Date(project.tent_start_date)
+                let start_date_day = start.getDate();
+                let start_date_month = start.getMonth() + 1;
+                let start_date_year = start.getFullYear();
+                let start_date = start_date_month + "/" + start_date_day + "/" + start_date_year;
 
-            let end = new Date(project.tent_end_date)
-            let end_date_day = end.getDate();
-            let end_date_month = end.getMonth() + 1;
-            let end_date_year = end.getFullYear();
-            let end_date = end_date_month + "/" + end_date_day + "/" + end_date_year;
-            let status = project.status.charAt(0).toUpperCase() + project.status.toLowerCase().slice(1)
-            table_2.row.add([
-                    status,
-                    '<a href="/projects/detail/' + project.id + '"/>' + project.project_title + '</a>',
-                    start_date,
-                    end_date
-            ]).draw()
+                let end = new Date(project.tent_end_date)
+                let end_date_day = end.getDate();
+                let end_date_month = end.getMonth() + 1;
+                let end_date_year = end.getFullYear();
+                let end_date = end_date_month + "/" + end_date_day + "/" + end_date_year;
+                let status = project.status.charAt(0).toUpperCase() + project.status.toLowerCase().slice(1)
+                table_2.row.add([
+                        status,
+                        '<a href="/projects/detail/' + project.id + '"/>' + project.project_title + '</a>',
+                        start_date,
+                        end_date
+                ]).draw()
+            }
 
         })
         if($.fn.DataTable.isDataTable('#table_1'))
