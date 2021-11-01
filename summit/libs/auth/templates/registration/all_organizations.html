@@ -16,7 +16,7 @@
     <!--<a href="{% get_url_from_app_link 'summit.libs.auth' 'create_contact' %}" class="btn btn-primary btn-sm m-0 waves-effect">Create Contact</a>-->
 </div>
 
-<div style="width:50%; float:left" class="container-fluid">
+<div style="width:30%; float:left" class="container-fluid">
 <table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0">
     <thead>
         <tr>
@@ -39,20 +39,35 @@
     </tbody>
 </table>
 </div>
-<div style="display:none; width:49%; float: left; margin-top: 100px;" id="info">
+<div style="display:none; width:70%; float: left; margin-top: 100px;" id="info">
     <div style="background-color: #ebf7fd;">
         <div id="org_info" style="width: 100%; display: inline-block"></div>
     </div>
-    <h3 style="display: block; margin-left:0px">Projects</h3>
-    <table class="table table-striped table-bordered table-sm" id="table_2" cellspacing="0"><thead>
-        <tr>
-            <th class="th-sm">Status</th>
-            <th class="th-sm">Title</th>
-            <th class="th-sm">Start Date</th>
-            <th class="th-sm">End Date</th>
-        </tr>
-        </thead>
-    </table>
+    <div style="width:48%;float: left;">
+        <h3 style="display: block; margin-left:0px">People</h3>
+        <table class="table table-striped table-bordered table-sm" id="people_table" cellspacing="0"><thead>
+            <tr>
+                <th class="th-sm">First Name</th>
+                <th class="th-sm">Last Name</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    
+    <div style="width:50%;float: right;">
+        <h3 style="display: block; margin-left:0px" id="projects_header">Projects</h3>
+        <table class="table table-striped table-bordered table-sm" id="table_2" cellspacing="0"><thead>
+            <tr>
+                <th class="th-sm">Status</th>
+                <th class="th-sm">Title</th>
+                <th class="th-sm">User Role</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    
+
+    
 </div>
 {% endblock %}
 

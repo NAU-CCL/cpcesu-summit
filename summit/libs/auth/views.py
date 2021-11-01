@@ -115,9 +115,9 @@ def edit_contact(request, profile_id=-1):
         if profile_form.is_valid():
             profile = profile_form.save()
             if profile.user is not None and profile.user.id == request.user.id:
-                return HttpResponseRedirect(reverse('summit.libs.auth:view_my_contact'))
+                return HttpResponseRedirect(reverse('summit.libs.auth:all_contacts'))
             else:
-                return HttpResponseRedirect(reverse('summit.libs.auth:view_contact', kwargs={'profile_id': profile.id}))
+                return HttpResponseRedirect(reverse('summit.libs.auth:all_contacts'))
     elif user_profile is None:
         profile_form = ProfileForm()
     else:

@@ -24,16 +24,25 @@ function loadDetails(id, group){
         data: {'userID': userID},
         success: function(resp){
             console.log(resp);
-            table_2 = $('#table_2').DataTable()
-            table = $('#info')
-            header = $('#header')
+            table_2 = $('#table_2').DataTable();
+            table = $('#info');
+            header = $('#header');
+            org_dept = $('#org-dept');
+            email = $('#email');
+            phone = $('#phone');
+            fax = $('#fax');
+            user_location = $('#location');
+
             header.empty()
             table_2.clear()
             
             $.each(resp['user'],function(index,user, orgs=resp['orgs'], projects=resp['projects']){
             header.append(`<div style="background-color: #ebf7fd">
             <div style="width: 100%; display: inline-block">
-            <h4 class="center" style="display: block; font-weight:bold;">${user.first_name} ${user.last_name}
+            
+            <h4 class="center" style="display: block;">
+            <img src="http://s3.amazonaws.com/37assets/svn/765-default-avatar.png" style="max-height: 50%; max-width: 50px; float:left">
+            ${user.first_name} ${user.last_name}
 
             <a href="/accounts/edit_contact/${id}/" title="Edit Contact" 
                 style="float:right; font-size:24px"> <i class="fas fa-edit"></i> </a>
@@ -42,11 +51,49 @@ function loadDetails(id, group){
             
             <h5 class="center"><a href="/accounts/manage_organization/${user.assigned_group_id}/"
         >${groupName}</a></h5>
-        <table class="table table-bordered"> 
+        </div>
+        </div>`)
+            if (user.email_address)
+            {
+                email.append(`
+                <span class="text-muted">
+                    Email Address: 
+                </span>
+                ${user.email_address}
+                <hr />
+                `)
+            }
+
+            if (user.phone_number)
+            {
+                phone.append(`
+                <span class="text-muted">
+                    Phone Number: 
+                </span>
+                ${user.phone_number}
+                <hr />
+                `)
+            }
+
+            if (user.fax_number)
+            {
+                fax.append(`
+                <span class="text-muted">
+                    Fax Number: 
+                </span>
+                ${user.fax_number}
+                <hr />
+                `)
+            }
+
+            
+        
+        /*<table class="table table-bordered"> 
                 <tr>
                     <td><b>Title:</b><br></td>
                     <td>
-                        ${user.title}
+                        </div>
+        </div>
                     </td>
                 </tr>
                 <tr>
@@ -76,8 +123,7 @@ function loadDetails(id, group){
                 
             </table>
             
-        </div>
-        </div>`)
+        `)*/
         $.each(projects, function(index,project){
             if (project.status != 'ARCHIVED'){
                 let start = new Date(project.tent_start_date)
@@ -104,13 +150,6 @@ function loadDetails(id, group){
         })
         if($.fn.DataTable.isDataTable('#table_2')){
             table_2.destroy()
-            $('#table_2').DataTable({
-                retrieve: true,
-                'ordering': true,
-                "dom": '<"top"f>r<"bottom"litp><"clear">'
-            });
-            $('.dataTables_filter').addClass('pull-left');
-            $('.dataTables_paginate').addClass('pull-left');
         }
         })
 
