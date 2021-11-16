@@ -815,7 +815,9 @@ class ProjectModifications(CreateView):
         files = request.FILES.getlist('file')
         if mod_form.is_valid():
             self.object = mod_form.save()
+            print("mod is valid!")
             if mod_file_form.is_valid():
+                print("mod file form is valid!")
                 for f in files:
                     mod_file_instance = ModFile(file=f, modification=self.object)
                     mod_file_instance.save()

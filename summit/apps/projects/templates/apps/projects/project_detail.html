@@ -332,9 +332,6 @@
         </div>
         <div>
             {% for mod in mods %}
-            <script>
-                console.log({{mod.files}})
-            </script>
             <table class="table table-bordered">
                 <tr>
                     <th>Number</th>
@@ -353,10 +350,11 @@
                     <td>{{ mod.mod_approved }}</td>
                     <td>{{ mod.mod_executed }}</td>
                     <td>
-                        
                         <!--DOES NOT WORK!-->
+                        {% if mod.files %}
+                            there are files!
+                        {% endif %}
                         {% for file in mod.files %}
-                        
                             <td><a href=" {{ file.file.url }} " target="_blank"> {{ file.file }}</a><br></td>
                         {% endfor %}
                     </td>

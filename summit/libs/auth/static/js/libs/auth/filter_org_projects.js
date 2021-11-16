@@ -2,7 +2,7 @@ $(document).ready(function(){
   $('td:nth-child(3),th:nth-child(3)').hide();
 })
 
-function loadProjectDetails(id){
+function loadDetails(id){
   $(document.getElementsByClassName("clicked-background")).removeClass("clicked-background");
   $(document.getElementById(id)).addClass("clicked-background");
   

@@ -71,7 +71,7 @@ sys.modules['fontawesome_free'] = __import__('fontawesome-free')
 
 DEBUG = True
 INTERNAL_IPS = ['127.0.0.1', 'localhost']
-INSTALLED_APPS = ['whitenoise.runserver_nostatic', 'fontawesome_free', *INSTALLED_APPS] # , 'debug_toolbar']
+INSTALLED_APPS = ['whitenoise.runserver_nostatic', 'fontawesome_free', "django_static_ionicons", *INSTALLED_APPS] # , 'debug_toolbar']
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
