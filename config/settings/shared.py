@@ -117,7 +117,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'cpcesupm',
+        'NAME': 'cpcesupm_test',
         'USER': 'cpcesu',
         'PASSWORD': 'HjMNGN4cJtQcg',
         'HOST': '127.0.0.1',

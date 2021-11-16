@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, render
 
 
 from .forms import ProfileForm, GroupForm
-from .models import User, UserProfile, UserGroup, CESUnit, FederalAgency, Partner
+from .models import User, UserProfile, UserGroup, CESUnit, FederalAgency, Partner, CESU, Organization
 from summit.apps.projects.models import Project
 
 
@@ -166,9 +166,10 @@ def all_contacts(request, name):
 def all_organizations(request, name):
     template_name = "registration/all_organizations.html"
 
-    cesus = CESUnit.objects.all()
+    cesus = CESU.objects.all()
     feds = FederalAgency.objects.all()
     partner = Partner.objects.all()
+    orgs = Organization.objects.all()
 
     groups = dict()
 
@@ -178,19 +179,25 @@ def all_organizations(request, name):
             "name": group.name,
             "type": "CES Unit"
         }
+    
+    #for group in feds:
+     #   groups[group.id] = {
+      #      "id": group.id,
+       #     "name": group.name,
+        #    "type": "Federal Agency"
+        #}
 
-    for group in feds:
+    #for group in partner:
+    #    groups[group.id] = {
+    #        "id": group.id,
+    #        "name": group.name,
+    #        "type": "Partner"
+    #    }
+    for group in orgs:
         groups[group.id] = {
             "id": group.id,
             "name": group.name,
-            "type": "Federal Agency"
-        }
-
-    for group in partner:
-        groups[group.id] = {
-            "id": group.id,
-            "name": group.name,
-            "type": "Partner"
+            "type": group.type
         }
 
     context = {
@@ -246,6 +253,11 @@ def manage_organization(request, name='summit.libs.auth.manage_organization', gr
         is_partner = Partner.objects.get(id=group.id)
     except ObjectDoesNotExist:
         is_partner = False
+
+    try:
+        is_org = Organization.objects.get(id=group.id)
+    except ObjectDoesNotExist:
+        is_org = False
 
     if is_cesu:
         group.type = "CES Unit"
@@ -399,9 +411,9 @@ def edit_organization(request, name="summit.libs.auth:edit_organization", group_
                 is_partner.description=group.description
                 is_partner.save()
             else:
-                UserGroup.objects.get(id=group.id).name=group.name
-                UserGroup.objects.get(id=group.id).name=group.description
-                UserGroup.objects.get(id=group.id).save()
+                Organization.objects.get(id=group.id).name=group.name
+                Organization.objects.get(id=group.id).name=group.description
+                Organization.objects.get(id=group.id).save()
 
             return HttpResponseRedirect(reverse('summit.libs.auth:manage_organization', kwargs={'group_id': group_id}))
     else:

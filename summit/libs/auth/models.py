@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager, Permission
 
 import uuid
 
+from . import choices
+
 from summit.libs.models import AuditModel
 
 
@@ -14,6 +16,7 @@ def get_all_user_groups():
         subclasses.append((count, user_group.__name__))
         count += 1
     return subclasses
+
 
 
 class UserGroup(AuditModel):
@@ -38,11 +41,21 @@ class Partner(UserGroup):
     def __str__(self):
         return self.name
 
-
 class CESUnit(UserGroup):
 
     class Meta:
         verbose_name = "CES Unit"
+
+    def __str__(self):
+        return self.name
+
+class CESU(AuditModel):
+
+    name = models.CharField(max_length=150, unique=True)
+    description = models.TextField(max_length=300, blank=True)
+    logo = models.ImageField(blank=True)
+    # add contact as text field
+    contact = models.TextField(max_length=300, blank=True)
 
     def __str__(self):
         return self.name
@@ -103,7 +116,7 @@ class UserManager(BaseUserManager):
         print(user)
 
         # CPCESU
-        group = CESUnit.objects.get(pk=1)
+        group = CESU.objects.get(pk=1)
         print(group)
 
         # New profile with group
@@ -175,8 +188,9 @@ class User(AbstractUser):
 
 
 class UserProfile(AuditModel):
-    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.SET_NULL)
     avatar = models.ImageField(blank=True)
+    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.SET_NULL)
+    headshot = models.ImageField(blank=True)
 
     first_name = models.CharField(default="", max_length=150)
     last_name = models.CharField(default="", max_length=150)
@@ -213,3 +227,21 @@ class UserProfile(AuditModel):
             ('view_profile.self', 'Can see own profile'),
         )
         verbose_name = "Contact"
+
+class Organization(AuditModel):
+    ORG_TYPE = choices.OrganizationChoices.ORG_TYPE
+
+    name = models.CharField(max_length=150, unique=True)
+    description = models.TextField(max_length=300, blank=True)
+    logo = models.ImageField(blank=True)
+    type = models.CharField(max_length=50, choices=ORG_TYPE,
+                            blank=True, verbose_name="Organization Type")
+    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.SET_NULL)
+
+    email = models.EmailField(
+        verbose_name='Contact Email Address',
+        max_length=255
+    )
+
+    def __str__(self):
+        return self.name
