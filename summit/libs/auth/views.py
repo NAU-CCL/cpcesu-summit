@@ -338,21 +338,9 @@ def create_organization(request, name):
 
         if group_form.is_valid():
             group = group_form.save()
-
-            group_type = group_form['group_type'].value()
-
-            group_type = int(group_type)
-
-            if group_type == 1:
-                cesu = CESUnit.objects.create(pk=group.id, created_on=group.created_on, name=group.name, description=group.description, avatar=group.avatar)
-                cesu.save()
-            elif group_type == 2:
-                federal = FederalAgency.objects.create(pk=group.id, created_on=group.created_on, name=group.name, description=group.description, avatar=group.avatar)
-                federal.save()
-            elif group_type == 3:
-                partner = Partner.objects.create(pk=group.id, created_on=group.created_on, name=group.name, description=group.description, avatar=group.avatar)
-                partner.save()
-
+#
+#            new_org = Organization.objects.create(pk=group.id, created_on=group.created_on, name=group.name, type=group.type, description=group.description, contact=group.contact, logo=group.logo)
+#            new_org.save()
             return HttpResponseRedirect(reverse('summit.libs.auth:all_organizations'))
     else:
         group_form = GroupForm()
@@ -375,12 +363,14 @@ def create_organization(request, name):
 # @permission_required("summit_auth.edit_profile.self")
 def edit_organization(request, name="summit.libs.auth:edit_organization", group_id=-1):
     template_name = 'registration/edit_organization.html'
+    is_cesu = False
 
     group_id = int(group_id)
     try:
-        group = Organization.objects.get(Organization, id=group_id)
+        group = get_object_or_404(Organization, id=group_id)
     except:
-        group = CESU.objects.get(Organization, id=group_id)
+        group = get_object_or_404(CESU, id=group_id)
+        is_cesu = True
 
     print(group)
 
@@ -389,21 +379,23 @@ def edit_organization(request, name="summit.libs.auth:edit_organization", group_
 
         if group_form.is_valid():
             group_form_instance = group_form.instance
-
-            new_group_type = group_form['group_type'].value()
-
-            new_group_type = int(new_group_type)
+            print(group_form_instance)
+            
 
             # Group Type
-            if (group_form_instance.type == "CES Unit"):
-                group = CESUnit.objects.get(id=group.id)
+            print(is_cesu)
+            if (is_cesu):
+                group = CESU.objects.get(id=group.id)
             else:
                 group = Organization.objects.get(id=group.id)
+                
 
             if group:
                 group.name=group_form_instance.name
                 group.description=group_form_instance.description
                 group.contact=group_form_instance.contact
+                if not is_cesu:
+                    group.type=group_form_instance.type
                 group.save()
             else:
                 Organization.objects.get(id=group.id).name=group.name

@@ -10,12 +10,7 @@ class ProfileForm(ModelForm):
 
 
 class GroupForm(ModelForm):
-    group_type = ChoiceField(choices=(
-        (1, "CES Unit"),
-        (2, "Federal Agency"),
-        (3, "Partner")
-    ))
 
     class Meta:
         model = Organization
-        fields = ['name', 'description', 'logo', 'contact']
+        fields = ['name', 'description', 'logo', 'type', 'contact']
