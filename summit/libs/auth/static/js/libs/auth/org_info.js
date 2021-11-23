@@ -126,7 +126,7 @@ $("tr").each(function(index){
     table.empty();
     let group = document.getElementById("a" + id).innerText
     table.append(`<a href="/accounts/edit_organization/${id}/" style="float:right; 
-        font-size:24px"> <i class="fas fa-edit"></i></a>`)
+        font-size:24px"> <ion-icon name="create-outline"></ion-icon></a>`)
     table.append(`<h5 class="center" style="align: block;"><a href="/accounts/manage_organization/${id}/">${group}</a></h5>`)
     table.append(`<h5 class="center"></h4>`)
     
