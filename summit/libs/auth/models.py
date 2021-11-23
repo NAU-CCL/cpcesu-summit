@@ -236,12 +236,7 @@ class Organization(AuditModel):
     logo = models.ImageField(blank=True)
     type = models.CharField(max_length=50, choices=ORG_TYPE,
                             blank=True, verbose_name="Organization Type")
-    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.SET_NULL)
-
-    email = models.EmailField(
-        verbose_name='Contact Email Address',
-        max_length=255
-    )
+    contact = models.TextField(max_length=300, blank=True)
 
     def __str__(self):
         return self.name

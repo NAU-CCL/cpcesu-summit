@@ -369,53 +369,40 @@ def edit_organization(request, name="summit.libs.auth:edit_organization", group_
     template_name = 'registration/edit_organization.html'
 
     group_id = int(group_id)
-    group = get_object_or_404(UserGroup, id=group_id)
+    try:
+        group = Organization.objects.get(Organization, id=group_id)
+    except:
+        group = CESU.objects.get(Organization, id=group_id)
+
     print(group)
 
     if request.method == "POST" and request.POST:
         group_form = GroupForm(request.POST, request.FILES, instance=group)
 
         if group_form.is_valid():
-            group = group_form.instance
+            group_form_instance = group_form.instance
 
             new_group_type = group_form['group_type'].value()
 
             new_group_type = int(new_group_type)
 
             # Group Type
-            try:
-                is_cesu = CESUnit.objects.get(id=group.id)
-            except ObjectDoesNotExist:
-                is_cesu = False
+            if (group_form_instance.type == "CES Unit"):
+                group = CESUnit.objects.get(id=group.id)
+            else:
+                group = Organization.objects.get(id=group.id)
 
-            try:
-                is_federal = FederalAgency.objects.get(id=group.id)
-            except ObjectDoesNotExist:
-                is_federal = False
-
-            try:
-                is_partner = Partner.objects.get(id=group.id)
-            except ObjectDoesNotExist:
-                is_partner = False
-
-            if is_cesu:
-                is_cesu.name=group.name
-                is_cesu.description=group.description
-                is_cesu.save()
-            elif is_federal:
-                is_federal.name=group.name
-                is_federal.description=group.description
-                is_federal.save()
-            elif is_partner:
-                is_partner.name=group.name
-                is_partner.description=group.description
-                is_partner.save()
+            if group:
+                group.name=group_form_instance.name
+                group.description=group_form_instance.description
+                group.contact=group_form_instance.contact
+                group.save()
             else:
                 Organization.objects.get(id=group.id).name=group.name
                 Organization.objects.get(id=group.id).name=group.description
                 Organization.objects.get(id=group.id).save()
 
-            return HttpResponseRedirect(reverse('summit.libs.auth:manage_organization', kwargs={'group_id': group_id}))
+            return HttpResponseRedirect(reverse('summit.libs.auth:all_organizations'))
     else:
         group_form = GroupForm(instance=group)
 
