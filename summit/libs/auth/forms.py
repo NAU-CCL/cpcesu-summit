@@ -1,6 +1,6 @@
 from django.forms import ModelForm, ChoiceField
 
-from .models import UserProfile, UserGroup
+from .models import Organization, UserProfile, UserGroup
 
 
 class ProfileForm(ModelForm):
@@ -17,5 +17,5 @@ class GroupForm(ModelForm):
     ))
 
     class Meta:
-        model = UserGroup
-        fields = ['name', 'description', 'avatar']
+        model = Organization
+        fields = ['name', 'description', 'logo', 'contact']

@@ -4,7 +4,7 @@ from . import choices
 
 from django.db import models
 
-from summit.libs.auth.models import Partner, FederalAgency, CESUnit, UserProfile
+from summit.libs.auth.models import Partner, FederalAgency, CESUnit, UserProfile, Organization, CESU
 from summit.libs.models import AuditModel
 
 # TODO: Create/Update help text for each field.
@@ -57,14 +57,14 @@ class Project(AuditModel):
     award_office = models.CharField(choices=AWARD_OFFICE, max_length=10, blank=True, null=True)
     budget = models.DecimalField(max_digits=12, decimal_places=2, help_text=_help_text['budget'], blank=True, null=True,
                                  verbose_name="Initial", default=0, validators=[MinValueValidator(Decimal(0.00)), MaxValueValidator(Decimal('9999999.99'))])
-    cesu_unit = models.ForeignKey(CESUnit, on_delete=models.SET_NULL,
+    cesu_unit = models.ForeignKey(CESU, on_delete=models.SET_NULL,
                                   related_name='cesu_unit', default=None, verbose_name="CESUnit", blank=True, null=True)
     description = models.TextField(help_text=_help_text['description'], verbose_name="Abstract/Description", blank=True)
     discipline = models.CharField(max_length=21, choices=DISCIPLINE,
                                   help_text=_help_text['discipline'], blank=True,
                                   default=DISCIPLINE[0][0])
     exec_start_date = models.DateField(blank=True, null=True, default=None, verbose_name="Executed")
-    federal_agency = models.ForeignKey(FederalAgency, on_delete=models.SET_NULL,
+    federal_agency = models.ForeignKey(Organization, on_delete=models.SET_NULL,
                                        related_name='federal_agency', default=None,
                                        blank=True, null=True, verbose_name="Agency")
     field_of_science = models.CharField(max_length=500, help_text=_help_text['field_of_science'], blank=True,
@@ -84,7 +84,7 @@ class Project(AuditModel):
                                                        default=0, verbose_name="Number of Students")
     p_num = models.CharField(verbose_name="Award #", blank=True, max_length=500, help_text=_help_text['p_num'],
                              null=True)
-    partner = models.ForeignKey(Partner, on_delete=models.SET_NULL, related_name='partner', default=None, blank=True,
+    partner = models.ForeignKey(Organization, on_delete=models.SET_NULL, related_name='partner', default=None, blank=True,
                                 null=True)
     pp_i = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, help_text=_help_text['pp_i'], blank=True,
                              verbose_name="Partner Principle Investigator", related_name='pp_i', default=None,

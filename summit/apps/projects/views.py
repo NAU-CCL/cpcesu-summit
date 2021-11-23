@@ -18,7 +18,7 @@ import json
 from summit.apps.generic_views import *
 
 from .tasks import read_pdf
-from summit.libs.auth.models import UserProfile, CESUnit, FederalAgency, Partner, UserGroup
+from summit.libs.auth.models import UserProfile, CESUnit, FederalAgency, Partner, UserGroup, Organization, CESU
 from .models import Project, File, Location, Modification, ModFile
 from .forms import ProjectForm, ProjectFileForm, LocationForm, ModificationForm, ModificationFileForm, ContactForm
 from .choices import ProjectChoices
@@ -134,8 +134,8 @@ class ProjectDashboardView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         people = UserProfile.objects.all()
         parks = Location.objects.all()
-        agencies = FederalAgency.objects.all()
-        partners = Partner.objects.all()
+        agencies = Organization.objects.all().filter(type="Federal Agency")
+        partners = Organization.objects.all().filter(type="Partner")
         all_projects = Project.objects.only("id")
         user = self.request.user
 
@@ -151,19 +151,19 @@ class ProjectDashboardView(LoginRequiredMixin, ListView):
                 ces_unit = None
         else: ces_unit = None
 
-        user_filtered_projects = all_projects.filter(cesu_unit=ces_unit, staff_member=profile, status="DRAFT") \
-                                 | all_projects.filter(cesu_unit=None, status="DRAFT") \
-                                 | all_projects.filter(staff_member=None, status="DRAFT")
+#        user_filtered_projects = all_projects.filter(cesu_unit=ces_unit, staff_member=profile, status="DRAFT") \
+#                                 | all_projects.filter(cesu_unit=None, status="DRAFT") \
+#                                 | all_projects.filter(staff_member=None, status="DRAFT")
 
         dashboard_projects = []
 
-        for proj in user_filtered_projects:
-            modifications = Modification.objects.filter(project=proj)
-            total_mod_amount = 0
-            for mod in modifications:
-                total_mod_amount += mod.mod_amount
-            proj.total_award_amount = (proj.budget or 0) + total_mod_amount
-            dashboard_projects.append(proj)
+#        for proj in user_filtered_projects:
+#            modifications = Modification.objects.filter(project=proj)
+#            total_mod_amount = 0
+#            for mod in modifications:
+#                total_mod_amount += mod.mod_amount
+#            proj.total_award_amount = (proj.budget or 0) + total_mod_amount
+#            dashboard_projects.append(proj)
 
 
         #
@@ -319,8 +319,8 @@ class ProjectCreate(CreateView):
     def get(self, request, *args, **kwargs):
         people = UserProfile.objects.all()
         parks = Location.objects.all()
-        agencies = FederalAgency.objects.all()
-        partners = Partner.objects.all()
+        agencies = Organization.objects.all().filter(type="Federal Agency")
+        partners = Organization.objects.all().filter(type="Partner")
         if 'job' in request.GET:
             job_id = request.GET['job']
             project = Project.objects.get(job_id=job_id)
@@ -500,9 +500,9 @@ def check_fields(project_form):
     federal_agency = project_form.cleaned_data['federal_agency']
     if federal_agency and len(federal_agency) > 0:
         try:
-            federal_agency = FederalAgency.objects.get(name=federal_agency)
+            federal_agency = Organization.objects.get(name=federal_agency, type="Federal Agency")
         except ObjectDoesNotExist:
-            federal_agency = FederalAgency(name=federal_agency)
+            federal_agency = Organization(name=federal_agency, type="Federal Agency")
             federal_agency.save()
     else:
         federal_agency = None
@@ -512,9 +512,9 @@ def check_fields(project_form):
     partner = project_form.cleaned_data['partner']
     if partner and len(partner) > 0:
         try:
-            partner = Partner.objects.get(name=partner)
+            partner = Organization.objects.get(name=partner,type="Organization")
         except ObjectDoesNotExist:
-            partner = Partner(name=partner)
+            partner = Organization(name=partner, type="Organization")
             partner.save()
     else:
         partner = None
@@ -1193,8 +1193,8 @@ def project_filter(request):
         start = int(request.GET.get('start_date'))
         end = int(request.GET.get('end_date'))
         desiredstatus = request.GET.get('status')
-        partners = Partner.objects.all().values()
-        agencies = FederalAgency.objects.all().values()
+        agencies = Organization.objects.all().filter(type="Partner").values()
+        agencies = agencies = Organization.objects.all().filter(type="Federal Agency").values()
         projects = Project.objects.only("project_id", "status", "federal_agency", "partner", "fiscal_year", "p_num",
                                         "project_title", "total_award_amount", "tent_start_date", "tent_end_date",
                                         "project_manager", "pp_i")
@@ -1229,14 +1229,14 @@ def project_search(request):
         p_m= request.GET.get('pm')
         p_m.strip()
         p_m_list = p_m.split()
-        partners = Partner.objects.all().values()
-        agencies = FederalAgency.objects.all()
+        partners = Organization.objects.all().filter(type="Partner")
+        agencies = Organization.objects.all().filter(type="Federal Agency")
         projects = Project.objects.only("project_id", "status", "federal_agency", "partner", "fiscal_year", "p_num",
                                         "project_title", "total_award_amount", "tent_start_date", "tent_end_date",
                                         "project_manager", "pp_i")
 
-        partner_ids = Partner.objects.filter(name__icontains=Partner_name).values_list("id", flat=True)
-        agency_ids= FederalAgency.objects.filter(name__icontains=agency_name).values_list("id", flat=True)
+        partner_ids = Organization.objects.filter(name__icontains=Partner_name).values_list("id", flat=True)
+        agency_ids= Organization.objects.filter(name__icontains=agency_name).values_list("id", flat=True)
         park_id = Location.objects.filter(name__icontains=place).values_list("id", flat=True)
         if(FY != ""):
             print("FY")

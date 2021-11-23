@@ -7,7 +7,7 @@ from datetime import datetime
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 from summit.apps.projects.models import Project, Location
-from summit.libs.auth.models import UserProfile, FederalAgency, Partner, CESUnit
+from summit.libs.auth.models import Organization, UserProfile, FederalAgency, Partner, CESUnit
 
 with open('_import/New_pull.csv') as csv_file:
     # Global vars
@@ -77,10 +77,10 @@ with open('_import/New_pull.csv') as csv_file:
 
         if len(federal_agency) > 0:
             try:
-                federal_agency = FederalAgency.objects.get(name=federal_agency)
+                federal_agency = Organization.objects.get(name=federal_agency, type="Federal Agency")
                 if DEBUG: print("get:", federal_agency)
             except ObjectDoesNotExist:
-                federal_agency = FederalAgency(name=federal_agency)
+                federal_agency = Organization(name=federal_agency, type="Federal Agency")
                 federal_agency.save()
                 if DEBUG: print("new:", federal_agency)
         else:
