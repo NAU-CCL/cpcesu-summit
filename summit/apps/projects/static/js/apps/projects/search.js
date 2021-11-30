@@ -193,3 +193,12 @@ var search = function(){
 
 
 $('#searchButton').on('click', search)
+
+var input = document.getElementById("advancedSearch");
+
+input.addEventListener("keyup", function(event) {
+  if (event.keyCode === 13) {
+    event.preventDefault();
+    document.getElementById("searchButton").click();
+  }
+}); 
