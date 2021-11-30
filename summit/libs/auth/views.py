@@ -128,8 +128,9 @@ def edit_contact(request, profile_id=-1):
         'pagetitle': 'Contact',
         'title': 'Your Contact',
         'bannerTemplate': 'none',
-        'cssFiles': [
+        'jsFiles': [
             # 'css/apps/core/testing.css'
+            'js/libs/auth/add_people_tab_bg.js'
         ],
         'profile': request.user.get_full_name(),
         'profile_form': profile_form
@@ -323,6 +324,9 @@ def create_contact(request, name="summit.libs.auth_Create Contact", group_id=0):
         'cssFiles': [
             # 'css/apps/core/testing.css'
         ],
+        'jsFiles': [
+            'js/libs/auth/add_people_tab_bg.js'
+        ],  
         'profile_form': profile_form
     }
 
@@ -352,6 +356,11 @@ def create_organization(request, name):
         'bannerTemplate': 'none',
         'cssFiles': [
             # 'css/apps/core/testing.css'
+            
+        ],
+        'jsFiles':
+        [
+            'js/libs/auth/add_tab_bg.js'
         ],
         'group_form': group_form
     }

@@ -20,6 +20,7 @@ function loadDetails(id){
     email = $('#email');
     phone = $('#phone');
     fax = $('#fax');
+    pic_container = $('#pic_container');
     user_location = $('#location');
     contact_info = $('#contact-info');
     no_select = $('#nothing-selected');
@@ -31,6 +32,7 @@ function loadDetails(id){
         $(document.getElementsByClassName("clicked-background")).removeClass("clicked-background");
         selected = NOTHING_SELECTED;
         header.empty()
+        pic_container.empty()
         table_2.clear()
         
     }
@@ -57,6 +59,7 @@ function loadDetails(id){
             success: function(resp){
                 console.log(resp);
                 table.empty()
+                pic_container.empty()
                 org_dept.empty()
                 email.empty()
                 phone.empty()
@@ -69,7 +72,11 @@ function loadDetails(id){
                 
                 $.each(resp['user'],function(index,user, orgs=resp['orgs'], projects=resp['projects']){
                 let groupID = user.assigned_group_id;
-                let groupName = document.getElementById("a" + groupID).innerText;
+                var groupName = "No Organization"
+                if (document.getElementById("a" + groupID))
+                {
+                    groupName = document.getElementById("a" + groupID).innerText;
+                }
                 if (user.title)
                 {
                     header.append(`
@@ -81,7 +88,9 @@ function loadDetails(id){
                         
                         </h4>
                         
-                        <div class="center">${user.title}, ${user.department} <a href="/accounts/all_groups/?id=${user.assigned_group_id}">
+                        
+                        
+                        <div class="center">${user.title}, ${user.department} </br> <a href="/accounts/all_groups/?id=${user.assigned_group_id}">
                     ${groupName}</a></div>
                     </div>`)
                 }
@@ -95,11 +104,12 @@ function loadDetails(id){
                             style="float:right; font-size:24px; font-weight: 50%"> <ion-icon name="create-outline"></ion-icon> </a>
                         
                         </h4>
-                        
                         <div class="center"><a href="/accounts/all_groups/?id=${user.assigned_group_id}">
                     ${groupName}</a></div>
                     </div>`)
                 }
+                pic_container.append(`
+                <img src="/static/imgs/TEST_AVATAR.png" style="float:right; max-width: 90%; margin-top: 10%">`)
                 
                 if (user.email_address)
                 {
@@ -132,10 +142,13 @@ function loadDetails(id){
 
                 user_location.append(`
                     <span>
-                    ${user.address}
-                    <br/>
+                    
                     ${user.location}
+                    <br/>
+                    ${user.address}
                     </span>
+                    
+                    
                 `)
 
                 
