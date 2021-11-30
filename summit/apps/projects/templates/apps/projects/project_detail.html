@@ -32,8 +32,10 @@
                         <td><b>Federal Agency:</b></td>
                         {% if object.federal_agency %}
                         <td>
-                            {{ object.federal_agency }}
+                            <a href="/accounts/all_groups/?id={{object.federal_agency.id}}">
+                                {{ object.federal_agency }}
                             </a>
+                            
                         </td>
                         {% else %}
                             <td>None</td>
@@ -51,8 +53,10 @@
                         <td><b>Partner:</b></td>
                         {% if object.partner %}
                         <td>
-                            {{ object.partner }}
+                            <a href="/accounts/all_groups/?id={{object.partner.id}}">
+                                {{ object.partner }}
                             </a>
+                            
                         </td>
                         {% else %}
                             <td>None</td>
@@ -107,7 +111,7 @@
                             <td><b>Agency Project Manager:</b></td>
                             {% if object.project_manager %}
                             <td>
-                                <a href="{% get_url_from_app_link 'summit.libs.auth' 'view_contact' profile_id=object.project_manager.id %}">
+                                <a href="/accounts/all_contacts/?id={{object.project_manager.id}}">
                                 {{ object.project_manager }}
                                 </a>
                             </td>
@@ -119,7 +123,7 @@
                             <td><b>Agency Agreements Tech Rep:</b></td>
                             {% if object.tech_rep %}
                             <td>
-                                <a href="{% get_url_from_app_link 'summit.libs.auth' 'view_contact' profile_id=object.tech_rep.id %}">
+                                <a href="/accounts/all_contacts/?id={{object.tech_rep.id}}">
                                 {{ object.tech_rep }}
                                 </a>
                             </td>
@@ -131,7 +135,7 @@
                             <td><b>Partner Principal Investigator:</b></td>
                             {% if object.pp_i %}
                             <td>
-                                <a href="{% get_url_from_app_link 'summit.libs.auth' 'view_contact' profile_id=object.pp_i.id %}">
+                                <a href="/accounts/all_contacts/?id={{object.pp_i.id}}">
                                 {{ object.pp_i }}
                                 </a>
                             </td>
@@ -143,7 +147,7 @@
                             <td><b>Staff Member:</b></td>
                             {% if object.staff_member %}
                             <td>
-                                <a href="{% get_url_from_app_link 'summit.libs.auth' 'view_contact' profile_id=object.staff_member.id %}">
+                                <a href="/accounts/all_contacts/?id={{object.staff_member.id }}">
                                 {{ object.staff_member }}
                                 </a>
                             </td>

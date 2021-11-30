@@ -2,6 +2,13 @@ $(document).ready(function(){
 $(document.getElementById("organization")).addClass("tab-background")
 $(document.getElementById("contentBody")).addClass("content-background");
 $('td:nth-child(3),th:nth-child(3)').hide();
+  var urlParams = new URLSearchParams(window.location.search);
+  var orgid = urlParams.get('id');
+  if (orgid)
+  {
+    loadDetails(orgid);
+  }
+  
 })
 
 var people_table = $('#people_table').DataTable()
@@ -127,7 +134,7 @@ $("tr").each(function(index){
     let group = document.getElementById("a" + id).innerText
     table.append(`<a href="/accounts/edit_organization/${id}/" style="float:right; 
         font-size:24px"> <ion-icon name="create-outline"></ion-icon></a>`)
-    table.append(`<h5 class="center" style="align: block;"><a href="/accounts/manage_organization/${id}/">${group}</a></h5>`)
+    table.append(`<h5 class="center" style="align: block;">${group}</a></h5>`)
     table.append(`<h5 class="center"></h4>`)
     
     let groupID = id;
@@ -145,9 +152,8 @@ $("tr").each(function(index){
 
         $.each(resp['people'], function(index,person){
             var new_row = people_table.row.add([
-                    person.first_name,
-                    person.last_name,
-                    person.id
+                    '<a href="/accounts/all_contacts/?id='+ person.id + '"/>' + person.first_name + '</a>',
+                    '<a href="/accounts/all_contacts/?id='+ person.id + '"/>' + person.last_name + '</a>'
             ]).node();
             var person_id = person.id.toString();
             $(new_row).addClass(person_id);

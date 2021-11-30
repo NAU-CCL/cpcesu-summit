@@ -27,6 +27,13 @@ var search = function(){
     let Title = document.getElementById('Title').value
     let PI = document.getElementById('pp_i').value
     let PM = document.getElementById('project_manager').value
+
+    const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2
+      })
+    
     $(document.getElementById('overlay')).removeClass("invisible")
     /*$.getJSON("/api/contacts/", function(data){    
         $.each( data, function(key, contact){
@@ -107,7 +114,7 @@ var search = function(){
                     AwardNum = project.p_num.toUpperCase()
                 }
                 title = '<a href="/projects/detail/'+ project.id + '/">'+ project.project_title + '</a>'
-                totalAmount = "$" + project.budget
+                totalAmount = formatter.format(project.budget)
                 let start = new Date(project.tent_start_date)
                 let start_date_day = start.getDate();
                 let start_date_month = start.getMonth() + 1;

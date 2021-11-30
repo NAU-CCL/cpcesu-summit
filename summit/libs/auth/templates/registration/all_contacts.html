@@ -29,7 +29,7 @@
         </thead>
         <tbody>
             {% for profile in query %}
-            <tr id="{{profile.id}}" onclick="loadDetails({{profile.id}}, {{profile.assigned_group_id}})">
+            <tr id="{{profile.id}}" onclick="loadDetails({{profile.id}})">
                 <!--<th scope="row">{{ profile.id }}</th>!-->
                 <td><!--href="{% get_url_from_app_link 'summit.libs.auth' 'view_contact' profile_id=profile.id %}"!-->{{ profile.first_name }}</td>
                 <td>{{ profile.last_name }}</td>
@@ -81,7 +81,6 @@
             
         
             <div id="location" style="text-align: center; width: 80%; float:right">
-                this is a test
             </div>
         </div>
     </div>

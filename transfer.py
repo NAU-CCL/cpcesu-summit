@@ -6,7 +6,10 @@ from summit.libs.auth.models import Organization
 
 
 for partner in Partner.objects.all():
-	created_org = Organization.objects.create(id=partner.id, type='Federal Agency', name= partner.name, description= partner.description, logo= partner.avatar, contact='')
+	org = Organization.objects.get(id=partner.id)
+	org.type = 'Partner'
+	org.save()
+	# created_org = Organization.objects.create(id=partner.id, type='Partner', name= partner.name, description= partner.description, logo= partner.avatar, contact='')
 
 for agency in FederalAgency.objects.all():
 	created_org = Organization.objects.create(id=agency.id, type='Federal Agency', name= agency.name, description= agency.description, logo= agency.avatar, contact='')

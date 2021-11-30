@@ -1,11 +1,18 @@
 $(document).ready(function(){
-
+    $(document.getElementById("contact")).addClass("tab-background")
+    $(document.getElementById("contentBody")).addClass("content-background");
+    var urlParams = new URLSearchParams(window.location.search);
+    var personid = urlParams.get('id');
+    if (personid)
+    {
+      loadDetails(personid);
+    }
 })
 
 const NOTHING_SELECTED = -1;
 var selected = NOTHING_SELECTED;
 
-function loadDetails(id, group){
+function loadDetails(id){
     table_2 = $('#table_2').DataTable();
     header = $('#header_top');
     table = $('#info');  
@@ -40,8 +47,7 @@ function loadDetails(id, group){
         })
         selected = id;
         let userID = id;
-        let groupID= group;
-        let groupName = document.getElementById("a" + groupID).innerText;
+        
         $(document.getElementById("info")).addClass("info-background");
         $(document.getElementById(id)).addClass("info-background");
         $.ajax({
@@ -60,7 +66,10 @@ function loadDetails(id, group){
                 header.empty()
                 table_2.clear()
                 
+                
                 $.each(resp['user'],function(index,user, orgs=resp['orgs'], projects=resp['projects']){
+                let groupID = user.assigned_group_id;
+                let groupName = document.getElementById("a" + groupID).innerText;
                 if (user.title)
                 {
                     header.append(`
@@ -72,8 +81,8 @@ function loadDetails(id, group){
                         
                         </h4>
                         
-                        <div class="center">${user.title}, <a href="/accounts/manage_organization/${user.assigned_group_id}/"
-                    >${groupName}</a></div>
+                        <div class="center">${user.title}, ${user.department} <a href="/accounts/all_groups/?id=${user.assigned_group_id}">
+                    ${groupName}</a></div>
                     </div>`)
                 }
                 else
@@ -87,8 +96,8 @@ function loadDetails(id, group){
                         
                         </h4>
                         
-                        <div class="center"><a href="/accounts/manage_organization/${user.assigned_group_id}/"
-                    >${groupName}</a></div>
+                        <div class="center"><a href="/accounts/all_groups/?id=${user.assigned_group_id}">
+                    ${groupName}</a></div>
                     </div>`)
                 }
                 

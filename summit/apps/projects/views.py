@@ -1284,6 +1284,7 @@ def project_search(request):
         projects = projects.values()
         managers = UserProfile.objects.all().values()
         agencies = agencies.values()
+        partners = partners.values()
         return JsonResponse({'projects': list(projects), 'agencies': list(agencies), 'partners': list(partners),
                              'managers': list(managers)})
 
