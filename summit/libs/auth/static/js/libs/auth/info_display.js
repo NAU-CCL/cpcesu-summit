@@ -109,7 +109,7 @@ function loadDetails(id){
                     </div>`)
                 }
                 pic_container.append(`
-                <img src="/static/imgs/TEST_AVATAR.png" style="float:right; max-width: 90%; margin-top: 10%">`)
+                <img src="/static/imgs/TEST_AVATAR.png" style="float:right; max-width: 80%; margin-top: 5%; margin-bottom: 5%">`)
                 
                 if (user.email_address)
                 {
