@@ -8,3 +8,5 @@ django_celery_beat
 pytesseract
 Wand
 djangorestframework
+fontawesome-free
+django_static_ionicons
