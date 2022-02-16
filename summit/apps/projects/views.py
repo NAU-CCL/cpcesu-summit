@@ -1222,7 +1222,6 @@ def project_filter(request):
 def change_cesu(request):
     if request.is_ajax():
         cesu_id = request.GET.get('cesu_id')
-        print("cesu session id: " + str(request.session['cesu']))
         request.session['cesu'] = int(cesu_id)
         print("updated cesu session id: " + str(request.session['cesu']))
 
