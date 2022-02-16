@@ -192,6 +192,7 @@ def all_contacts(request, name):
     template_name = "registration/all_contacts.html"
 
     session_cesu = request.session.get('cesu')
+    cesu_name = CESU.objects.get(id=session_cesu)
     profiles = UserProfile.objects.all().filter(cesu = session_cesu)
     profiles = profiles.order_by('assigned_group', 'last_name', 'first_name')
     
@@ -215,7 +216,8 @@ def all_contacts(request, name):
             'js/libs/auth/info_display.js'
         ],
         'query': profiles,
-        'cesu': session_cesu
+        'cesu': session_cesu,
+        'cesu_name': cesu_name
     }
 
     return render(request, template_name, context)
@@ -365,6 +367,7 @@ def create_contact(request, name="summit.libs.auth_Create Contact", group_id=0):
         profile_form = ProfileForm(request.POST, request.FILES)
 
         if profile_form.is_valid():
+            print(profile_form.cesu)
             profile_form.save()
             return HttpResponseRedirect(reverse('summit.libs.auth:all_contacts'))
     elif group_id > 0:
