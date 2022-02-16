@@ -1,5 +1,6 @@
 import csv
 import datetime
+import re
 from django.http import HttpResponse, Http404, HttpResponseRedirect, JsonResponse
 
 from django.shortcuts import get_object_or_404, render
@@ -22,6 +23,7 @@ from summit.libs.auth.models import UserProfile, CESUnit, FederalAgency, Partner
 from .models import Project, File, Location, Modification, ModFile
 from .forms import ProjectForm, ProjectFileForm, LocationForm, ModificationForm, ModificationFileForm, ContactForm
 from .choices import ProjectChoices
+
 
 
 class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -121,7 +123,6 @@ class ProjectPublicListView(ListView):
         pk_ = self.kwargs.get("id")
         return get_object_or_404(Project, pk=pk_)
 
-
 class ProjectDashboardView(LoginRequiredMixin, ListView):
     template_name = 'apps/projects/project_index.html'
     model = Project
@@ -131,13 +132,19 @@ class ProjectDashboardView(LoginRequiredMixin, ListView):
     permission_denied_message = 'You do not have the correction permissions to access this page.'
     #raise_exception = False
 
+
+
     def get_context_data(self, **kwargs):
+        
         people = UserProfile.objects.all()
         parks = Location.objects.all()
         agencies = Organization.objects.all().filter(type="Federal Agency")
         partners = Organization.objects.all().filter(type="Partner")
         all_projects = Project.objects.only("id")
         user = self.request.user
+        cesu = self.request.session.get('cesu')
+
+        print("session cesu: " + str(cesu))
 
         try:
             profile = UserProfile.objects.get(user=user)
@@ -196,6 +203,7 @@ class ProjectDashboardView(LoginRequiredMixin, ListView):
             'parks': parks,
             'agencies': agencies,
             'partners': partners,
+            'cesu': cesu
 
         }
         ctx = super(ProjectDashboardView, self).get_context_data(**kwargs)
@@ -317,6 +325,8 @@ class ProjectCreate(CreateView):
         return reverse('summit.apps.projects:project_detail', args=[str(self.object.id)])
 
     def get(self, request, *args, **kwargs):
+        cesu = self.request.session.get('cesu')
+        print("project create cesu: " + str(cesu))
         people = UserProfile.objects.all()
         parks = Location.objects.all()
         agencies = Organization.objects.all().filter(type="Federal Agency")
@@ -354,11 +364,14 @@ class ProjectCreate(CreateView):
                 'parks': parks,
                 'agencies': agencies,
                 'partners': partners,
+                'cesu': cesu
 
             }
             return render(request, self.template_name, context)
 
     def get_context_data(self, **kwargs):
+        cesu = self.request.session.get('cesu')
+        print("project create cesu: " + str(cesu))
         context = {
             'name': self.kwargs['name'],
             'pagetitle': 'Create Project',
@@ -375,7 +388,8 @@ class ProjectCreate(CreateView):
             ],
             'form': self.get_form(),
             'file_form': ProjectFileForm(),
-            'confirm_status': self.confirm_status
+            'confirm_status': self.confirm_status,
+            'cesu': cesu
         }
         ctx = super(ProjectCreate, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
@@ -398,7 +412,7 @@ class ProjectCreate(CreateView):
             self.object = project_form.save()
             
             #checks to see if staff member already exists
-            project_manager_split = self.object.project_manager.split()
+            #project_manager_split = self.object.project_manager.split()
 
             if self.object.status != 'DRAFT':
                 self.confirm_status = True
@@ -449,8 +463,7 @@ class ProjectEdit(UpdateView):
             "project_manager": proj.project_manager,
             "tech_rep": proj.tech_rep,
             "pp_i": proj.pp_i,
-            "staff_member": proj.staff_member,
-            "last_status": proj.status
+            "staff_member": proj.staff_member
         })
         context = {
             'pagetitle': 'Edit Project',
@@ -512,7 +525,7 @@ def check_fields(project_form):
     partner = project_form.cleaned_data['partner']
     if partner and len(partner) > 0:
         try:
-            partner = Organization.objects.get(name=partner,type="Organization")
+            partner = Organization.objects.get(name=partner,type="Partner")
         except ObjectDoesNotExist:
             partner = Organization(name=partner, type="Organization")
             partner.save()
@@ -536,8 +549,8 @@ def check_fields(project_form):
     project_form.instance.location = location
 
     # CES Unit
-    cesu = CESUnit.objects.get(pk=1)
-    project_form.instance.cesu_unit = cesu
+    #cesu = CESUnit.objects.get(pk=1)
+    cesu = project_form.instance.cesu_unit 
 
     # Project Manager
     project_manager = project_form.cleaned_data['project_manager']
@@ -1206,6 +1219,16 @@ def project_filter(request):
     projects = Project.objects.filter()
     return JsonResponse({'projects': list(projects)})
 
+def change_cesu(request):
+    if request.is_ajax():
+        cesu_id = request.GET.get('cesu_id')
+        print("cesu session id: " + str(request.session['cesu']))
+        request.session['cesu'] = int(cesu_id)
+        print("updated cesu session id: " + str(request.session['cesu']))
+
+    return JsonResponse({'cesu': request.session['cesu']})
+
+
 
 def project_search(request):
     if request.is_ajax():
@@ -1229,9 +1252,11 @@ def project_search(request):
         p_m= request.GET.get('pm')
         p_m.strip()
         p_m_list = p_m.split()
+        cesu = request.GET.get('cesu')
         partners = Organization.objects.all().filter(type="Partner")
         agencies = Organization.objects.all().filter(type="Federal Agency")
-        projects = Project.objects.only("project_id", "status", "federal_agency", "partner", "fiscal_year", "p_num",
+        projects = Project.objects.all().filter(cesu_unit = cesu)
+        projects = projects.only("project_id", "status", "federal_agency", "partner", "fiscal_year", "p_num",
                                         "project_title", "total_award_amount", "tent_start_date", "tent_end_date",
                                         "project_manager", "pp_i")
 

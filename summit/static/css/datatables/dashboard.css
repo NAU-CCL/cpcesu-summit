@@ -10,3 +10,30 @@ table.dataTable thead .sorting_desc_disabled:after,
 table.dataTable thead .sorting_desc_disabled:before {
   bottom: .5em;
 }
+
+table.dataTable thead .sorting::after,
+table.dataTable thead .sorting_asc::after {
+    display:none;
+}
+
+table.dataTable thead .sorting_desc::after {
+    display:none;
+}
+
+table.dataTable thead .sorting {
+   background-image: url(https://datatables.net/media/images/sort_both.png);
+   background-repeat: no-repeat;
+   background-position: center right;
+}
+
+table.dataTable thead .sorting_asc {
+   background-image: url(https://datatables.net/media/images/sort_asc.png);
+   background-repeat: no-repeat;
+   background-position: center right;
+}
+
+table.dataTable thead .sorting_desc {
+   background-image: url(https://datatables.net/media/images/sort_desc.png);
+   background-repeat: no-repeat;
+   background-position: center right;
+}

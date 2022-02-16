@@ -108,7 +108,7 @@ class Project(AuditModel):
     staff_member = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, verbose_name="Staff Member",
                                      blank=True, related_name='staff_member', default=None, null=True)
     status = models.CharField(max_length=50, choices=STATUS, default=STATUS[0], blank=True)
-    last_status = models.CharField(max_length=50, choices=STATUS, default=STATUS[0], blank=True)
+    #last_status = models.CharField(max_length=50, choices=STATUS, default=STATUS[0], blank=True)
 
     # I got an error "__init__() missing 1 required positional argument: 'on_delete'" 
     # so I added on_delete=models.SET_NULL since that is what other foreign keys in here use

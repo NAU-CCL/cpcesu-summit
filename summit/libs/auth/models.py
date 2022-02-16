@@ -203,6 +203,9 @@ class UserProfile(AuditModel):
     fax_number = models.CharField(max_length=30, blank=True)
     email_address = models.EmailField(blank=True)
 
+    cesu = models.ForeignKey(CESU, on_delete=models.SET_NULL,
+                                  related_name='person_cesu', default=1, verbose_name="CESU", blank=True, null=True)
+
     assigned_group = models.ForeignKey(UserGroup, blank=True, null=True, on_delete=models.SET_NULL, verbose_name="Assigned Organization")
 
     def get_full_name(self):

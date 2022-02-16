@@ -9,6 +9,7 @@ app_regex = r'^projects/'
 class AppLinks:
     # All Links - ORDER MATTERS
     # Single Link
+
     project_dashboard = DjangoLink('project_dashboard', app_name, app_regex,
                                    r'^dashboard/$', views.ProjectDashboardView.as_view(),
                                    'Your Dashboard',
@@ -85,6 +86,7 @@ class AppLinks:
                                       views.ProjectPublicListView.as_view(), app_name, kwargs={"is_widget": True})
     project_filter = DjangoURL('project_filter', r'^filter/', views.project_filter, app_name)
     project_search = DjangoURL('project_search', r'^search/', views.project_search, app_name)
+    change_cesu = DjangoURL('change_cesu', r'^change_cesu/', views.change_cesu, app_name)
 
     # Location Related Links/URLs
     # States, Parks, etc. in one model/object

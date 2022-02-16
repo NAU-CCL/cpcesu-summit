@@ -4,6 +4,11 @@
 
 
 {% block primary %}
+
+<script>
+    const cesuID = {{cesu}};
+  </script>
+  
 <div>
     <h1 style="text-align: center" class="all-header">
         Organizations Directory
@@ -17,7 +22,7 @@
 </div>
 
 <div style="width:30%; float:left" class="container-fluid">
-<table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0">
+<table class="dtBasicExample table table-striped table-bordered table-sm" id="main_table" cellspacing="0">
     <thead>
         <tr>
             <th class="th-sm">Group</th>

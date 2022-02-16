@@ -1,14 +1,61 @@
+import re
 from django.contrib.auth.decorators import login_required, permission_required
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
-
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.views.generic import ListView
 
 from .forms import ProfileForm, GroupForm
 from .models import User, UserProfile, UserGroup, CESUnit, FederalAgency, Partner, CESU, Organization
 from summit.apps.projects.models import Project
 
+class CESUSwitcherView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    template_name = 'registration/cesu_selector.html'
+    model = Project
+    context_object_name = 'projects'
+
+    permission_required = 'summit_projects.add_project'
+    permission_denied_message = 'You do not have the correction permissions to access this page.'
+    #raise_exception = False
+
+
+
+    def get_context_data(self, **kwargs):
+        user = self.request.user
+        cesu = self.request.session.get('cesu')
+
+        print("session cesu: " + str(cesu))
+        cesu_list = CESU.objects.all()
+
+        try:
+            profile = UserProfile.objects.get(user=user)
+        except ObjectDoesNotExist:
+            profile = None
+
+        if profile is not None:
+            try:
+                profile_cesu = CESU.objects.get(id=profile.assigned_group.id)
+            except (ObjectDoesNotExist, AttributeError) as e:
+                profile_cesu = None
+        else: profile_cesu = None
+
+        context = {
+            'cssFiles': [
+                'libs/mdb/css/addons/datatables.min.css',
+                'css/datatables/dashboard.css',
+            ],
+            'jsFiles': [
+                'libs/mdb/js/addons/datatables.min.js',
+                'js/libs/auth/cesu_switcher.js'
+            ],
+            "cesu_list": cesu_list
+
+        }
+        ctx = super(CESUSwitcherView, self).get_context_data(**kwargs)
+        ctx = {**ctx, **context}
+        return ctx
 
 def logged_out(request):
     template_name = 'registration/logged_out.html'
@@ -144,7 +191,12 @@ def edit_contact(request, profile_id=-1):
 def all_contacts(request, name):
     template_name = "registration/all_contacts.html"
 
-    profiles = UserProfile.objects.all().order_by('assigned_group', 'last_name', 'first_name')
+    session_cesu = request.session.get('cesu')
+    profiles = UserProfile.objects.all().filter(cesu = session_cesu)
+    profiles = profiles.order_by('assigned_group', 'last_name', 'first_name')
+    
+
+    print("session cesu for contacts: " + str(session_cesu))
 
     print(name)
 
@@ -162,7 +214,8 @@ def all_contacts(request, name):
             'js/datatables/no_sort_datatable.js',
             'js/libs/auth/info_display.js'
         ],
-        'query': profiles
+        'query': profiles,
+        'cesu': session_cesu
     }
 
     return render(request, template_name, context)
@@ -172,6 +225,8 @@ def all_contacts(request, name):
 #@permission_required()
 def all_organizations(request, name):
     template_name = "registration/all_organizations.html"
+
+    session_cesu = request.session.get('cesu')
 
     cesus = CESU.objects.all()
     feds = FederalAgency.objects.all()
@@ -221,7 +276,8 @@ def all_organizations(request, name):
             'js/datatables/no_sort_datatable.js',
             'js/libs/auth/org_info.js'
         ],
-        'query': groups
+        'query': groups,
+        'cesu': session_cesu
     }
 
     return render(request, template_name, context)
@@ -432,8 +488,12 @@ def info_display(request):
     if request.is_ajax():
         print(request.GET)
         userID = request.GET.get('userID')
-        userInfo = UserProfile.objects.filter(id = userID).values()
-        ProjectInfo = Project.objects.filter(pp_i_id = userID) | Project.objects.filter(project_manager_id = userID)
+        cesuID = request.GET.get('cesuID')
+        userInfo = UserProfile.objects.filter(cesu = cesuID)
+        userInfo = userInfo.filter(id = userID).values()
+        ProjectInfo = Project.objects.filter(cesu_unit = cesuID)
+        print("CESUID: " + cesuID)
+        ProjectInfo = ProjectInfo.filter(pp_i_id = userID) | ProjectInfo.filter(project_manager_id = userID)
         ProjectInfo = ProjectInfo.values()
         return JsonResponse({"user": list(userInfo) , "projects": list(ProjectInfo)})
 
@@ -445,8 +505,11 @@ def org_info(request):
     if request.is_ajax():
         print(request.GET)
         groupID = request.GET.get('groupID')
-        people = UserProfile.objects.filter(assigned_group_id = groupID).values()
-        projects = Project.objects.filter(partner_id = groupID).values() | Project.objects.filter(federal_agency_id = groupID).values()
+        cesuID = request.GET.get('cesuID')
+        people = UserProfile.objects.filter(cesu = cesuID)
+        people = people.filter(assigned_group_id = groupID).values()
+        projects = Project.objects.filter(cesu_unit_id = cesuID)
+        projects = projects.filter(partner_id = groupID).values() | projects.filter(federal_agency_id = groupID).values()
         return JsonResponse({"people": list(people), "projects": list(projects)})
     people = UserProfile.objects.all().values()
     projects = Project.objects.all().values()

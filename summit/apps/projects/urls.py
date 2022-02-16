@@ -7,6 +7,7 @@ app_regex = vars.app_regex
 urlpatterns = [
     # Project Links
     app_link(vars.AppLinks.project_dashboard),
+    
     app_link(vars.AppLinks.all_projects),
     app_link(vars.AppLinks.project_create),
     app_link(vars.AppLinks.project_upload),
@@ -26,6 +27,9 @@ urlpatterns = [
     url_wrapper(vars.AppLinks.project_public_widget),
     url_wrapper(vars.AppLinks.project_filter),
     url_wrapper(vars.AppLinks.project_search),
+
+    # CESU change URL
+    url_wrapper(vars.AppLinks.change_cesu),
 
     # Locations Links and URLs
     # States, Parks, etc. in one model/object

@@ -4,14 +4,21 @@ $(document.getElementById("contentBody")).addClass("content-background");
 $('td:nth-child(3),th:nth-child(3)').hide();
   var urlParams = new URLSearchParams(window.location.search);
   var orgid = urlParams.get('id');
+  var table = $('#main_table').DataTable();
   if (orgid)
   {
+    var test_var = document.getElementById("a"+orgid).innerText;
+    console.log(test_var);
+    table.row(orgid).scrollTo();
+    //table.search(test_var).draw();
     loadDetails(orgid);
   }
   
 })
-
-var people_table = $('#people_table').DataTable()
+var people_table = $('#people_table').DataTable({
+  "scrollY": "400px",
+  "scrollCollapse": true
+})
 
 $(document).on('click', '#people_table tr', function(){
     loadProjectDetails($(this).attr('class'));
@@ -52,7 +59,10 @@ function loadProjectDetails(id){
           data: {'userID': userID},
           success: function(resp){
               console.log(resp);
-              table_2 = $('#table_2').DataTable()
+              table_2 = $('#table_2').DataTable({
+                "scrollY": "400px",
+                "scrollCollapse": true
+              })
               table_2.clear()
               $.each(user=resp['user'],function(index,user, orgs=resp['orgs'], projects=resp['projects']){
                 projects_name.innerHTML = "Projects involving " + user.first_name + " " + user.last_name;
@@ -106,6 +116,8 @@ $("tr").each(function(index){
     })
     $(document.getElementById("info")).addClass("info-background");
     $(document.getElementById(id)).addClass("info-background");
+    
+    
 
     let info = $('#info')
 
@@ -142,7 +154,7 @@ $("tr").each(function(index){
     $.ajax({
     type: "GET",
     url: '/accounts/org_info',
-    data: {'groupID': groupID},
+    data: {'groupID': groupID, 'cesuID': cesuID},
     success: function(resp){
         console.log(resp);
         people_table = $('#people_table').DataTable()

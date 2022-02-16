@@ -1,0 +1,21 @@
+{% extends 'layouts/base.html' %}
+{% load common_tags %}
+{% load static %}
+{% block primary %}
+  <h1 style="text-align: center" class="all-header">
+    CESU Selector
+  </h1>
+  {% for cesu in cesu_list %}
+  <button class="btn btn-default" onclick="change_cesu({{cesu.id}})">{{cesu.name}}</button>
+  {% endfor %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'apps/projects/partials/side_nav.html' %}
+{% endblock %}
+
+{% block layout_wrapper %}
+    {% with layout='left'  %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}

@@ -3,7 +3,13 @@
 {% load static %}
 
 
+
 {% block primary %}
+
+<script>
+  const cesuID = {{cesu}};
+</script>
+
 <div>
     <h1 style="text-align: center" class="all-header">
         Contact Book
@@ -18,7 +24,7 @@
     
 </div>
 <div style="width:50%; float:left;" class="container-fluid">
-    <table class="dtBasicExample table table-striped table-bordered table-sm" cellspacing="0">
+    <table class="dtBasicExample table table-striped table-bordered table-sm" id="main_table" cellspacing="0">
         <thead>
             <tr>
                 <th class="th-sm">First Name</th>
@@ -29,22 +35,24 @@
         </thead>
         <tbody>
             {% for profile in query %}
-            <tr id="{{profile.id}}" onclick="loadDetails({{profile.id}})">
-                <!--<th scope="row">{{ profile.id }}</th>!-->
-                <td><!--href="{% get_url_from_app_link 'summit.libs.auth' 'view_contact' profile_id=profile.id %}"!-->{{ profile.first_name }}</td>
-                <td>{{ profile.last_name }}</td>
-                <!--<td>{{ profile.email_address }}</td>!-->
-                <td id="a{{profile.assigned_group_id}}">{{ profile.assigned_group }}</td>
-               <!-- <td>
-                    <!--<a class="btn btn-outline-primary btn-sm m-0 waves-effect"
-                    href="{% get_url_from_app_link 'summit.libs.auth' 'view_contact' profile_id=profile.id %}">
-                        View Contact
-                    </a>
-                    {% if profile.assigned_group != None %}
-                    <a href="{% get_url_from_app_link 'summit.libs.auth' 'manage_organization' group_id=profile.assigned_group.id %}" class="btn btn-outline-primary btn-sm m-0 waves-effect">Manage Org.</a>
-                    {% endif %}
-                </td> !-->
-            </tr>
+                {% if profile.cesu.id == cesu %}
+                    <tr id="{{profile.id}}" onclick="loadDetails({{profile.id}})">
+                        <!--<th scope="row">{{ profile.id }}</th>!-->
+                        <td><!--href="{% get_url_from_app_link 'summit.libs.auth' 'view_contact' profile_id=profile.id %}"!-->{{ profile.first_name }}</td>
+                        <td>{{ profile.last_name }}</td>
+                        <!--<td>{{ profile.email_address }}</td>!-->
+                        <td id="a{{profile.assigned_group_id}}">{{ profile.assigned_group }}</td>
+                    <!-- <td>
+                            <!--<a class="btn btn-outline-primary btn-sm m-0 waves-effect"
+                            href="{% get_url_from_app_link 'summit.libs.auth' 'view_contact' profile_id=profile.id %}">
+                                View Contact
+                            </a>
+                            {% if profile.assigned_group != None %}
+                            <a href="{% get_url_from_app_link 'summit.libs.auth' 'manage_organization' group_id=profile.assigned_group.id %}" class="btn btn-outline-primary btn-sm m-0 waves-effect">Manage Org.</a>
+                            {% endif %}
+                        </td> !-->
+                    </tr>
+                {% endif %}
             {% endfor %}
         </tbody>
     </table>

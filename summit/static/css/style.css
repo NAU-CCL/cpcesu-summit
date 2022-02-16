@@ -299,5 +299,9 @@ header {
 }
 
 .clicked-background {
-  background-color: aliceblue !important;
+  background-color: cornflowerblue !important;
+}
+
+.modal-backdrop {
+  z-index: -1;
 }

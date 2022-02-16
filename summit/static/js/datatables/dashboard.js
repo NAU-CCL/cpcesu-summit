@@ -3,6 +3,10 @@ function pageify(){
         retrieve: true,
         'ordering': true,
         "dom": '<"top"f>r<"bottom"litp><"clear">',
+        columnDefs: [
+            { width: '20%', targets: 0 }
+        ],
+        fixedColumns: true
     });
     $('.dataTables_filter').addClass('pull-left');
 }

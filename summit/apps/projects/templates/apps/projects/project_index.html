@@ -3,6 +3,9 @@
 {% load static %}
 {% block primary %}
 
+    <script>
+        const cesuID = {{cesu}};
+    </script>
 
 
     {% if pagetitle %}
@@ -202,17 +205,13 @@
                     <th style="max-width: 30px">
                         <input type="checkbox" id="select_all_1">
                     </th>
-                    <th style="max-width: 75px">Status</th>
-                    <th style="max-width: 200px">Agency</th>
-                    <th style="max-width: 200px">Partner</th>
-                    <th style="max-width: 75px">FY</th>
-                    <th style="max-width: 100px">Award #</th>
+                    <!--<th style="max-width: 75px">Status</th>-->
+                    <th style="max-width: 100px">Agency</th>
+                    <th style="max-width: 100px">Partner</th>
+                    <th style="max-width: 100px">Award Info</th>
                     <th style="max-width: 400px">Title</th>
-                    <th style="max-width: 50px">Total Amount</th>
-                    <th style="max-width: 100px">Start</th>
-                    <th style="max-width: 100px">End</th>
-                    <th style="max-width: 100px">PM</th>
-                    <th style="max-width: 100px">PI</th>
+                    <th style="max-width: 100px">Timeframe</th>
+                    <th style="max-width: 100px">Staff</th>
                     <!--<th>View Details</th>!-->
                 </tr>
                 </thead>
@@ -227,11 +226,6 @@
                             <td></td>
                             <td></td>
                             <td><!--<a href=" get_url_from_app_link 'summit.apps.projects' 'project_detail' id=project.id "></a>--></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
                             <!--<td>
                                 <a class="btn btn-outline-primary btn-sm m-0 waves-effect"
                                    href=" get_url_from_app_link 'summit.apps.projects' 'project_detail' id=project.id ">

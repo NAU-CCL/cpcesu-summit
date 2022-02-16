@@ -14,7 +14,7 @@ urlpatterns = [
     url_wrapper(vars.AppLinks.view_my_contact),
     url_wrapper(vars.AppLinks.view_contact),
 
-
+    app_link(vars.AppLinks.cesu_selector),
     app_link(vars.AppLinks.all_contacts),
     app_link(vars.AppLinks.all_organizations),
     app_link(vars.AppLinks.create_contact),

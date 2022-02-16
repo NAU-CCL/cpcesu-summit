@@ -141,7 +141,9 @@ $.getJSON("/api/federal_agencies/", function(data){
 var partners = [];
 $.getJSON("/api/partners/", function(data){
     $.each( data, function(key, partner){
-        partners.push(partner.name);
+        
+            partners.push(partner.name);
+        
     });
 
     autocomplete(document.getElementById("partner"), partners);
@@ -179,17 +181,19 @@ $.getJSON("/api/contacts/", function(data){
     contacts['other'] = [];
 
     $.each( data, function(key, contact){
-        if(contact.assigned_group_name){
-            var groupName = contact.assigned_group_name;
-            if(agencies.includes(groupName))
-                contacts['feds'][groupName].push(contact.first_name + " " + contact.last_name);
-            else if(partners.includes(groupName))
-                contacts['partners'][groupName].push(contact.first_name + " " + contact.last_name);
-            else
-                contacts['other'].push(contact.first_name + " " + contact.last_name);
+        if (contact.cesu == cesuID){
+            if(contact.assigned_group_name){
+                var groupName = contact.assigned_group_name;
+                if(agencies.includes(groupName))
+                    contacts['feds'][groupName].push(contact.first_name + " " + contact.last_name);
+                else if(partners.includes(groupName))
+                    contacts['partners'][groupName].push(contact.first_name + " " + contact.last_name);
+                else
+                    contacts['other'].push(contact.first_name + " " + contact.last_name);
+            }
+            else contacts['other'].push(contact.first_name + " " + contact.last_name);
+            contacts['all'].push(contact.first_name + " " + contact.last_name);
         }
-        else contacts['other'].push(contact.first_name + " " + contact.last_name);
-        contacts['all'].push(contact.first_name + " " + contact.last_name);
     });
 
 

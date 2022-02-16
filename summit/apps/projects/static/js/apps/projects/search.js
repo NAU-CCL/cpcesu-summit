@@ -1,3 +1,4 @@
+
 $('#advancedSearchButton').on('click', function(){
 $(document.getElementById('advancedSearch')).removeClass("invisible");
  $(document.getElementById('advancedSearch')).addClass("visible");
@@ -59,7 +60,8 @@ var search = function(){
         "agency": Agency,
         "title": Title,
         "pi": PI,
-        "pm": PM},
+        "pm": PM,
+        "cesu": cesuID},
         success: function(resp){
             console.log(resp)
             table = $('#replace').DataTable();
@@ -154,19 +156,28 @@ var search = function(){
                     pI = " "
                 }
 
+                let award_info = "<span style='font-weight: bold;'>Status:</span> " + status 
+                    + "</br><span style='font-weight: bold;'>Award Number:</span> " + AwardNum 
+                    + "</br><span style='font-weight: bold;'>Award Amount:</span> " +  totalAmount;
+                let start_end = "<span style='font-weight: bold;'>FY:</span> " + FY
+                    + "</br> <span style='font-weight: bold;'>Start:</span> " + startDate 
+                    + "</br> <span style='font-weight: bold;'>End:</span> " + endDate;
+                    
+                let staff = "<span style='font-weight: bold;'>PM: </span>" + pM
+                    + "</br> <span style='font-weight: bold;'>PI: </span>" + pI;
+
                 table.row.add([
                 checkBox,
-                status,
+                
                 agency_name,
                 partner_name,
-                FY,
-                AwardNum,
+                award_info,
                 title,
-                totalAmount,
-                startDate,
-                endDate,
-                pM,
-                pI
+                start_end,
+                staff,
+                //endDate,
+                //pM,
+                //pI
                 ]).draw()
                 $(document.getElementById('overlay')).addClass("invisible")
                 //$(document.getElementById('overlay')).removeClass("visible");

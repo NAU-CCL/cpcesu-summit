@@ -23,6 +23,13 @@ class AppLinks:
     # Secondary Links in nav menu (load in second/separate)
     #
     #
+    cesu_selector = DjangoLink('cesu_selector', app_name, app_regex,
+                                r'^cesu_selector/$', views.CESUSwitcherView.as_view(),
+                                'CESU Selector',
+                                link_args={
+                                    'auth_required': True
+                                })
+
     all_contacts = DjangoLink('all_contacts', app_name, app_regex,
                               r'^all_contacts/$', views.all_contacts, 'All Contacts',
                               link_args={

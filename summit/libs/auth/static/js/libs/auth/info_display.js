@@ -2,9 +2,16 @@ $(document).ready(function(){
     $(document.getElementById("contact")).addClass("tab-background")
     $(document.getElementById("contentBody")).addClass("content-background");
     var urlParams = new URLSearchParams(window.location.search);
+    console.log(cesuID);
     var personid = urlParams.get('id');
+    var table = $('#main_table').DataTable();
     if (personid)
     {
+        var table_contents = document.getElementById(personid).innerText;
+        var splitArray = table_contents.split("\t");
+        var search_text = splitArray[0] + " " + splitArray[1];
+        console.log(splitArray);
+        table.search(search_text).draw();
       loadDetails(personid);
     }
 })
@@ -55,7 +62,7 @@ function loadDetails(id){
         $.ajax({
         type: "GET",
             url: '/accounts/info_display',
-            data: {'userID': userID},
+            data: {'userID': userID, 'cesuID': cesuID},
             success: function(resp){
                 console.log(resp);
                 table.empty()

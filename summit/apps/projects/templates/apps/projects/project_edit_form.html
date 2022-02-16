@@ -2,6 +2,9 @@
 {% block form_title %}Edit Project {% endblock %}
 
 {% block row1_col1 %}
+<script>
+    const cesuID = {{cesu}};
+</script>
 
 <div class="form-group">
     <h5><u>General Information: </u></h5>
@@ -279,7 +282,6 @@
     <br>
 </div>
 <div style="display:none">
-    {{ form.last_status }}
 </div>
 {% endblock %}
 
