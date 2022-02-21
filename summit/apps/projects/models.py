@@ -57,6 +57,10 @@ class Project(AuditModel):
     award_office = models.CharField(choices=AWARD_OFFICE, max_length=10, blank=True, null=True)
     budget = models.DecimalField(max_digits=12, decimal_places=2, help_text=_help_text['budget'], blank=True, null=True,
                                  verbose_name="Initial", default=0, validators=[MinValueValidator(Decimal(0.00)), MaxValueValidator(Decimal('9999999.99'))])
+    added_amount = models.DecimalField(max_digits=12, decimal_places=2, help_text=_help_text['budget'], blank=True, null=True,
+                                 verbose_name="Initial", default=0, validators=[MinValueValidator(Decimal(0.00)), MaxValueValidator(Decimal('9999999.99'))])
+    total_amount = models.DecimalField(max_digits=12, decimal_places=2, help_text=_help_text['budget'], blank=True, null=True,
+                                 verbose_name="Initial", default=0, validators=[MinValueValidator(Decimal(0.00)), MaxValueValidator(Decimal('9999999.99'))])
     cesu_unit = models.ForeignKey(CESU, on_delete=models.SET_NULL,
                                   related_name='cesu_unit', default=None, verbose_name="CESUnit", blank=True, null=True)
     description = models.TextField(help_text=_help_text['description'], verbose_name="Abstract/Description", blank=True)
@@ -84,6 +88,8 @@ class Project(AuditModel):
                                                        default=0, verbose_name="Number of Students")
     p_num = models.CharField(verbose_name="Award #", blank=True, max_length=500, help_text=_help_text['p_num'],
                              null=True)
+    local_num = models.CharField(verbose_name="Local #", blank=True, max_length=500, help_text=_help_text['local_num'],
+                             null=True)
     partner = models.ForeignKey(Organization, on_delete=models.SET_NULL, related_name='partner', default=None, blank=True,
                                 null=True)
     pp_i = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, help_text=_help_text['pp_i'], blank=True,
@@ -107,7 +113,7 @@ class Project(AuditModel):
                                       choices=SOURCE_OF_FUNDING, default=SOURCE_OF_FUNDING[0][0])
     staff_member = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, verbose_name="Staff Member",
                                      blank=True, related_name='staff_member', default=None, null=True)
-    status = models.CharField(max_length=50, choices=STATUS, default=STATUS[0], blank=True)
+    status = models.CharField(max_length=50, choices=STATUS, default=STATUS[0], blank=True, null=True)
     #last_status = models.CharField(max_length=50, choices=STATUS, default=STATUS[0], blank=True)
 
     # I got an error "__init__() missing 1 required positional argument: 'on_delete'" 

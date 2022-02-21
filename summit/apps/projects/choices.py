@@ -1,6 +1,7 @@
 class ProjectChoices:
     help_text = {
         'p_num': 'Project number. Sometimes not received.',
+        'local_num': 'Local number.',
         'project_title': 'The title of the project',
         'short_summary': 'This field is displayed in "overviews" such as the projects listing page.',
         'description': 'A free-form description of the plugin.',

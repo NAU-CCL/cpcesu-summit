@@ -186,6 +186,18 @@ class User(AbstractUser):
     def is_superstaff(self):
         return self.is_superuser
 
+class Organization(AuditModel):
+    ORG_TYPE = choices.OrganizationChoices.ORG_TYPE
+
+    name = models.CharField(max_length=150, unique=True)
+    description = models.TextField(max_length=300, blank=True)
+    logo = models.ImageField(blank=True)
+    type = models.CharField(max_length=50, choices=ORG_TYPE,
+                            blank=True, verbose_name="Organization Type")
+    contact = models.TextField(max_length=300, blank=True)
+
+    def __str__(self):
+        return self.name
 
 class UserProfile(AuditModel):
     avatar = models.ImageField(blank=True)
@@ -206,7 +218,7 @@ class UserProfile(AuditModel):
     cesu = models.ForeignKey(CESU, on_delete=models.SET_NULL,
                                   related_name='person_cesu', default=1, verbose_name="CESU", blank=True, null=True)
 
-    assigned_group = models.ForeignKey(UserGroup, blank=True, null=True, on_delete=models.SET_NULL, verbose_name="Assigned Organization")
+    assigned_group = models.ForeignKey(Organization, blank=True, null=True, on_delete=models.SET_NULL, verbose_name="Assigned Organization")
 
     def get_full_name(self):
         if self.user is not None:
@@ -231,15 +243,4 @@ class UserProfile(AuditModel):
         )
         verbose_name = "Contact"
 
-class Organization(AuditModel):
-    ORG_TYPE = choices.OrganizationChoices.ORG_TYPE
 
-    name = models.CharField(max_length=150, unique=True)
-    description = models.TextField(max_length=300, blank=True)
-    logo = models.ImageField(blank=True)
-    type = models.CharField(max_length=50, choices=ORG_TYPE,
-                            blank=True, verbose_name="Organization Type")
-    contact = models.TextField(max_length=300, blank=True)
-
-    def __str__(self):
-        return self.name
