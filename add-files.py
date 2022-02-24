@@ -13,6 +13,8 @@ from django.core.exceptions import ObjectDoesNotExist
 # deleting profiles that have users attached breaks the system
 non_user_people = UserProfile.objects.exclude(user__isnull=False)
 non_user_people.delete()
+for user in UserProfile.objects.all():
+  user.cesu = CESU.objects.get(id=1)
 Project.objects.all().delete()
 Location.objects.all().delete()
 Organization.objects.all().delete()
@@ -21,6 +23,9 @@ Organization.objects.all().delete()
 with open('CPCESU_Summit-Data-Import_FINAL.csv', newline='') as csvfile:
   reader = csv.DictReader(csvfile, quotechar='"')
   for row in reader:
+    is_before_22217 = False
+    if (row['Start Date'] != ""):
+      is_before_22217 = datetime.strptime(row['Start Date'], '%m/%d/%y') < datetime(2017, 2, 22)
     fed_agency = None
     project_partner = None
     project_location = None
@@ -86,6 +91,6 @@ with open('CPCESU_Summit-Data-Import_FINAL.csv', newline='') as csvfile:
       task_agreement_start_date = datetime.strptime(row['Approved Date'], '%m/%d/%y') if row['Approved Date'] != "" else None,
       tent_start_date = datetime.strptime(row['Start Date'], '%m/%d/%y') if row['Start Date'] != "" else None,
       tent_end_date = datetime.strptime(row['End Date'], '%m/%d/%y') if row['End Date'] != "" else None,
-      status = row['Project Status'],
+      status = "CLOSED" if is_before_22217 else "AWARDED",
       award_office = row['Awarding Office']
     )
