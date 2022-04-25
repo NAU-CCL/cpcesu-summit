@@ -18,6 +18,8 @@ class AppLinks:
     view_my_contact = DjangoURL('view_my_contact', r'^view_contact/$', views.view_contact, app_name)
     view_contact = DjangoURL('view_contact', r'^view_contact/(?P<profile_id>[-\w]+)/$', views.view_contact, app_name)
 
+    edit_user = DjangoURL('edit_user', r'^edit_user/(?P<profile_id>[-\w]+)/$', views.edit_user, app_name)
+
     #
     #
     # Secondary Links in nav menu (load in second/separate)
@@ -29,6 +31,7 @@ class AppLinks:
                                 link_args={
                                     'auth_required': True
                                 })
+                                
 
     all_contacts = DjangoLink('all_contacts', app_name, app_regex,
                               r'^all_contacts/$', views.all_contacts, 'All Contacts',
@@ -43,6 +46,13 @@ class AppLinks:
                                        'auth_required': True,
                                        'dropdown_id': app_name,
                                    })
+    
+    all_users = DjangoLink('all_users', app_name, app_regex, r'^all_users/$',
+                                views.all_users, 'All Users',
+                                link_args={
+                                    'auth_required': True,
+                                    'dropdown_id': app_name,
+                                })
 
     create_organization = DjangoLink('create_organization', app_name, app_regex, r'^create_organization/$',
                                      views.create_organization, 'Create Organization',
@@ -53,6 +63,13 @@ class AppLinks:
 
     create_contact = DjangoLink('create_contact', app_name, app_regex, r'^create_contact/$', views.create_contact,
                                 'Create Contact',
+                                link_args={
+                                    'auth_required': True,
+                                    'dropdown_id': app_name
+                                })
+
+    create_user = DjangoLink('create_user', app_name, app_regex, r'^create_user/$', views.create_user,
+                                'Create User',
                                 link_args={
                                     'auth_required': True,
                                     'dropdown_id': app_name
@@ -76,5 +93,9 @@ class AppLinks:
                                         views.create_contact, app_name)
     info_display = DjangoURL('info_display', r'^info_display/$', views.info_display, app_name)
     org_info = DjangoURL('org_info', r'^org_info/$', views.org_info, app_name)
+    user_info_display = DjangoURL('user_info_display', r'^user_info_display/$', views.user_info_display, app_name)
+    deactivate_user = DjangoURL('deactivate_user', r'^deactivate_user/$', views.deactivate_user, app_name)
+    delete_user = DjangoURL('delete_user', r'^delete_user/$', views.delete_user, app_name)
+    add_users = DjangoURL('add_users', r'^add_users/$', views.add_users, app_name)
 
 

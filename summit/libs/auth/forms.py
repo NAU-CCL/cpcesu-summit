@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Organization, UserProfile, UserGroup
+from .models import Organization, UserProfile, UserGroup, User, CESU
 
 
 class ProfileForm(forms.ModelForm):
@@ -9,7 +9,8 @@ class ProfileForm(forms.ModelForm):
         exclude = ['user']
         widgets = {
             'location': forms.TextInput(attrs={'placeholder': 'Street Address'}),
-            'address': forms.TextInput(attrs={'placeholder': 'City, State, Zip'})
+            'address': forms.TextInput(attrs={'placeholder': 'City, State, Zip'}),
+            'cesu': forms.TextInput(),
         }
 
 
@@ -18,3 +19,16 @@ class GroupForm(forms.ModelForm):
     class Meta:
         model = Organization
         fields = ['name', 'description', 'logo', 'type', 'contact']
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email', 'role', 'user_cesus']
+        widgets = {
+            
+        }
+    user_cesus = forms.ModelMultipleChoiceField(
+            queryset=CESU.objects.all(),
+            widget=forms.CheckboxSelectMultiple
+        )
+        

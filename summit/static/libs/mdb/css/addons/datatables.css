@@ -80,7 +80,7 @@ div.dataTables_wrapper div.dataTables_paginate ul.pagination {
 }
 
 div.dataTables_wrapper div.dataTables_paginate ul.pagination .page-item.active .page-link:focus {
-    background-color: #4285f4;
+    background-color: #f1f1f1
 }
 
 div.dataTables_wrapper div.dataTables_paginate ul.pagination .page-item .page-link:focus {
@@ -171,7 +171,7 @@ div.dataTables_wrapper div.dataTables_paginate ul.pagination {
 }
 
 div.dataTables_wrapper div.dataTables_paginate ul.pagination .page-item.active .page-link:focus {
-    background-color: #4285f4;
+    background-color: #f1f1f1
 }
 
 div.dataTables_wrapper div.dataTables_paginate ul.pagination .page-item .page-link:focus {

@@ -129,6 +129,7 @@ var agencies = [];
 $.getJSON("/api/federal_agencies/", function(data){
     $.each( data, function(key, agency){
         agencies.push(agency.name);
+        agencies.push(agency.abbrv);
     });
     if (document.getElementById("federal_agency")) {
         autocomplete(document.getElementById("federal_agency"), agencies, 'project_manager', "feds", "tech_rep");
@@ -143,6 +144,7 @@ $.getJSON("/api/partners/", function(data){
     $.each( data, function(key, partner){
         
             partners.push(partner.name);
+            partners.push(partner.abbrv);
         
     });
 
@@ -154,6 +156,7 @@ $.getJSON("/api/locations/", function(data){
     var locations = [];
     $.each( data, function(key, location){
         locations.push(location.name);
+        locations.push(location.abbrv);
     });
 
     autocomplete(document.getElementById("location"), locations);

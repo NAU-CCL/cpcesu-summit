@@ -127,15 +127,18 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
+    ROLE = choices.UserChoices.ROLE
     """
     User model
     """
+    
     email = models.EmailField(
         verbose_name='Email Address',
         max_length=255,
         unique=True
     )
 
+    role = models.CharField(max_length=50, choices=ROLE, default=ROLE[0], blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False,
                                    help_text="With this checked, it allows this user to access the administrative " +
@@ -148,6 +151,8 @@ class User(AbstractUser):
         blank=False,
         default=uuid.uuid4
     )
+
+    user_cesus = models.ManyToManyField(CESU, blank=True, related_name='user_cesus')
 
     objects = UserManager()
 
@@ -195,6 +200,7 @@ class Organization(AuditModel):
     type = models.CharField(max_length=50, choices=ORG_TYPE,
                             blank=True, verbose_name="Organization Type")
     contact = models.TextField(max_length=300, blank=True)
+    abbrv = models.TextField(max_length=300, blank=True)
 
     def __str__(self):
         return self.name

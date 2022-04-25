@@ -16,3 +16,8 @@ for agency in FederalAgency.objects.all():
 
 for cesu in CESUnit.objects.all():
 	created_org = CESU.objects.create(id= cesu.id, name= cesu.name, description= cesu.description, logo= cesu.avatar, contact='')
+
+CPCESU = CESU.objects.get(id=1)
+for user in User.objects.all():
+	if user.user_cesus.all().count() == 0:
+		user.user_cesus.add(CPCESU)

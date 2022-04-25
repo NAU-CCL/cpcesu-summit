@@ -9,7 +9,7 @@ $('td:nth-child(3),th:nth-child(3)').hide();
   {
     var test_var = document.getElementById("a"+orgid).innerText;
     console.log(test_var);
-    table.row(orgid).scrollTo();
+    table.row('#' + orgid).scrollTo(false);
     //table.search(test_var).draw();
     loadDetails(orgid);
   }
@@ -56,7 +56,7 @@ function loadProjectDetails(id){
       $.ajax({
       type: "GET",
           url: '/accounts/info_display',
-          data: {'userID': userID},
+          data: {'userID': userID, 'cesuID': cesuID},
           success: function(resp){
               console.log(resp);
               table_2 = $('#table_2').DataTable({
@@ -146,8 +146,8 @@ $("tr").each(function(index){
     let group = document.getElementById("a" + id).innerText
     table.append(`<a href="/accounts/edit_organization/${id}/" style="float:right; 
         font-size:24px"> <ion-icon name="create-outline"></ion-icon></a>`)
-    table.append(`<h5 class="center" style="align: block;">${group}</a></h5>`)
-    table.append(`<h5 class="center"></h4>`)
+    table.append(`<h4 class="center" style="align: block;">${group}</a></h4>`)
+    table.append(`<h4 class="center"></h4>`)
     
     let groupID = id;
     //let groupName = document.getElementById("a" + groupID).innerText;

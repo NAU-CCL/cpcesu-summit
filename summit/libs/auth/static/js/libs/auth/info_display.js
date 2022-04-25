@@ -5,14 +5,14 @@ $(document).ready(function(){
     console.log(cesuID);
     var personid = urlParams.get('id');
     var table = $('#main_table').DataTable();
+    table.order([1, "asc"]).draw();
     if (personid)
     {
-        var table_contents = document.getElementById(personid).innerText;
-        var splitArray = table_contents.split("\t");
-        var search_text = splitArray[0] + " " + splitArray[1];
-        console.log(splitArray);
-        table.search(search_text).draw();
-      loadDetails(personid);
+        //console.log(table.row('#' + 2472).index())
+        table.row('#' + personid).scrollTo(false, 5);
+        //table.scroller.toPosition(5);
+        
+        loadDetails(personid);
     }
 })
 
@@ -118,34 +118,27 @@ function loadDetails(id){
                 pic_container.append(`
                 <img src="/static/imgs/TEST_AVATAR.png" style="float:right; max-width: 80%; margin-top: 5%; margin-bottom: 5%">`)
                 
-                if (user.email_address)
-                {
-                    email.append(`
-                    ${user.email_address}
-                    <br/>
-                    `)
-                }
+                
+                email.append(`
+                ${user.email_address}
+                <br/>
+                `)
+            
 
-                if (user.phone_number)
-                {
-                    phone.append(`
-                    <span class="text-muted">
-                        Ph #: 
-                    </span>
-                    ${user.phone_number}
-                    <br/>
-                    `)
-                }
+                phone.append(`
+                <span class="text-muted">
+                    Ph #: 
+                </span>
+                ${user.phone_number}
+                <br/>
+                `)
 
-                if (user.fax_number)
-                {
-                    fax.append(`
-                    <span class="text-muted">
-                        Fax #: 
-                    </span>
-                    ${user.fax_number}
-                    `)
-                }
+                fax.append(`
+                <span class="text-muted">
+                    Fax #: 
+                </span>
+                ${user.fax_number}
+                `)
 
                 user_location.append(`
                     <span>

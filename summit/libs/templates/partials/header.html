@@ -8,11 +8,19 @@
 {% else %}
 <header>
 {% endif %}
+  
   <!--Fixed Nav Bar-->
   <nav class="navbar fixed-top navbar-expand-lg navbar-dark black">
+    
+    {% if request.session.cesu_image %}
+    <a class="navbar-brand" href="/">
+      <img height="50" src="{{request.session.cesu_image}}"/>
+    </a>
+    {% else %}
     <a class="navbar-brand" href="/">
       <img height="50" src="{% static 'imgs/iconsLogos/CPCESULogo_Short_Horizontal.png' %}"/>
     </a>
+    {% endif %}
 
     <!-- Collapse button -->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
@@ -37,7 +45,7 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+              <h5 class="modal-title" id="exampleModalLabel">About</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -119,8 +127,9 @@
             <a class="dropdown-item waves-effect waves-light" href="{% get_url_from_app_link 'summit.libs.auth' 'view_my_contact' %}">My account</a>
             {% if request.user.is_superuser %}
             <a class="dropdown-item waves-effect waves-light" href="{% get_url_from_app_link 'summit.libs.auth' 'cesu_selector' %}">Select CESU</a>
+            <a class="dropdown-item waves-effect waves-light" href="{% get_url_from_app_link 'summit.libs.auth' 'all_users' %}">Manage Users</a>
+      
             {% endif %}
-            <a class="dropdown-item waves-effect waves-light" href="{% url 'admin:index' %}">Admin site</a>
             <a class="dropdown-item waves-effect waves-light" href="{% url 'logout' %}">Log out</a>
           </div>
         </li>
@@ -147,25 +156,28 @@
       <div class="coverText">
         <h2>{{ heading2 }}</h2>
         <h1>{{ heading1 }}</h1>
-
         <p class="buttonsDiv">
-          
-          {% for button in buttons %}
-          {% if button.uses_reverse %}
-          <a href="{% url button.link %}" class="button" target="{{ button.target|default:'' }}">
-          
-          {% else %}
-          <a href="{{ button.link }}" class="button" target="{{ button.target|default:'' }}">
-          {% endif %}
-            {{ button.name }}
-          </a>
-          
+          {% for cesu in cesu_list %}
+            <button onclick="change_cesu({{cesu.id}})" class="btn btn-white pop" type="button" data-toggle="popover" animation=true data-placement="bottom" 
+            title="{{cesu.name}} CESU" 
+            data-content="
+              {{cesu.description}}
+              <div style='font-weight: bold'>
+              Contact:
+              </div>
+              {{cesu.contact}}
+            
+              "><img style="max-height: 50;" src="/data/{{cesu.logo}}"></img></button>
           {% endfor %}
-        </p>         
+        </p>    
+
+             
       {% endwith %}
       {% endif %}
     </div>
   </div>
+
+  
 
 
   {% endwith %}

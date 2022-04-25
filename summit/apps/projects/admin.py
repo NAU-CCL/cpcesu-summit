@@ -15,7 +15,7 @@ class ProjectAdmin(admin.ModelAdmin):
                     'field_of_science',
                     'final_report',
                     'fiscal_year',
-                    'location',
+                    #'location',
                     'init_start_date',
                     'monitoring',
                     'notes',

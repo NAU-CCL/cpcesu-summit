@@ -8,7 +8,19 @@
 <div class="card">
     <div class="row1">
         <div class="card-header col-sm-12">
-            <h1 align="center" class="card-header">CESU: {{object.p_num}} - {{ object.project_title }}</h1>
+            <h2 align="center" class="card-header">{{ object.project_title }}</h1>
+            
+            <div class="row">
+                <h5 class="col-lg">
+                {{object.federal_agency}}<ion-icon name="swap-horizontal-outline"></ion-icon>{{object.partner}} (${{object.budget}}, {{object.exec_start_date}})
+                </h5>
+            </div>
+            <div class="row">
+                <h5 class="col-sm">
+                    #{{object.p_num}}
+                </h5>
+            </div>
+
             {% if object.status == 'ARCHIVED' %}
             <h3 align="center" class="card-header" style="color: red;">This project is archived and cannot be edited. Please unarchive to edit.</h1>
             {% endif %}
@@ -64,7 +76,10 @@
                     </tr>
                     <tr>
                         <td><b>Location:</b></td>
-                        <td>{{ object.location }}</td>
+                        {% for place in object.location.all %}
+                            <td>{{ place }} ({{ place.abbrv }})</td>
+                        {% endfor %}
+                        
                     </tr>
 
                     <tr>
@@ -80,7 +95,7 @@
                         <td>{{ object.get_discipline_display }} </td>
                     </tr>
                     <tr>
-                        <td><b>Vet/Youth Support:</b></td>
+                        <td><b>Students Involved:</b></td>
                         <td>{{ object.get_vet_support_display }} </td>
                     </tr>
                     <tr>
@@ -95,11 +110,11 @@
                 <table class="table table-bordered">
                     <tbody>
                     <tr>
-                        <td><b>Budget:</b></td>
+                        <td><b>Initial Amount:</b></td>
                         <td>${{ object.budget }} </td>
                     </tr>
                     <tr>
-                        <td><b>Total Award Amt:</b></td>
+                        <td><b>Total Amount:</b></td>
                         <td>${{ total_award_amount }} </td>
                     </tr>
                     </tbody>
@@ -108,7 +123,7 @@
                 <table class="table table-bordered">
                     <tbody>
                         <tr>
-                            <td><b>Agency Project Manager:</b></td>
+                            <td><b>Federal Project Lead:</b></td>
                             {% if object.project_manager %}
                             <td>
                                 <a href="/accounts/all_contacts/?id={{object.project_manager.id}}">
@@ -120,7 +135,7 @@
                             {% endif %}
                         </tr>
                         <tr>
-                            <td><b>Agency Agreements Tech Rep:</b></td>
+                            <td><b>Federal Tech Rep:</b></td>
                             {% if object.tech_rep %}
                             <td>
                                 <a href="/accounts/all_contacts/?id={{object.tech_rep.id}}">
@@ -132,7 +147,7 @@
                             {% endif %}
                         </tr>
                         <tr>
-                            <td><b>Partner Principal Investigator:</b></td>
+                            <td><b>Principal Investigator:</b></td>
                             {% if object.pp_i %}
                             <td>
                                 <a href="/accounts/all_contacts/?id={{object.pp_i.id}}">
@@ -338,10 +353,10 @@
             {% for mod in mods %}
             <table class="table table-bordered">
                 <tr>
-                    <th>Number</th>
+                    <th>Mod Number</th>
                     <th>Type</th>
                     <th>Amount</th>
-                    <th>RC Approved</th>
+                    <th>Approved Date</th>
                     <th>Executed</th>
                     <th>Mod Files</th>
                     <th>Mod Status</th>

@@ -1,6 +1,7 @@
 function pageify(){
     $('.dtBasicExample').DataTable({
         retrieve: true,
+        "paging":   false,
         'ordering': true,
         "dom": '<"top"f>r<"bottom"litp><"clear">',
         columnDefs: [

@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group, Permission
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from summit.libs.auth.models import User, UserProfile, Partner, CESUnit, FederalAgency
+from summit.libs.auth.models import User, UserProfile, Partner, CESU, FederalAgency
 
 
 class UserCreationForm(forms.ModelForm):
@@ -63,7 +63,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'is_active', 'is_admin', 'is_superuser')
+        fields = ('email', 'role', 'first_name', 'last_name', 'is_active', 'is_admin', 'is_superuser')
 
     def clean_password(self):
         """
@@ -82,11 +82,12 @@ class UserAdmin(BaseUserAdmin):
     add_form = UserCreationForm
 
     # For displaying the user model
-    list_display = ('username', 'email', 'first_name', 'last_name', 'last_login', 'date_joined', 'is_active', 'is_admin')
+    filter_horizontal = ('user_cesus')
+    list_display = ('username', 'role', 'email', 'first_name', 'last_name', 'last_login', 'date_joined', 'is_active', 'is_admin')
     list_filter = ('is_admin', 'is_active')
     readonly_fields = ('date_joined', 'last_login')
     fieldsets = (
-        (None, {'fields': ('username', 'email', 'password')}),
+        (None, {'fields': ('username', 'email', 'password', 'role')}),
         ('Personal Info', {'fields': ('first_name', 'last_name')}),
         ('Permissions', {'fields': ('is_admin', 'is_superuser', 'user_permissions')}),
         ('Auditing', {'fields': ('is_active', 'date_joined', 'last_login')}),
@@ -100,13 +101,13 @@ class UserAdmin(BaseUserAdmin):
         }),
     )
     search_fields = ('username', 'email', 'first_name', 'last_name',)
-    ordering = ('username', 'email', 'first_name', 'last_name', 'is_admin')
+    ordering = ('username', 'email', 'role', 'first_name', 'last_name', 'is_admin')
     filter_horizontal = ()
 
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Partner)
-admin.site.register(CESUnit)
+admin.site.register(CESU)
 admin.site.register(FederalAgency)
 admin.site.register(UserProfile)
 admin.site.register(Permission)

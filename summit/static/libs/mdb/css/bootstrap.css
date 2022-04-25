@@ -1567,7 +1567,7 @@ pre code {
 }
 
 .table-striped tbody tr:nth-of-type(odd) {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0,0,0,.05);
 }
 
 .table-hover tbody tr:hover {
@@ -5406,6 +5406,7 @@ button.close {
   -ms-flex-direction: column;
   flex-direction: column;
   width: 100%;
+  color: #000;
   pointer-events: auto;
   background-color: #fff;
   background-clip: padding-box;

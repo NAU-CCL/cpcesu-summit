@@ -13,6 +13,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.files import File
 
+from django.db.models import Q
+
 from celery.result import AsyncResult
 import json
 
@@ -24,7 +26,22 @@ from .models import Project, File, Location, Modification, ModFile
 from .forms import ProjectForm, ProjectFileForm, LocationForm, ModificationForm, ModificationFileForm, ContactForm
 from .choices import ProjectChoices
 
+def file_upload(request):
+    if request.method == 'POST':
+        print(request.POST.get('project_id'))
+        print(request.FILES)
+        file_project = Project.objects.get(id= request.POST.get('project_id'))
 
+        files = [request.FILES.get('file[%d]' % i)
+            for i in range(0, len(request.FILES))]
+        print(files)
+        for f in files:
+            File.objects.create(file=f, project=file_project)
+        #for key, values in request.FILES.items():
+        #    for value in values:
+        #        
+        return JsonResponse({'hey':'this worked'})
+    return JsonResponse({'post':'false'})
 
 class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     template_name = 'apps/projects/project_all_fields.html'
@@ -58,11 +75,11 @@ class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             'header': {
             },
             'cssFiles': [
-                'libs/mdb/css/addons/datatables.min.css',
+                'libs/mdb/DataTables/datatables.min.css',
                 'css/datatables/dashboard.css'
             ],
             'jsFiles': [
-                'libs/mdb/js/addons/datatables.min.js',
+                'libs/mdb/DataTables/datatables.min.js',
                 'js/datatables/dashboard.js'
             ],
             'table2_disabled': True,
@@ -94,11 +111,11 @@ class ProjectPublicListView(ListView):
             'header': {
             },
             'cssFiles': [
-                'libs/mdb/css/addons/datatables.min.css',
+                'libs/mdb/DataTables/datatables.min.css',
                 'css/datatables/dashboard.css'
             ],
             'jsFiles': [
-                'libs/mdb/js/addons/datatables.min.js',
+                'libs/mdb/DataTables/datatables.min.js',
                 'js/datatables/dashboard.js'
             ],
             'project_url': 'summit.apps.projects:project-detail-public'
@@ -123,8 +140,8 @@ class ProjectPublicListView(ListView):
         pk_ = self.kwargs.get("id")
         return get_object_or_404(Project, pk=pk_)
 
-class ProjectDashboardView(LoginRequiredMixin, ListView):
-    template_name = 'apps/projects/project_index.html'
+class ProjectUploadView(LoginRequiredMixin, ListView):
+    template_name = 'apps/projects/project_upload.html'
     model = Project
     context_object_name = 'projects'
 
@@ -143,6 +160,7 @@ class ProjectDashboardView(LoginRequiredMixin, ListView):
         all_projects = Project.objects.only("id")
         user = self.request.user
         cesu = self.request.session.get('cesu')
+        cesu_logo = CESU.objects.get(id=cesu).logo
 
         print("session cesu: " + str(cesu))
 
@@ -186,24 +204,121 @@ class ProjectDashboardView(LoginRequiredMixin, ListView):
             'bannerTemplate': 'none',
             'header': {},
             'cssFiles': [
-                'libs/mdb/css/addons/datatables.min.css',
+                'libs/mdb/DataTables/datatables.min.css',
                 'css/datatables/dashboard.css',
                 'css/apps/projects/autofill.css',
             ],
             'jsFiles': [
-                'libs/mdb/js/addons/datatables.min.js',
-                'js/datatables/dashboard.js',
+                'libs/mdb/DataTables/datatables.min.js',
+                'js/datatables/upload_dashboard.js',
                 'js/apps/projects/filter.js',
                 'js/apps/projects/search.js',
                 'js/apps/projects/show_more.js',
                 'js/apps/projects/form-autofill-select.js',
-                'js/apps/projects/autocomplete.js'
+                'js/apps/projects/autocomplete.js',
+                'js/apps/projects/exportMode.js'
             ],
             'people': people,
             'parks': parks,
             'agencies': agencies,
             'partners': partners,
-            'cesu': cesu
+            'cesu': cesu,
+            'cesu_logo': cesu_logo
+
+        }
+        ctx = super(ProjectUploadView, self).get_context_data(**kwargs)
+        ctx = {**ctx, **context}
+        return ctx
+
+    # TODO: integrate this get_obkect into context
+    def get_object(self, **kwargs):
+        pk_ = self.kwargs.get("id")
+        return get_object_or_404(Project, pk=pk_)
+
+class ProjectDashboardView(LoginRequiredMixin, ListView):
+    template_name = 'apps/projects/project_index.html'
+    model = Project
+    context_object_name = 'projects'
+
+    permission_required = 'summit_projects.add_project'
+    permission_denied_message = 'You do not have the correction permissions to access this page.'
+    #raise_exception = False
+
+
+
+    def get_context_data(self, **kwargs):
+        
+        people = UserProfile.objects.all()
+        parks = Location.objects.all()
+        agencies = Organization.objects.all().filter(type="Federal Agency")
+        partners = Organization.objects.all().filter(type="Partner")
+        all_projects = Project.objects.only("id")
+        user = self.request.user
+        cesu = self.request.session.get('cesu')
+        cesu_logo = CESU.objects.get(id=cesu).logo
+
+        print("session cesu: " + str(cesu))
+
+        try:
+            profile = UserProfile.objects.get(user=user)
+        except ObjectDoesNotExist:
+            profile = None
+
+        if profile is not None:
+            try:
+                ces_unit = CESUnit.objects.get(id=profile.assigned_group.id)
+            except (ObjectDoesNotExist, AttributeError) as e:
+                ces_unit = None
+        else: ces_unit = None
+
+#        user_filtered_projects = all_projects.filter(cesu_unit=ces_unit, staff_member=profile, status="DRAFT") \
+#                                 | all_projects.filter(cesu_unit=None, status="DRAFT") \
+#                                 | all_projects.filter(staff_member=None, status="DRAFT")
+
+        dashboard_projects = []
+
+#        for proj in user_filtered_projects:
+#            modifications = Modification.objects.filter(project=proj)
+#            total_mod_amount = 0
+#            for mod in modifications:
+#                total_mod_amount += mod.mod_amount
+#            proj.total_award_amount = (proj.budget or 0) + total_mod_amount
+#            dashboard_projects.append(proj)
+
+
+        #
+        #'js/datatables/no_sort_datatable.js',
+        context = {
+            'name': self.kwargs['name'],
+            'pagetitle': 'Project Dashboard',
+            'table1_header': 'Project Search',
+            'table1_desc': 'A table to be filled with projects matching your search criteria',
+            'table2_header': 'All Recent Projects',
+            'table2_desc': 'A table of all of the projects that have been created in the last 30 days',
+            'title': 'Project Dashboard',
+            'bannerTemplate': 'none',
+            'header': {},
+            'cssFiles': [
+                'libs/mdb/DataTables/datatables.min.css',
+                'css/datatables/dashboard.css',
+                'css/apps/projects/autofill.css',
+            ],
+            'jsFiles': [
+                'libs/mdb/DataTables/datatables.min.js',
+                'js/datatables/dashboard.js',
+                'js/apps/projects/filter.js',
+                'js/apps/projects/search.js',
+                'js/apps/projects/show_more.js',
+                'js/apps/projects/form-autofill-select.js',
+                'js/apps/projects/autocomplete.js',
+                'js/apps/projects/exportMode.js'
+            ],
+            'people': people,
+            'parks': parks,
+            'agencies': agencies,
+            'partners': partners,
+            'cesu': cesu,
+            'cesu_logo': cesu_logo
 
         }
         ctx = super(ProjectDashboardView, self).get_context_data(**kwargs)
@@ -250,11 +365,11 @@ class ProjectDetail(LoginRequiredMixin, DetailView):
             'header': {
             },
             'cssFiles': [
-                'libs/mdb/css/addons/datatables.min.css',
+                'libs/mdb/DataTables/datatables.min.css',
                 'css/datatables/dashboard.css'
             ],
             'jsFiles': [
-                'libs/mdb/js/addons/datatables.min.js',
+                'libs/mdb/DataTables/datatables.min.js',
                 'js/datatables/dashboard.js',
                 'js/apps/projects/editProject.js'
 
@@ -292,11 +407,11 @@ class ProjectPublicDetail(DetailView):
             'pagetitle': 'Projects Details',
             'title': 'Projects Details',
             'cssFiles': [
-                'libs/mdb/css/addons/datatables.min.css',
+                'libs/mdb/DataTables/datatables.min.css',
                 'css/datatables/dashboard.css'
             ],
             'jsFiles': [
-                'libs/mdb/js/addons/datatables.min.js',
+                'libs/mdb/DataTables/datatables.min.js',
                 'js/datatables/dashboard.js'
             ],
             'total_award_amount': self.total_award_amount()
@@ -353,7 +468,7 @@ class ProjectCreate(CreateView):
                     'css/apps/projects/autofill.css',
                 ],
                 'jsFiles': [
-                    'libs/mdb/js/addons/datatables.min.js',
+                    'libs/mdb/DataTables/datatables.min.js',
                     'js/datatables/no_sort_datatable.js',
                     'js/apps/projects/autocomplete.js',
                     'js/apps/projects/form-autofill-select.js',
@@ -378,11 +493,11 @@ class ProjectCreate(CreateView):
             'title': 'Create Project',
             'bannerTemplate': 'none',
             'cssFiles': [
-                'libs/mdb/css/addons/datatables.min.css',
+                'libs/mdb/DataTables/datatables.min.css',
                 'css/datatables/dashboard.css'
             ],
             'jsFiles': [
-                'libs/mdb/js/addons/datatables.min.js',
+                'libs/mdb/DataTables/datatables.min.js',
                 'js/datatables/dashboard.js',
                 'js/apps/projects/form-autofill-select.js',
             ],
@@ -803,11 +918,11 @@ class ProjectModifications(CreateView):
             'pagetitle': 'Project Modifications',
             'title': 'Project Modifications',
             'cssFiles': [
-                'libs/mdb/css/addons/datatables.min.css',
+                'libs/mdb/DataTables/datatables.min.css',
                 'css/datatables/dashboard.css'
             ],
             'jsFiles': [
-                'libs/mdb/js/addons/datatables.min.js',
+                'libs/mdb/DataTables/datatables.min.js',
                 'js/datatables/dashboard.js'
             ],
             'project': get_object_or_404(Project, pk=self.kwargs.get("id")),
@@ -871,11 +986,11 @@ class ProjectModEdit(UpdateView):
             'pagetitle': 'Project Modifications',
             'title': 'Project Modifications',
             'cssFiles': [
-                'libs/mdb/css/addons/datatables.min.css',
+                'libs/mdb/DataTables/datatables.min.css',
                 'css/datatables/dashboard.css'
             ],
             'jsFiles': [
-                'libs/mdb/js/addons/datatables.min.js',
+                'libs/mdb/DataTables/datatables.min.js',
                 'js/datatables/dashboard.js'
             ],
             'project': get_object_or_404(Project, pk=self.kwargs.get("id")),
@@ -932,11 +1047,11 @@ class LocationListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             'header': {
             },
             'cssFiles': [
-                'libs/mdb/css/addons/datatables.min.css',
+                'libs/mdb/DataTables/datatables.min.css',
                 'css/datatables/dashboard.css'
             ],
             'jsFiles': [
-                'libs/mdb/js/addons/datatables.min.js',
+                'libs/mdb/DataTables/datatables.min.js',
                 'js/datatables/dashboard.js'
             ]
         }
@@ -961,11 +1076,11 @@ class LocationCreate(CreateView):
             'pagetitle': 'Create Location',
             'title': 'Create Location',
             'cssFiles': [
-                'libs/mdb/css/addons/datatables.min.css',
+                'libs/mdb/DataTables/datatables.min.css',
                 'css/datatables/dashboard.css'
             ],
             'jsFiles': [
-                'libs/mdb/js/addons/datatables.min.js',
+                'libs/mdb/DataTables/datatables.min.js',
                 'js/datatables/dashboard.js'
             ],
             'form': self.get_form_class(),
@@ -1091,19 +1206,19 @@ def request_project_info(request, project_id):
 
 
 from rest_framework import viewsets
-from .serializers import FederalAgencySerializer, PartnerSerializer, LocationSerializer, UserProfileSerializer
+from .serializers import FederalAgencySerializer, OrganizationSerializer, PartnerSerializer, LocationSerializer, UserProfileSerializer
 
 
 class FederalAgencyViewSet(viewsets.ModelViewSet):
-    queryset = FederalAgency.objects.all().order_by('name')
-    serializer_class = FederalAgencySerializer
+    queryset = Organization.objects.filter(type="Federal Agency").order_by('name')
+    serializer_class = OrganizationSerializer
     http_method_names = ['get']
     pagination_class = None
 
 
 class PartnerViewSet(viewsets.ModelViewSet):
-    queryset = Partner.objects.all().order_by('name')
-    serializer_class = PartnerSerializer
+    queryset = Organization.objects.filter(type="Partner").order_by('name')
+    serializer_class = OrganizationSerializer
     http_method_names = ['get']
     pagination_class = None
 
@@ -1222,6 +1337,7 @@ def project_filter(request):
 def change_cesu(request):
     if request.is_ajax():
         cesu_id = request.GET.get('cesu_id')
+        request.session['cesu_image'] = CESU.objects.get(id=int(cesu_id)).logo.url
         request.session['cesu'] = int(cesu_id)
         print("updated cesu session id: " + str(request.session['cesu']))
 
@@ -1231,87 +1347,109 @@ def change_cesu(request):
 
 def project_search(request):
     if request.is_ajax():
-        FY = request.GET.get('FY')
-        Partner_name = request.GET.get('partner_name')
-        Partner_name.strip()
-        AwardNum = request.GET.get('AwardNumber')
-        AwardNum.strip()
-        place = request.GET.get('place')
-        place.strip()
-        status = request.GET.get('status')
-        status.strip()
-        status.upper()
-        agency_name = request.GET.get('agency')
-        agency_name.strip()
-        title = request.GET.get('title')
-        title.strip()
-        p_i = request.GET.get('pi')
-        p_i.strip()
-        p_i_list = p_i.split()
-        p_m= request.GET.get('pm')
-        p_m.strip()
-        p_m_list = p_m.split()
-        cesu = request.GET.get('cesu')
-        partners = Organization.objects.all().filter(type="Partner")
-        agencies = Organization.objects.all().filter(type="Federal Agency")
-        projects = Project.objects.all().filter(cesu_unit = cesu)
-        projects = projects.only("project_id", "status", "federal_agency", "partner", "fiscal_year", "p_num",
-                                        "project_title", "total_award_amount", "tent_start_date", "tent_end_date",
-                                        "project_manager", "pp_i")
+        if (request.GET.get('id')):
+            proj_id = request.GET.get('id')
+            file_list = File.objects.filter(project=-1).values()
+            file_project = Project.objects.get(id=proj_id)
+            file_list = file_list | File.objects.filter(project=file_project).values()
+            print(file_list)
+            return JsonResponse({'files': list(file_list)})
+        else:
+            FY = request.GET.get('FY')
+            Partner_name = request.GET.get('partner_name')
+            Partner_name.strip()
+            AwardNum = request.GET.get('AwardNumber')
+            AwardNum.strip()
+            place = request.GET.get('place')
+            place.strip()
+            status = request.GET.get('status')
+            status.strip()
+            status.upper()
+            agency_name = request.GET.get('agency')
+            agency_name.strip()
+            title = request.GET.get('title')
+            title.strip()
+            p_i = request.GET.get('pi')
+            p_i.strip()
+            p_i_list = p_i.split()
+            p_m= request.GET.get('pm')
+            p_m.strip()
+            p_m_list = p_m.split()
+            cesu = request.GET.get('cesu')
+            partners = Organization.objects.all().filter(type="Partner")
+            agencies = Organization.objects.all().filter(type="Federal Agency")
+            projects = Project.objects.all().filter(cesu_unit = cesu)
+            projects = projects.only("project_id", "status", "federal_agency", "partner", "fiscal_year", "p_num",
+                                            "project_title", "total_award_amount", "tent_start_date", "tent_end_date",
+                                            "project_manager", "pp_i")
+            partner_ids = Organization.objects.filter(Q(name__icontains=Partner_name) | Q(abbrv__icontains=Partner_name)).values_list("id", flat=True)
+            agency_ids= Organization.objects.filter(Q(name__icontains=agency_name)| Q(abbrv__icontains=agency_name)).values_list("id", flat=True)
+            park_id = Location.objects.filter(Q(name__icontains=place) | Q(abbrv__icontains=place)).values_list("id", flat=True)
+            if(FY != ""):
+                print("FY")
+                projects = projects.filter(fiscal_year__contains=FY)
+            if (AwardNum != ""):
+                print("awardnum")
+                projects = projects.filter(p_num__icontains=AwardNum)
+            if (Partner_name != ""):
+                print("partner")
+                projects = projects.filter(partner_id__in=partner_ids)
+            if (place != ""):
+                print("place")
+                
+                projects = projects.filter(location__in=park_id)
+            if (agency_name != ""):
+                print("agency")
+                projects = projects.filter(federal_agency_id__in=agency_ids)
+            if (status != "" and status !=""):
+                print("status")
+                projects = projects.filter(status__icontains=status)
+            if (title != ""):
+                print("title")
+                projects = projects.filter(project_title__icontains=title)
+            if (p_i != ""):
+                print("p_i")
+                if p_i_list:
+                    if len (p_i_list) == 1:
+                        pi_id = UserProfile.objects.filter(first_name__icontains=p_i_list[0]) | UserProfile.objects.filter(
+                            last_name__icontains=p_i_list[0])
+                    else:
+                        pi_id = UserProfile.objects.filter(first_name__icontains=p_i_list[0]) & UserProfile.objects.filter(
+                            last_name__icontains=p_i_list[1])
+                    pi_id = pi_id.values_list("id", flat=True)
+                projects = projects.filter(pp_i__in=pi_id)
+            if (p_m != ""):
+                print("p_m")
+                if p_m_list:
+                    if len (p_m_list) == 1:
+                        pm_id = UserProfile.objects.filter(first_name__icontains=p_m_list[0]) & UserProfile.objects.filter(last_name__icontains=p_m_list[0])
+                    else:
+                        pm_id = UserProfile.objects.filter(first_name__icontains=p_m_list[0]) & UserProfile.objects.filter(last_name__icontains=p_m_list[1])
+                    pm_id = pm_id.values_list("id", flat=True)
+                projects = projects.filter(project_manager__in=pm_id)
 
-        partner_ids = Organization.objects.filter(name__icontains=Partner_name).values_list("id", flat=True)
-        agency_ids= Organization.objects.filter(name__icontains=agency_name).values_list("id", flat=True)
-        park_id = Location.objects.filter(name__icontains=place).values_list("id", flat=True)
-        if(FY != ""):
-            print("FY")
-            projects = projects.filter(fiscal_year__contains=FY)
-        if (AwardNum != ""):
-            print("awardnum")
-            projects = projects.filter(p_num__icontains=AwardNum)
-        if (Partner_name != ""):
-            print("partner")
-            projects = projects.filter(partner_id__in=partner_ids)
-        if (place != ""):
-            print("place")
-            projects = projects.filter(location_id__in=park_id)
-        if (agency_name != ""):
-            print("agency")
-            projects = projects.filter(federal_agency_id__in=agency_ids)
-        if (status != "" and status !=""):
-            print("status")
-            projects = projects.filter(status__icontains=status)
-        if (title != ""):
-            print("title")
-            projects = projects.filter(project_title__icontains=title)
-        if (p_i != ""):
-            print("p_i")
-            if p_i_list:
-                if len (p_i_list) == 1:
-                    pi_id = UserProfile.objects.filter(first_name__icontains=p_i_list[0]) | UserProfile.objects.filter(
-                        last_name__icontains=p_i_list[0])
-                else:
-                    pi_id = UserProfile.objects.filter(first_name__icontains=p_i_list[0]) & UserProfile.objects.filter(
-                        last_name__icontains=p_i_list[1])
-                pi_id = pi_id.values_list("id", flat=True)
-            projects = projects.filter(pp_i__in=pi_id)
-        if (p_m != ""):
-            print("p_m")
-            if p_m_list:
-                if len (p_m_list) == 1:
-                    pm_id = UserProfile.objects.filter(first_name__icontains=p_m_list[0]) & UserProfile.objects.filter(last_name__icontains=p_m_list[0])
-                else:
-                    pm_id = UserProfile.objects.filter(first_name__icontains=p_m_list[0]) & UserProfile.objects.filter(last_name__icontains=p_m_list[1])
-                pm_id = pm_id.values_list("id", flat=True)
-            projects = projects.filter(project_manager__in=pm_id)
-
-        projects = projects.filter().exclude(status__icontains="archived")
-        projects = projects.values()
-        managers = UserProfile.objects.all().values()
-        agencies = agencies.values()
-        partners = partners.values()
-        return JsonResponse({'projects': list(projects), 'agencies': list(agencies), 'partners': list(partners),
-                             'managers': list(managers)})
+            projects = projects.filter().exclude(status__icontains="archived")
+            projects = projects.values()
+            managers = UserProfile.objects.all().values()
+            agencies = agencies.values()
+            partners = partners.values()
+            file_list = File.objects.filter(project=-1).values()
+            for project in projects:
+                file_project = Project.objects.get(id=project.get('id'))
+                file_list = file_list | File.objects.filter(project=file_project).values()
+            return JsonResponse({'projects': list(projects), 'agencies': list(agencies), 'partners': list(partners),
+                                'managers': list(managers), 'files': list(file_list)})
+        
 
     projects = Project.objects.filter()
     return JsonResponse({'projects': list(projects)})
 
+def delete_file(request):
+    if request.is_ajax():
+        file_id = request.POST.get('id')
+        selected_file = File.objects.get(id = file_id)
+        selected_file.delete()
+        return_file = File.objects.filter(id = file_id).values()
+        return JsonResponse({"file": list(return_file)})
+    return_user = File.objects.filter(id = file_id).values()
+    return JsonResponse({"user": list(return_user)})

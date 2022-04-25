@@ -1,0 +1,38 @@
+<form method="post" class="card col-lg-6" style="display: inline-block;">
+  {% csrf_token %}
+  <div class="row">
+      
+      <div >
+        <h2>Add New User</h2>
+          <table>
+              <tbody>
+                  <tr>
+                      <td><b>{{ user_form.first_name.label }}:</b></td><td>{{ user_form.first_name }}</td>
+                  </tr>
+                  <tr>
+                      <td><b>{{ user_form.last_name.label }}:</b></td><td>{{ user_form.last_name }}</td>
+                  </tr>
+                  <tr>
+                      <td><b>{{ user_form.email.label }}:</b></td><td>{{ user_form.email }}</td>
+                  </tr>
+                  <tr>
+                        <td><b>Role:</b></td><td>{{ user_form.role }}</td>
+                  </tr>
+                  {% if request.user.is_authenticated and request.user.is_superuser %}
+                  <tr>
+                        <td><b>User CESUS:</b></td><td>{{ user_form.user_cesus }}</td>
+                  </tr>
+                  {% endif %}
+
+              </tbody>
+          </table>
+          <div>
+              <input class="btn btn-light" type="submit" value="Submit" />
+              <button class="btn btn-light" onclick="history.back()">Cancel</button>  
+          </div>
+
+          
+      </div>
+  </div>
+</form>
+

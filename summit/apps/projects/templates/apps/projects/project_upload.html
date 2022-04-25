@@ -1,0 +1,170 @@
+{% extends 'layouts/base.html' %}
+{% load common_tags %}
+{% load static %}
+{% block primary %}
+
+    {% csrf_token %}
+    <script>
+        const cesuID = {{cesu}};
+        var csrf_token = '{{ csrf_token }}';
+    </script>
+
+
+    {% if pagetitle %}
+    <h1 style="text-align: center" class="all-header">
+        Upload Manager
+        <a class="btn btn-primary btm-sm waves-effect right-button" href="/projects/create">Create Project</a>
+    </h1>
+    {% else %}
+    <h1 style="text-align: center">PROJECT PAGE</h1>
+    {% endif %}
+    
+    <!--Div that contains the search bar-->
+    <div id ="advancedSearch" class="container-fluid form-group">
+        
+        <div>
+            <h5><b>{{ table1_header }}</b></h5>
+            <p class="animated fadeIn text-muted">{{ table1_desc }}</p>
+        </div>
+        
+        <label for="FY">Fiscal Year: </label>
+        <input type="number" id="FY" value="">
+        <label for="Title">Title: </label>
+        <input type="text" id="Title" value="">
+        <label for="AwardNum">Award Number: </label>
+        <input type="text" id="AwardNum" name="AwardNum" value="">
+        <span>
+            <button id="search-show-more-button" class="btn btn-outline-dark btn-sm m-0">
+                Show More &#9660
+            </button>
+            <button id="search-show-less-button" class="btn btn-outline-dark btn-sm m-0 invisible">
+                Show Less &#9650
+            </button>
+        </span>
+        
+
+        <div id="search-show-more" class="invisible">
+            <label for="Place">Place: </label>
+            <span class="autocomplete">
+                <input id="location" type="text" name="place" placeholder="Place" value="{{ form.location.value|default:'' }}" autocomplete="off" value="{{location.name}}">
+            </span>
+            <label for="Status">Status: </label>
+            <select id="Status" class="form-select">
+                <option selected value="">Status</option>
+                <option value="DRAFT">Draft</option>
+                <option value="EXECUTED">Executed</option>
+                <option value="CLOSED">Closed</option>
+                <option value="APPROVED">Approved</option>
+                <option value="LEGACY">Legacy</option>
+            </select>
+            <label for="Agency">Agency: </label>
+            <span class="autocomplete">
+                <input id="Agency" type="text" name="federal_agency" placeholder="Federal Agency" value="{{ form.federal_agency.value|default:'' }}" autocomplete="off" value="{{federal_agency.name}}">
+            </span><br/>
+            </td>
+            <label for="partner">Partner: </label>
+            <span class="autocomplete">
+                <input id="partner" type="text" name="partner" placeholder="Partner" value="{{ form.partner.value|default:'' }}" autocomplete="off" value="{{partner.name}}">
+            </span>
+            <label for="PI">PI: </label>
+            <span class="autocomplete">
+                <input id="pp_i" type="text" name="pp_i" placeholder="Principal Investigator" value="{{ form.pp_i.value|default:'' }}" autocomplete="off" value="{{pp_i.name}}">
+            </span>
+            
+            <label for="PM">PL: </label>
+            <span class="autocomplete">
+                <input id="project_manager" type="text" name="project_manager" placeholder="Project Manager" value="{{ form.project_manager.value|default:'' }}" autocomplete="off" value="{{project_manager.name}}">
+            </span>
+
+            <label for="tech_lead">Tech Rep: </label>
+            <span class="autocomplete">
+                <input id="tech_lead" type="text" name="tech_lead" placeholder="" value="{{ form.tech_lead.value|default:'' }}" autocomplete="off" value="{{tech_lead.name}}">
+            </span>
+        </div>
+        <div>
+            <button type="button" id="uploadSearchButton" class="btn btn-outline-success btn-sm m-0 waves-effect">Submit</button>
+        </div>
+
+    <!--Div that contains the search results-->
+    <hr />
+    
+    <div class="container-fluid">
+        <div>
+            <button style="float: right;"class="btn btn-outline-dark btn-sm m-0 waves-effect" id="export-mode-button">
+                <ion-icon name="share-outline"></ion-icon>
+            </button>
+        </div>
+        <br/>
+        
+        <form action="{% get_url_from_app_link 'summit.apps.projects' 'project_export_csv' %}" method="post" enctype="multipart/form-data"
+              name="export_form">
+            {% csrf_token %}
+            <br/>
+            <button style="float: right;" class="btn btn-outline-primary btn-sm m-0 waves-effect" type="submit" value="Submit" id="export-button">
+                Export Selected Projects
+            </button>
+            
+        <!--The below was likely part of an old advanced search-->
+        <!--<div id="search" class ="visible">
+            <label for="start_date">From(year): </label>
+            <input type="number" id="start_date" name="start_date">
+            <label for="end_date">To(year): </label>
+            <input type="number" id="end_date" name="end_date">
+            
+            <button type="button" id="filter">Submit</button>
+            <br>
+            <button type="button" id = "advancedSearchButton" class="btn btn-outline-success btn-sm m-0 waves-effect" style="float: left;">
+                Advanced Search
+            </button>
+        </div>-->
+        <div id="load-container">
+            <div id="overlay" class="invisible">
+                <div class="spinner"></div>
+            </div>
+            <table id="replace" class="main_table table-responsive-sm table-striped table-bordered" style="width: 100%; float:left;">
+                <thead>
+                <tr>
+                    <th style="max-width: 30px">
+                        <input type="checkbox" id="select_all_1">
+                    </th>
+                    <!--<th style="max-width: 75px">Status</th>-->
+                    <th style="max-width: 150px">Award Info</th>
+                    <th style="max-width: 400px">Title</th>
+                    <th style="max-width: 50px">Timeframe</th>
+                    <th style="max-width: 100px">File Upload</th>
+                    <!--<th>View Details</th>!-->
+                </tr>
+                </thead>
+                <tbody id="filterable">
+                        <tr class="project">
+                            <th scope="row">
+                                <input class="export_list_1" type="checkbox" name="export_list" value=" project.id "/>
+                            </th>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><!--<a href=" get_url_from_app_link 'summit.apps.projects' 'project_detail' id=project.id "></a>--></td>
+                            <!--<td>
+                                <a class="btn btn-outline-primary btn-sm m-0 waves-effect"
+                                   href=" get_url_from_app_link 'summit.apps.projects' 'project_detail' id=project.id ">
+                                    Details
+                                </a>
+                            </td>!-->
+                        </tr>
+                </tbody>
+            </table>
+        </div>
+        </form>
+            <br>
+    </div>
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'apps/projects/partials/side_nav.html' %}
+{% endblock %}
+
+{% block layout_wrapper %}
+    {% with layout='left'  %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}

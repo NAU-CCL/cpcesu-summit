@@ -160,3 +160,6 @@ venv-prod/
 
 collected_static/
 .idea/
+data/projects/
+data/autofill/
+data/

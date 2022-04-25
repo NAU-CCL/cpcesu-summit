@@ -16,11 +16,12 @@ class DjangoLink:
 
 
 class DjangoURL:
-    def __init__(self, ident, regex, view_obj, app_name, kwargs=None):
+    def __init__(self, ident, regex, view_obj, app_name, kwargs=None, link_args=None):
         self.ident = ident
         self.regex = regex
         self.view_obj = view_obj
         self.kwargs = kwargs
+        self.link_args = link_args
 
 
 # Nav links

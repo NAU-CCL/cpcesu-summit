@@ -42,10 +42,6 @@ with open('CPCESU_Summit-Data-Import_FINAL.csv', newline='') as csvfile:
         name = row['Partner'],
         type = 'Partner'
       )[0]
-    if (row['Location'] != ""):
-      project_location = Location.objects.get_or_create(
-        name = row['Location']
-      )[0]
     if (row['Partner Principal Investigator First Name'] != ""):
       ppi = UserProfile.objects.get_or_create(
         first_name = row['Partner Principal Investigator First Name'],
@@ -64,14 +60,14 @@ with open('CPCESU_Summit-Data-Import_FINAL.csv', newline='') as csvfile:
         last_name = row['Federal Project Lead Last Name'], 
         assigned_group = fed_agency
       )[0]
-    Project.objects.create(
+    new_proj = Project.objects.create(
       cesu_unit = CESU.objects.get(id=1),
       federal_agency = fed_agency,
       partner = project_partner,
       fiscal_year = row['Fiscal Year'],
       p_num = row['Award Number'],
       local_num = row['Local Number'],
-      location = project_location,
+      #location = project_location,
       project_title = row['Project Title'],
       type = row['Type'],
       discipline = row['Discipline'],
@@ -94,3 +90,11 @@ with open('CPCESU_Summit-Data-Import_FINAL.csv', newline='') as csvfile:
       status = "CLOSED" if is_before_22217 else "AWARDED",
       award_office = row['Awarding Office']
     )
+    if (row['Location'] != ""):
+      location_arr = (row['Location']).split("| ")
+      print(location_arr)
+      for entry in location_arr:
+        new_location = Location.objects.get_or_create(
+          abbrv = entry.strip()
+        )[0]
+        new_proj.location.add(new_location)

@@ -6,8 +6,9 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic import ListView
+from django.db.models import Q
 
-from .forms import ProfileForm, GroupForm
+from .forms import ProfileForm, GroupForm, UserForm
 from .models import User, UserProfile, UserGroup, CESUnit, FederalAgency, Partner, CESU, Organization
 from summit.apps.projects.models import Project
 
@@ -43,11 +44,11 @@ class CESUSwitcherView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
         context = {
             'cssFiles': [
-                'libs/mdb/css/addons/datatables.min.css',
+                'libs/mdb/DataTables/datatables.min.css',
                 'css/datatables/dashboard.css',
             ],
             'jsFiles': [
-                'libs/mdb/js/addons/datatables.min.js',
+                'libs/mdb/DataTables/datatables.min.js',
                 'js/libs/auth/cesu_switcher.js'
             ],
             "cesu_list": cesu_list
@@ -191,13 +192,13 @@ def edit_contact(request, profile_id=-1):
 def all_contacts(request, name):
     template_name = "registration/all_contacts.html"
 
-    session_cesu = request.session.get('cesu')
-    cesu_name = CESU.objects.get(id=session_cesu)
-    profiles = UserProfile.objects.all().filter(cesu = session_cesu)
+    cesu = request.session.get('cesu')
+    cesu_name = CESU.objects.get(id=cesu)
+    profiles = UserProfile.objects.all().filter(cesu = cesu)
     profiles = profiles.order_by('assigned_group', 'last_name', 'first_name')
     
 
-    print("session cesu for contacts: " + str(session_cesu))
+    print("session cesu for contacts: " + str(cesu))
 
     print(name)
 
@@ -207,16 +208,16 @@ def all_contacts(request, name):
         'title': 'All Contacts',
         'bannerTemplate': 'none',
         'cssFiles': [
-            'libs/mdb/css/addons/datatables.min.css',
+            'libs/mdb/DataTables/datatables.min.css',
             'css/datatables/dashboard.css'
         ],
         'jsFiles': [
-            'libs/mdb/js/addons/datatables.min.js',
+            'libs/mdb/DataTables/datatables.min.js',
             'js/datatables/no_sort_datatable.js',
             'js/libs/auth/info_display.js'
         ],
         'query': profiles,
-        'cesu': session_cesu,
+        'cesu': cesu,
         'cesu_name': cesu_name
     }
 
@@ -228,7 +229,7 @@ def all_contacts(request, name):
 def all_organizations(request, name):
     template_name = "registration/all_organizations.html"
 
-    session_cesu = request.session.get('cesu')
+    cesu = request.session.get('cesu')
 
     cesus = CESU.objects.all()
     feds = FederalAgency.objects.all()
@@ -270,16 +271,45 @@ def all_organizations(request, name):
         'title': 'All Organizations',
         'bannerTemplate': 'none',
         'cssFiles': [
-            'libs/mdb/css/addons/datatables.min.css',
+            'libs/mdb/DataTables/datatables.min.css',
             'css/datatables/dashboard.css'
         ],
         'jsFiles': [
-            'libs/mdb/js/addons/datatables.min.js',
+            'libs/mdb/DataTables/datatables.min.js',
             'js/datatables/no_sort_datatable.js',
             'js/libs/auth/org_info.js'
         ],
         'query': groups,
-        'cesu': session_cesu
+        'cesu': cesu
+    }
+
+    return render(request, template_name, context)
+
+def all_users(request, name):
+    template_name = "registration/all_users.html"
+
+    cesu = request.session.get('cesu')
+    cesu_name = CESU.objects.get(id=cesu)
+    users = User.objects.filter(user_cesus__in=[cesu])
+    users = users.order_by('last_name', 'first_name')
+
+    context = {
+        'name': name,
+        'pagetitle': 'All Users',
+        'title': 'All Users',
+        'bannerTemplate': 'none',
+        'cssFiles': [
+            'libs/mdb/DataTables/datatables.min.css',
+            'css/datatables/dashboard.css'
+        ],
+        'jsFiles': [
+            'libs/mdb/DataTables/datatables.min.js',
+            'js/datatables/no_sort_datatable.js',
+            'js/libs/auth/user_info_display.js'
+        ],
+        'query': users,
+        'cesu': cesu,
+        'cesu_name': cesu_name
     }
 
     return render(request, template_name, context)
@@ -339,11 +369,11 @@ def manage_organization(request, name='summit.libs.auth.manage_organization', gr
         'title': 'All Users in Organization',
         'bannerTemplate': 'none',
         'cssFiles': [
-            'libs/mdb/css/addons/datatables.min.css',
+            'libs/mdb/DataTables/datatables.min.css',
             'css/datatables/dashboard.css'
         ],
         'jsFiles': [
-            'libs/mdb/js/addons/datatables.min.js',
+            'libs/mdb/DataTables/datatables.min.js',
             'js/datatables/no_sort_datatable.js',
             'js/libs/auth/manage_org.js',
             'js/libs/auth/add_org_tab_bg.js',
@@ -367,7 +397,7 @@ def create_contact(request, name="summit.libs.auth_Create Contact", group_id=0):
         profile_form = ProfileForm(request.POST, request.FILES)
 
         if profile_form.is_valid():
-            print(profile_form.cesu)
+            
             profile_form.save()
             return HttpResponseRedirect(reverse('summit.libs.auth:all_contacts'))
     elif group_id > 0:
@@ -487,6 +517,87 @@ def edit_organization(request, name="summit.libs.auth:edit_organization", group_
 
     return render(request, template_name, context)
 
+@login_required()
+def create_user(request, name="summit.libs.auth.create_user"):
+    template_name = "registration/create_user.html"
+
+    cesu = request.session.get('cesu')
+    other_users = User.objects.filter(~Q(user_cesus__in=[cesu]))
+
+    if request.method == "POST" and request.POST:
+        user_form = UserForm(request.POST, request.FILES)
+
+        if user_form.is_valid():
+            
+            user_form.save()
+            return HttpResponseRedirect(reverse('summit.libs.auth:all_users'))
+    else:
+        user_form = UserForm()
+
+    context = {
+        'name': name,
+        'pagetitle': 'Contact',
+        'title': 'Create Contact',
+        'bannerTemplate': 'none',
+        'cssFiles': [
+            'libs/mdb/DataTables/datatables.min.css',
+            'css/datatables/dashboard.css',
+            # 'css/apps/core/testing.css'
+        ],
+        'jsFiles': [
+            'js/libs/auth/add_people_tab_bg.js',
+            'libs/mdb/DataTables/datatables.min.js',
+            'js/datatables/dashboard.js',
+            'js/libs/auth/add_existing_users.js'
+        ],  
+        'user_form': user_form,
+        'other_users': other_users
+    }
+
+    return render(request, template_name, context)
+
+@login_required()
+def edit_user(request, profile_id=-1, name="libs.auth.edit_user"):
+    template_name = 'registration/edit_user.html'
+
+    try:
+        profile_id = int(profile_id)
+        if profile_id <= 0:
+            user_profile = User.objects.get(user=request.user.id)
+        else:
+            user_profile = User.objects.get(id=profile_id)
+    except ObjectDoesNotExist:
+        user_profile = None
+
+    if request.method == "POST" and request.POST:
+        if user_profile is None:
+            user_profile = User(user=request.user)
+            user_profile.save()
+        profile_form = UserForm(request.POST, request.FILES, instance=user_profile)
+
+        if profile_form.is_valid():
+            profile = profile_form.save()
+            return HttpResponseRedirect(reverse('summit.libs.auth:all_users'))
+    elif user_profile is None:
+        profile_form = UserForm()
+    else:
+        profile_form = UserForm(instance=user_profile)
+
+    context = {
+        'name': 'libs.auth.edit_user',
+        'pagetitle': 'Edit User',
+        'title': 'Edit User',
+        'bannerTemplate': 'none',
+        'jsFiles': [
+            # 'css/apps/core/testing.css'
+            'js/libs/auth/add_people_tab_bg.js'
+        ],
+        'profile': request.user.get_full_name(),
+        'user_form': profile_form
+    }
+
+    return render(request, template_name, context)
+
 def info_display(request):
     if request.is_ajax():
         print(request.GET)
@@ -495,14 +606,26 @@ def info_display(request):
         userInfo = UserProfile.objects.filter(cesu = cesuID)
         userInfo = userInfo.filter(id = userID).values()
         ProjectInfo = Project.objects.filter(cesu_unit = cesuID)
-        print("CESUID: " + cesuID)
-        ProjectInfo = ProjectInfo.filter(pp_i_id = userID) | ProjectInfo.filter(project_manager_id = userID)
+        ProjectInfo = ProjectInfo.filter(pp_i_id = userID) | ProjectInfo.filter(project_manager_id = userID) | ProjectInfo.filter(tech_rep_id = userID) | ProjectInfo.filter(staff_member_id = userID)
         ProjectInfo = ProjectInfo.values()
         return JsonResponse({"user": list(userInfo) , "projects": list(ProjectInfo)})
 
     userInfo = UserProfile.objects.get(id = 0).values()
     groupInfo = UserGroup.objects.filter(id = 0).values()
     return JsonResponse({"user": list(userInfo)})
+
+def user_info_display(request):
+    if request.is_ajax():
+        print(request.GET)
+        userID = request.GET.get('userID')
+        requested_user = User.objects.filter(id = userID)
+        userInfo = requested_user.values()
+        associated_cesus = requested_user[0].user_cesus.all().values()
+        return JsonResponse({"user": list(userInfo), "cesus": list(associated_cesus)})
+
+    userInfo = User.objects.get(id = 0).values()
+    return JsonResponse({"user": list(userInfo)})
+
 
 def org_info(request):
     if request.is_ajax():
@@ -517,3 +640,43 @@ def org_info(request):
     people = UserProfile.objects.all().values()
     projects = Project.objects.all().values()
     return JsonResponse({"people": list(people), "projects": list(projects)})
+
+def deactivate_user(request):
+    if request.is_ajax():
+        userID = request.POST.get('userID')
+        reactivate = request.POST.get('reactivate')
+        print(reactivate)
+        user = User.objects.get(id = userID)
+        if (reactivate == "true"):
+            user.is_active = True
+        else:
+            user.is_active = False
+        user.save()
+        return_user = User.objects.filter(id = userID).values()
+        return JsonResponse({"user": list(return_user)})
+    return_user = User.objects.filter(id = userID).values()
+    return JsonResponse({"user": list(return_user)})
+
+def delete_user(request):
+    if request.is_ajax():
+        userID = request.POST.get('userID')
+        user = User.objects.get(id = userID)
+        user.delete()
+        return_user = User.objects.filter(id = userID).values()
+        return JsonResponse({"user": list(return_user)})
+    return_user = User.objects.filter(id = userID).values()
+    return JsonResponse({"user": list(return_user)})
+
+def add_users(request):
+    if request.is_ajax():
+        
+        userIDs = request.POST.getlist('userIDs[]')
+        print(userIDs)
+        cesuID = request.session.get('cesu')
+        for userID in userIDs:
+            print(userID)
+            user = User.objects.get(id = userID)
+            user.user_cesus.add(CESU.objects.get(id=cesuID))
+        return JsonResponse({"userIDS": list(userIDs)})
+    userIDs = request.POST.getlist('userIDs')
+    return JsonResponse({"userIDS": list(userIDs)})

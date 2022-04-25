@@ -1,4 +1,4 @@
-from summit.libs.auth.models import UserGroup, UserProfile, Partner, FederalAgency
+from summit.libs.auth.models import UserGroup, UserProfile, Partner, FederalAgency, Organization
 from summit.apps.projects.models import Location
 from rest_framework import serializers
 
@@ -6,13 +6,17 @@ from rest_framework import serializers
 class FederalAgencySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = FederalAgency
-        fields = ('pk', 'name')
+        fields = ('pk', 'name', 'abbrv')
 
+class OrganizationSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Organization
+        fields = ('pk', 'name', 'abbrv')
 
 class PartnerSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Partner
-        fields = ('pk', 'name')
+        fields = ('pk', 'name', 'abbrv')
 
 
 class LocationSerializer(serializers.HyperlinkedModelSerializer):

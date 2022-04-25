@@ -7,8 +7,9 @@ app_name = vars.app_name
 app_regex = vars.app_regex
 
 urlpatterns = [
-    url_wrapper(vars.AppLinks.index),
-    app_link(vars.AppLinks.about)
+    #url_wrapper(vars.AppLinks.index),
+    app_link(vars.AppLinks.about),
+    app_link(vars.AppLinks.tiles),
 ]
 
 # Static Links

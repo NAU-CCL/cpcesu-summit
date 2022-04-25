@@ -12,19 +12,19 @@
 .loader {
   border-radius: 50%;
   border: 11px solid #f3f3f3;
-  border-top: 11px solid #4285F4;
+  border-top: 11px solid #f1f1f1
   width: 100px;
   height: 100px;
   animation: spin 2s linear infinite;
   &.small {
     border: 5px solid #f3f3f3;
-    border-top: 5px solid #4285F4;
+    border-top: 5px solid #f1f1f1
     width: 50px;
     height: 50px;
   }
   &.medium {
     border: 8px solid #f3f3f3;
-    border-top: 8px solid #4285F4;
+    border-top: 8px solid #f1f1f1
     width: 80px;
     height: 80px;
   }
@@ -33,7 +33,7 @@
   }
 }
 .border-top-primary {
-  border-top-color: #4285f4; }
+  border-top-color: #f1f1f1 }
 .border-top-danger {
   border-top-color: #ff3547; }
 .border-top-warning {
@@ -51,7 +51,7 @@
 .border-top-light {
   border-top-color: #e0e0e0; }
 .border-right-primary {
-  border-right-color: #4285f4; }
+  border-right-color: #f1f1f1 }
 .border-right-danger {
   border-right-color: #ff3547; }
 .border-right-warning {
@@ -69,7 +69,7 @@
 .border-right-light {
   border-right-color: #e0e0e0; }
 .border-bottom-primary {
-  border-bottom-color: #4285f4; }
+  border-bottom-color: #f1f1f1 }
 .border-bottom-danger {
   border-bottom-color: #ff3547; }
 .border-bottom-warning {
@@ -87,7 +87,7 @@
 .border-bottom-light {
   border-bottom-color: #e0e0e0; }
 .border-left-primary {
-  border-left-color: #4285f4; }
+  border-left-color: #f1f1f1 }
 .border-left-danger {
   border-left-color: #ff3547; }
 .border-left-warning {

@@ -7,7 +7,7 @@ app_regex = ''
 
 
 class AppLinks:
-    index = DjangoURL('index', r'^$', views.index, app_name)
+    #index = DjangoURL('index', r'^$', views.index, app_name)
     about = DjangoLink('about', app_name, app_regex, r'^about/$', views.about,
                        'About')
 
@@ -16,3 +16,7 @@ class AppLinks:
                              'link': 'https://in.nau.edu/cpesu/cpcesu-contact/',
                              'target': '_blank'
                          })
+    tiles = DjangoLink('tiles', app_name, app_regex,
+                                   r'^$', views.MainView.as_view(),
+                                   'CESU Tiles'
+                                   )

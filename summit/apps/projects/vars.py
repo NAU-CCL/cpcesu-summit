@@ -17,6 +17,13 @@ class AppLinks:
                                        'auth_required': True
                                    })
 
+    project_upload_dashboard = DjangoLink('project_upload_dashboard', app_name, app_regex,
+                                   r'^upload_dashboard/$', views.ProjectUploadView.as_view(),
+                                   'Your Uploading Dashboard',
+                                   link_args={
+                                       'auth_required': True
+                                   })
+
     # Dropdown Menu/Links
     all_projects = DjangoLink('all_projects', app_name, app_regex, r'^$',
                               views.ProjectListView.as_view(), 'All Projects',
@@ -87,6 +94,9 @@ class AppLinks:
     project_filter = DjangoURL('project_filter', r'^filter/', views.project_filter, app_name)
     project_search = DjangoURL('project_search', r'^search/', views.project_search, app_name)
     change_cesu = DjangoURL('change_cesu', r'^change_cesu/', views.change_cesu, app_name)
+
+    file_upload = DjangoURL('file_upload', r'^upload/', views.file_upload, app_name)
+    delete_file = DjangoURL('delete_file', r'^delete_file/', views.delete_file, app_name)
 
     # Location Related Links/URLs
     # States, Parks, etc. in one model/object

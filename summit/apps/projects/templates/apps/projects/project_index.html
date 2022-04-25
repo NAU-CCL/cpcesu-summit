@@ -3,8 +3,10 @@
 {% load static %}
 {% block primary %}
 
+    {% csrf_token %}
     <script>
         const cesuID = {{cesu}};
+        var csrf_token = '{{ csrf_token }}';
     </script>
 
 
@@ -16,6 +18,7 @@
     {% else %}
     <h1 style="text-align: center">PROJECT PAGE</h1>
     {% endif %}
+    
     <!--Div that contains the search bar-->
     <div id ="advancedSearch" class="container-fluid form-group">
         
@@ -68,117 +71,36 @@
                 <input id="pp_i" type="text" name="pp_i" placeholder="Principal Investigator" value="{{ form.pp_i.value|default:'' }}" autocomplete="off" value="{{pp_i.name}}">
             </span>
             
-            <label for="PM">PM: </label>
+            <label for="PM">PL: </label>
             <span class="autocomplete">
                 <input id="project_manager" type="text" name="project_manager" placeholder="Project Manager" value="{{ form.project_manager.value|default:'' }}" autocomplete="off" value="{{project_manager.name}}">
+            </span>
+
+            <label for="tech_lead">Tech Rep: </label>
+            <span class="autocomplete">
+                <input id="tech_lead" type="text" name="tech_lead" placeholder="" value="{{ form.tech_lead.value|default:'' }}" autocomplete="off" value="{{tech_lead.name}}">
             </span>
         </div>
         <div>
             <button type="button" id="searchButton" class="btn btn-outline-success btn-sm m-0 waves-effect">Submit</button>
         </div>
 
-        <!--Modals go down hwere-->
-        <div class="modal" id="placeModal" tabindex="-1" role="dialog">
-            <div class="modal-dialogue modal-dialogue-scrollable modal-sm">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <table class="dtBasicExample table table-responsive-sm table-striped table-bordered table-sm" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th class="th-sm">Park Name</th>
-                                    <!--<th class="th-sm">Details</th>!-->
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {% for park in parks %}
-                            <tr id="{{park.id}}" onclick="selectPark({{ park.id }})">
-                                <td id="{{park.id}}park">{{park.name}}</td>
-                            </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" id="submit-park" class="btn btn-default" data-dismiss="modal">Submit</button>
-                        <button type="button" id="create-new-park" class="btn btn-default" data-dismiss="modal">Create New Park</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal" id="personModal" tabindex="-1" role="dialog">
-            <div class="modal-dialogue modal-dialogue-scrollable">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <table class="dtBasicExample table table-responsive-sm table-striped table-bordered table-sm" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th class="th-sm">First Name</th>
-                                    <th class="th-sm">Last Name</th>
-                                    <th class="th-sm">Organization</th>
-                                    <!--<th class="th-sm">Details</th>!-->
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for person in people %}
-                                <tr id="{{person.id}}" onclick="selectPerson({{ person.id }}, 'm')">
-                                    <td id="{{person.id}}first">{{ person.first_name }}</td>
-                                    <td id="{{person.id}}last">{{ person.last_name }}</td>
-                                    <td>{{ person.assigned_group }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" id="submit-park" class="btn btn-default" data-dismiss="modal">Submit</button>
-                        <button type="button" id="create-new-park" class="btn btn-default" data-dismiss="modal">Create New Park</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-
-        
-
-        <!--<button type="button" id = "basicSearchButton" class="btn btn-outline-success btn-sm m-0 waves-effect" style="float: left;">
-        Basic Search
-    </button>-->
-    <div class="modal fade" id="duplicateModal" tabindex="-1" role="dialog" aria-labelledby="duplicateModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="duplicateModalLabel">Delete Duplicates</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-                
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!--Div that contains the search results-->
     <hr />
     
     <div class="container-fluid">
+        <div>
+            <button style="float: right;"class="btn btn-outline-dark btn-sm m-0 waves-effect" id="export-mode-button">
+                <ion-icon name="share-outline"></ion-icon>
+            </button>
+        </div>
+        <br/>
+        
         <form action="{% get_url_from_app_link 'summit.apps.projects' 'project_export_csv' %}" method="post" enctype="multipart/form-data"
               name="export_form">
             {% csrf_token %}
-            <button style="float: right;"class="btn btn-outline-primary btn-sm m-0 waves-effect" type="submit" value="Submit">
+            <br/>
+            <button style="float: right;" class="btn btn-outline-primary btn-sm m-0 waves-effect" type="submit" value="Submit" id="export-button">
                 Export Selected Projects
             </button>
             
@@ -206,11 +128,11 @@
                         <input type="checkbox" id="select_all_1">
                     </th>
                     <!--<th style="max-width: 75px">Status</th>-->
-                    <th style="max-width: 100px">Agency</th>
-                    <th style="max-width: 100px">Partner</th>
-                    <th style="max-width: 100px">Award Info</th>
+                    <th style="max-width: 70px">Agency</th>
+                    <th style="max-width: 70px">Partner</th>
+                    <th style="max-width: 150px">Award Info</th>
                     <th style="max-width: 400px">Title</th>
-                    <th style="max-width: 100px">Timeframe</th>
+                    <th style="max-width: 50px">Timeframe</th>
                     <th style="max-width: 100px">Staff</th>
                     <!--<th>View Details</th>!-->
                 </tr>

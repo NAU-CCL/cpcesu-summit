@@ -1,0 +1,110 @@
+{% extends 'layouts/base.html' %}
+{% load common_tags %}
+{% load static %}
+
+
+
+{% block primary %}
+
+<script>
+  const cesuID = {{cesu}};
+    var csrf_token = '{{ csrf_token }}';
+</script>
+
+<div>
+    <h1 style="text-align: center" class="all-header">
+        {{cesu_name}} Users
+        <a href="{% get_url_from_app_link 'summit.libs.auth' 'create_user' %}" class="btn btn-primary waves-effect right-button">Add User</a>
+    </h1>
+   
+</div>
+
+
+<div class="container-fluid">
+    <!--<a href="{% get_url_from_app_link 'summit.libs.auth' 'create_organization' %}" class="btn btn-primary btn-sm m-0 waves-effect">Create Organization</a>!-->
+    
+</div>
+<div style="width:50%; float:left;" class="container-fluid">
+    <table class="dtBasicExample table table-striped table-bordered table-sm" id="main_table" cellspacing="0">
+        <thead>
+            <tr>
+                <th class="th-sm">First Name</th>
+                <th class="th-sm">Last Name</th>
+                <th class="th-sm">Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for profile in query %}
+              <tr id="{{profile.id}}" onclick="loadDetails({{profile.id}})">
+                  <!--<th scope="row">{{ profile.id }}</th>!-->
+                  <td>{{ profile.first_name }}</td>
+                  <td>{{ profile.last_name }}</td>
+                  <td>{{ profile.email }}</td>
+              <!-- <td>
+                      <!--<a class="btn btn-outline-primary btn-sm m-0 waves-effect"
+                      href="{% get_url_from_app_link 'summit.libs.auth' 'view_contact' profile_id=profile.id %}">
+                          View Contact
+                      </a>
+                      {% if profile.assigned_group != None %}
+                      <a href="{% get_url_from_app_link 'summit.libs.auth' 'manage_organization' group_id=profile.assigned_group.id %}" class="btn btn-outline-primary btn-sm m-0 waves-effect">Manage Org.</a>
+                      {% endif %}
+                  </td> !-->
+              </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div style="width:49%; float: left; margin-top: 100px; border: 1px solid grey;" id="nothing-selected">
+    <h3 style="text-align: center;">
+        No person selected.
+    </h3>
+</div>
+<div style="display:none; width:49%; float: left; margin-top: 100px; border: 1px solid grey;" id="contact-info">
+
+    
+    <div style="background-color: #bab4b5;" id ="header">
+        <div style="background-color: #efefef; display:block; overflow: auto;">
+            <span style="width: 20%; float:left" id="pic_container">
+            </span>
+            <div style="width: 80%; float:right" id="header_top">
+            </div>
+            <br/>
+            
+            <div>
+                
+            </div>
+            <div style="text-align: center;width: 80%; float:right">
+                <div id="email">
+                </div>
+                
+                <div id="phone">
+                </div>
+                
+                <div id="fax">
+                </div>
+            </div>
+            
+        
+            <div id="location" style="text-align: center; width: 80%; float:right">
+            </div>
+        </div>
+    </div>
+    <br>
+
+    <div id="admin-buttons">
+      
+    </div>
+    
+
+</div>
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'registration/partials/side_nav.html' %}
+{% endblock %}
+
+{% block layout_wrapper %}
+    {% with layout='left' %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}

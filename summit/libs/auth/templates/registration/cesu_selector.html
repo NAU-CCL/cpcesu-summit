@@ -6,7 +6,8 @@
     CESU Selector
   </h1>
   {% for cesu in cesu_list %}
-  <button class="btn btn-default" onclick="change_cesu({{cesu.id}})">{{cesu.name}}</button>
+  <button class="btn btn-outline-default" onclick="change_cesu({{cesu.id}})"><img style="max-height: 50;" src="/data/{{cesu.logo}}"></img></button>
+  
   {% endfor %}
 {% endblock %}
 

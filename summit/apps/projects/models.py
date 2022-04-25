@@ -2,6 +2,9 @@ from decimal import Decimal
 
 from . import choices
 
+import datetime
+
+from django.utils.timezone import now
 from django.db import models
 
 from summit.libs.auth.models import Partner, FederalAgency, CESUnit, UserProfile, Organization, CESU
@@ -12,10 +15,19 @@ _help_text = choices.ProjectChoices.help_text
 
 
 def get_directory_path(instance, filename):
+    print(instance.project)
+    
+    
+    if (File.objects.last().summit_date >= datetime.date.today()):
+        last_file_index = File.objects.last().summit_index
+        instance.summit_index = last_file_index + 1
+        print(last_file_index)
     if instance.id is None:
-        return 'autofill/{0}'.format(filename)
+        current_date = datetime.datetime.now().strftime("%Y%m%d")
+        return '{0}-{1}-{2}-{3}'.format(current_date, instance.summit_index, instance.project.id, filename)
     else:
-        return 'projects/{0}/{1}'.format(instance.project.id, filename)
+        current_date = datetime.datetime.now().strftime("%d/%m/%Y")
+        return 'projects-{0}-{1}'.format(instance.project.id, filename)
 
 
 def get_mod_directory_path(instance, filename):
@@ -24,7 +36,7 @@ def get_mod_directory_path(instance, filename):
 
 class Location(models.Model):
     abbrv = models.TextField(max_length=64, blank=True, null=True)
-    name = models.TextField(max_length=255, unique=True)
+    name = models.TextField(max_length=255)
 
     def get_absolute_url(self):
         from django.urls import reverse
@@ -77,7 +89,7 @@ class Project(AuditModel):
     final_report = models.BooleanField(verbose_name="Final Report", default=False, blank=True)
     fiscal_year = models.PositiveSmallIntegerField(null=True, blank=True, default=2021,
                                                    verbose_name="Fiscal Year")
-    location = models.ForeignKey(Location, on_delete=models.SET_NULL,
+    location = models.ManyToManyField(Location,
                                  related_name='location', default=None,
                                  verbose_name="Place", blank=True, null=True)
     init_start_date = models.DateField(blank=True, default=None, null=True,
@@ -171,7 +183,7 @@ class Project(AuditModel):
         return reverse('summit.apps.projects:project_detail', args=[str(self.id)])
 
     def __str__(self):
-        if self.project_title is None or len(self.project_title) > 0:
+        if self.project_title is None or len(self.project_title) <= 0:
             return "No Title"
         else:
             return self.project_title
@@ -202,9 +214,20 @@ class Modification(models.Model):
 class File(models.Model):
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True)
     file = models.FileField(blank=True, upload_to=get_directory_path, verbose_name="Select File(s)")
+    summit_index = models.IntegerField(default=1)
+    summit_date = models.DateField(default=now, blank=True)
 
     def __str__(self):
         return str.rsplit(str(self.file), sep='/', maxsplit=1)
+
+class SummitID(models.Model):
+    index = models.IntegerField()
+    type =  models.CharField(max_length=500)
+    date = models.DateField()
+
+
+    def __str__(self):
+        return str(self.type) + "-" + str(self.date) + str(self.index)
 
 
 class ModFile(models.Model):
@@ -213,3 +236,5 @@ class ModFile(models.Model):
 
     def __str__(self):
         return str.rsplit(str(self.file), sep='/', maxsplit=1)
+
+
