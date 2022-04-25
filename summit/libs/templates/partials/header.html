@@ -158,7 +158,8 @@
         <h1>{{ heading1 }}</h1>
         <p class="buttonsDiv">
           {% for cesu in cesu_list %}
-            <button onclick="change_cesu({{cesu.id}})" class="btn btn-white pop" type="button" data-toggle="popover" animation=true data-placement="bottom" 
+            {% if cesu.logo %}
+          <button onclick="change_cesu({{cesu.id}})" class="btn btn-white pop" type="button" data-toggle="popover" animation=true data-placement="bottom" 
             title="{{cesu.name}} CESU" 
             data-content="
               {{cesu.description}}
@@ -167,7 +168,21 @@
               </div>
               {{cesu.contact}}
             
-              "><img style="max-height: 50;" src="/data/{{cesu.logo}}"></img></button>
+              ">
+              <img style="max-height: 50;" src="/data/{{cesu.logo}}"></img></button>
+              {% else %}
+              <button onclick="change_cesu({{cesu.id}})" class="btn btn-white pop" type="button" data-toggle="popover" animation=true data-placement="bottom" 
+              title="{{cesu.name}} CESU" 
+              data-content="
+                {{cesu.description}}
+                <div style='font-weight: bold'>
+                Contact:
+                </div>
+                {{cesu.contact}}
+              
+                ">
+                {{cesu.name}}</button>
+              {% endif %}
           {% endfor %}
         </p>    
 
