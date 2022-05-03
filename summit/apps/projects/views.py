@@ -1340,7 +1340,7 @@ def change_cesu(request):
         if (CESU.objects.get(id=int(cesu_id)).logo):
             request.session['cesu_image'] = CESU.objects.get(id=int(cesu_id)).logo.url
         else:
-            request.session['cesu_image'] = "/data/CPCESULogo_Short_Horizontal_KlJYBdF.png"
+            request.session['cesu_image'] = "/static/imgs/iconsLogos/CPCESULogo_Short_Horizontal.png"
         
         request.session['cesu'] = int(cesu_id)
         print("updated cesu session id: " + str(request.session['cesu']))
