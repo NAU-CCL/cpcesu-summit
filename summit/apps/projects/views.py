@@ -1337,7 +1337,11 @@ def project_filter(request):
 def change_cesu(request):
     if request.is_ajax():
         cesu_id = request.GET.get('cesu_id')
-        request.session['cesu_image'] = CESU.objects.get(id=int(cesu_id)).logo.url
+        if (CESU.objects.get(id=int(cesu_id)).logo):
+            request.session['cesu_image'] = CESU.objects.get(id=int(cesu_id)).logo.url
+        else:
+            request.session['cesu_image'] = "/data/CPCESULogo_Short_Horizontal_KlJYBdF.png"
+        
         request.session['cesu'] = int(cesu_id)
         print("updated cesu session id: " + str(request.session['cesu']))
 
