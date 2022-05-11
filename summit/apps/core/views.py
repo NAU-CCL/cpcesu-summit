@@ -50,12 +50,16 @@ class MainView(ListView):
         print(self.request.session.get('cesu_image'))
 
         print("session cesu: " + str(cesu))
+        print(user)
         cesu_list = CESU.objects.all()
 
-        try:
-            profile = UserProfile.objects.get(user=user)
-        except ObjectDoesNotExist:
-            profile = None
+        profile = None
+
+        if (user.id):
+            try:
+                profile = UserProfile.objects.get(user=user)
+            except ObjectDoesNotExist:
+                profile = None
 
         if profile is not None:
             try:
