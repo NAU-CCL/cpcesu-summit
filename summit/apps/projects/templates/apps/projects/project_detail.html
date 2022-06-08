@@ -75,10 +75,12 @@
                         {% endif %}
                     </tr>
                     <tr>
-                        <td><b>Location:</b></td>
+                        <td><b>Location(s):</b></td>
+                        <td>
                         {% for place in object.location.all %}
-                            <td>{{ place }} ({{ place.abbrv }})</td>
+                            {{ place }} ({{ place.abbrv }})
                         {% endfor %}
+                        </td>
                         
                     </tr>
 
@@ -387,6 +389,7 @@
     </div>
 </div>
 <span>
+    {% if role != 'VIEWER' %}
         {% if object.status != 'ARCHIVED' %}
         <a href="{% get_url_from_app_link 'summit.apps.projects' 'project_edit' id=object.id %}">
             <button type="button" class="btn btn-light">Edit Project</button>
@@ -400,6 +403,7 @@
         </a>
         {% endif %}
         
+    {% endif %}
     </span>
 <br>
 <!--<div class="card">

@@ -144,8 +144,11 @@ $("tr").each(function(index){
     let table = $('#org_info')
     table.empty();
     let group = document.getElementById("a" + id).innerText
-    table.append(`<a href="/accounts/edit_organization/${id}/" style="float:right; 
+    if (user_role != 'VIEWER'){
+      table.append(`<a href="/accounts/edit_organization/${id}/" style="float:right; 
         font-size:24px"> <ion-icon name="create-outline"></ion-icon></a>`)
+    }
+   
     table.append(`<h4 class="center" style="align: block;">${group}</a></h4>`)
     table.append(`<h4 class="center"></h4>`)
     

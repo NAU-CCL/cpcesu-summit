@@ -65,10 +65,9 @@
                 <h6><label class="control-label col-sm-auto">{{ form.location.label_tag }}</label></h6>
             </td>
             <td>
-                <div class="autocomplete">
-                    <input class="form-control" id="location" type="text" name="location" placeholder="Location" value="{{ form.location.value|default:''}}" autocomplete="off">
-                </div><br/>
-<!--                {{ form.location }}<br><br>-->
+                <div style="border:2px solid #ccc; max-height: 200px !important; overflow-y: scroll !important;">
+                    {{ form.location }}
+                </div>
             </td>
         </tr>
         <tr>

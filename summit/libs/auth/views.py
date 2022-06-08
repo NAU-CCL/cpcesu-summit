@@ -1,18 +1,64 @@
-import re
+from functools import wraps
+from urllib.parse import urlparse
+
+from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import get_object_or_404, render
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.shortcuts import get_object_or_404, render, resolve_url
+from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView
 from django.db.models import Q
 
-from .forms import ProfileForm, GroupForm, UserForm
-from .models import User, UserProfile, UserGroup, CESUnit, FederalAgency, Partner, CESU, Organization
+from .forms import ProfileForm, GroupForm, RoleForm, UserForm
+from .models import User, UserProfile, UserGroup, CESUnit, FederalAgency, Partner, CESU, Organization, CESURole
 from summit.apps.projects.models import Project
 
-class CESUSwitcherView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+
+def request_test(test_func, login_url=None, redirect_field_name=REDIRECT_FIELD_NAME):
+    """
+    Decorator for views that checks that the user passes the given test,
+    redirecting to the log-in page if necessary. The test should be a callable
+    that takes the user object and returns True if the user passes.
+    """
+
+    def decorator(view_func):
+        @wraps(view_func)
+        def _wrapped_view(request, *args, **kwargs):
+            if test_func(request):
+                return view_func(request, *args, **kwargs)
+            path = request.build_absolute_uri()
+            resolved_login_url = resolve_url(login_url or settings.LOGIN_URL)
+            # If the login url is the same scheme and net location then just
+            # use the path as the "next" url.
+            login_scheme, login_netloc = urlparse(resolved_login_url)[:2]
+            current_scheme, current_netloc = urlparse(path)[:2]
+            if ((not login_scheme or login_scheme == current_scheme) and
+                    (not login_netloc or login_netloc == current_netloc)):
+                path = request.get_full_path()
+            from django.contrib.auth.views import redirect_to_login
+            return redirect_to_login(
+                path, resolved_login_url, redirect_field_name)
+        return _wrapped_view
+    return decorator
+
+def exists_in_cesu(request):
+    return CESURole.objects.filter(user_id=request.user.id, cesu_id=request.session.get('cesu')).exists()
+
+def exists_and_is_not_viewer(request):
+    print(request.user.id)
+    print(CESURole.objects.filter(user_id=request.user.id, cesu_id=request.session.get('cesu')).exists())
+    return CESURole.objects.get(user_id=request.user.id, cesu_id=request.session.get('cesu')).role != 'VIEWER' and CESURole.objects.filter(user_id=request.user.id, cesu_id=request.session.get('cesu')).exists()
+
+def exists_and_is_admin(request):
+    print(CESURole.objects.filter(user_id=request.user.id, cesu_id=request.session.get('cesu')).exists())
+    return CESURole.objects.get(user_id=request.user.id, cesu_id=request.session.get('cesu')).role == 'ADMIN' and CESURole.objects.filter(user_id=request.user.id, cesu_id=request.session.get('cesu')).exists()
+
+
+class CESUSwitcherView(LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin, ListView):
+   
     template_name = 'registration/cesu_selector.html'
     model = Project
     context_object_name = 'projects'
@@ -142,6 +188,7 @@ def view_contact(request, profile_id=-1):
 
 @login_required()
 @permission_required("summit_auth.edit_profile.self")
+@request_test(exists_and_is_not_viewer)
 def edit_contact(request, profile_id=-1):
     template_name = 'registration/edit_contact.html'
 
@@ -197,6 +244,12 @@ def all_contacts(request, name):
     profiles = UserProfile.objects.all().filter(cesu = cesu)
     profiles = profiles.order_by('assigned_group', 'last_name', 'first_name')
     
+    if (CESURole.objects.filter(user_id=request.user.id, cesu_id=request.session.get('cesu')).exists()):
+        role = CESURole.objects.get(user_id=request.user.id, cesu_id=request.session.get('cesu')).role
+    elif (request.user.is_superuser):
+        role = "EDITS ALLOWED" 
+    else:
+        role = "VIEWER" 
 
     print("session cesu for contacts: " + str(cesu))
 
@@ -218,7 +271,8 @@ def all_contacts(request, name):
         ],
         'query': profiles,
         'cesu': cesu,
-        'cesu_name': cesu_name
+        'cesu_name': cesu_name,
+        'role': role
     }
 
     return render(request, template_name, context)
@@ -235,6 +289,13 @@ def all_organizations(request, name):
     feds = FederalAgency.objects.all()
     partner = Partner.objects.all()
     orgs = Organization.objects.all()
+    if (CESURole.objects.filter(user_id=request.user.id, cesu_id=request.session.get('cesu')).exists()):
+        role = CESURole.objects.get(user_id=request.user.id, cesu_id=request.session.get('cesu')).role
+    elif (request.user.is_superuser):
+        role = "EDITS ALLOWED" 
+    else:
+        role = "VIEWER" 
+    
 
     groups = dict()
 
@@ -280,7 +341,8 @@ def all_organizations(request, name):
             'js/libs/auth/org_info.js'
         ],
         'query': groups,
-        'cesu': cesu
+        'cesu': cesu,
+        'role': role
     }
 
     return render(request, template_name, context)
@@ -316,6 +378,7 @@ def all_users(request, name):
 
 
 @login_required()
+@request_test(exists_and_is_not_viewer)
 def manage_organization(request, name='summit.libs.auth.manage_organization', group_id=-1):
     template_name = "registration/manage_organization.html"
 
@@ -388,6 +451,7 @@ def manage_organization(request, name='summit.libs.auth.manage_organization', gr
 
 
 @login_required()
+@request_test(exists_and_is_not_viewer)
 def create_contact(request, name="summit.libs.auth_Create Contact", group_id=0):
     template_name = "registration/create_contact.html"
 
@@ -423,6 +487,7 @@ def create_contact(request, name="summit.libs.auth_Create Contact", group_id=0):
 
 
 @login_required()
+@request_test(exists_and_is_not_viewer)
 def create_organization(request, name):
     template_name = "registration/create_organization.html"
 
@@ -459,6 +524,7 @@ def create_organization(request, name):
 
 @login_required()
 # @permission_required("summit_auth.edit_profile.self")
+@request_test(exists_and_is_not_viewer)
 def edit_organization(request, name="summit.libs.auth:edit_organization", group_id=-1):
     template_name = 'registration/edit_organization.html'
     is_cesu = False
@@ -518,6 +584,7 @@ def edit_organization(request, name="summit.libs.auth:edit_organization", group_
     return render(request, template_name, context)
 
 @login_required()
+@request_test(exists_and_is_admin)
 def create_user(request, name="summit.libs.auth.create_user"):
     template_name = "registration/create_user.html"
 
@@ -526,18 +593,21 @@ def create_user(request, name="summit.libs.auth.create_user"):
 
     if request.method == "POST" and request.POST:
         user_form = UserForm(request.POST, request.FILES)
+        print(user_form)
 
         if user_form.is_valid():
             
             user_form.save()
+            user_role = CESURole.objects.get_or_create(user_id=user_form.id, cesu_id=cesu)[0]
+            user_role.role = request.POST['role']
+            print(user_role)
+            user_role.save()
             return HttpResponseRedirect(reverse('summit.libs.auth:all_users'))
     else:
         user_form = UserForm()
 
     context = {
         'name': name,
-        'pagetitle': 'Contact',
-        'title': 'Create Contact',
         'bannerTemplate': 'none',
         'cssFiles': [
             'libs/mdb/DataTables/datatables.min.css',
@@ -557,15 +627,19 @@ def create_user(request, name="summit.libs.auth.create_user"):
     return render(request, template_name, context)
 
 @login_required()
+@request_test(exists_and_is_admin)
 def edit_user(request, profile_id=-1, name="libs.auth.edit_user"):
     template_name = 'registration/edit_user.html'
 
     try:
+        cesu = request.session.get('cesu')
         profile_id = int(profile_id)
         if profile_id <= 0:
             user_profile = User.objects.get(user=request.user.id)
+            #role_id = CESURole.objects.get(user_id=request.user.id, cesu_id=cesu)
         else:
             user_profile = User.objects.get(id=profile_id)
+            #role_id = CESURole.objects.get(user_id=profile_id, cesu_id=cesu)
     except ObjectDoesNotExist:
         user_profile = None
 
@@ -576,12 +650,19 @@ def edit_user(request, profile_id=-1, name="libs.auth.edit_user"):
         profile_form = UserForm(request.POST, request.FILES, instance=user_profile)
 
         if profile_form.is_valid():
+            print(request.POST)
             profile = profile_form.save()
+            user_role = CESURole.objects.get_or_create(user_id=profile_id, cesu_id=cesu)[0]
+            user_role.role = request.POST['role']
+            print(user_role)
+            user_role.save()
             return HttpResponseRedirect(reverse('summit.libs.auth:all_users'))
     elif user_profile is None:
         profile_form = UserForm()
+        role_form = RoleForm()
     else:
         profile_form = UserForm(instance=user_profile)
+        role_form = RoleForm()
 
     context = {
         'name': 'libs.auth.edit_user',
@@ -593,7 +674,7 @@ def edit_user(request, profile_id=-1, name="libs.auth.edit_user"):
             'js/libs/auth/add_people_tab_bg.js'
         ],
         'profile': request.user.get_full_name(),
-        'user_form': profile_form
+        'user_form': profile_form,
     }
 
     return render(request, template_name, context)
@@ -641,6 +722,7 @@ def org_info(request):
     projects = Project.objects.all().values()
     return JsonResponse({"people": list(people), "projects": list(projects)})
 
+@request_test(exists_and_is_admin)
 def deactivate_user(request):
     if request.is_ajax():
         userID = request.POST.get('userID')
@@ -657,6 +739,7 @@ def deactivate_user(request):
     return_user = User.objects.filter(id = userID).values()
     return JsonResponse({"user": list(return_user)})
 
+@request_test(exists_and_is_admin)
 def delete_user(request):
     if request.is_ajax():
         userID = request.POST.get('userID')
@@ -667,6 +750,7 @@ def delete_user(request):
     return_user = User.objects.filter(id = userID).values()
     return JsonResponse({"user": list(return_user)})
 
+@request_test(exists_and_is_admin)
 def add_users(request):
     if request.is_ajax():
         

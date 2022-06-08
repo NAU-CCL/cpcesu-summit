@@ -191,6 +191,13 @@ class User(AbstractUser):
     def is_superstaff(self):
         return self.is_superuser
 
+class CESURole(AuditModel):
+    ROLE = choices.UserChoices.ROLE
+    role = models.CharField(max_length=50, choices=ROLE, default=ROLE[0], blank=True, null=True)
+    cesu = models.ForeignKey(CESU, null=True, related_name='role_cesu', on_delete=models.SET_NULL)
+    user = models.ForeignKey(User, null=True, related_name='cesu_role_user', on_delete=models.SET_NULL)
+
+
 class Organization(AuditModel):
     ORG_TYPE = choices.OrganizationChoices.ORG_TYPE
 

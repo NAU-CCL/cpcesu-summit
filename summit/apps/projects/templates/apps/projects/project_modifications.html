@@ -4,7 +4,7 @@
 {% block primary %}
     <form method="post" enctype="multipart/form-data" name="form">
         {% csrf_token %}
-        <div class="card">
+        <div class="card form-group">
             <div class="card-header">
                 <h3>{% block form_title %}Modification Form{% endblock %}</h3>
             </div>
@@ -14,30 +14,29 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
-                        <table>
+                        <table class="table table-bordered">
                             <tbody>
                             <tr>
                                 <u>Quick Project Details</u>
-                                <td><b>Status:</b></td>
-                                <td>{{ project.status }}, &nbsp</td>
-                                <td><b>FY:</b></td>
-                                <td>{{ project.fiscal_year }} &nbsp</td>
-                                <td><b>Agency:</b></td>
-                                <td>{{ project.fed_agency }} &nbsp</td>
-                                <td><b>Award #:</b></td>
-                                <td>{{ project.p_num }} &nbsp</td>
-                                <td><b>Partner:</b></td>
-                                <td>{{ project.partner }} &nbsp</td>
-                                <td><b>Place:</b></td>
-                                <td>{{ project.location }} &nbsp</td>
-                                <td><b>Title:</b></td>
-                                <td>{{ project.project_title }} &nbsp</td>
-                                <td><b>Total Amount:</b></td>
-                                <td>{{ total_award_amount }} &nbsp</td>
-                                <td><b>Start: </b></td>
-                                <td>{{ project.tent_start_date }} &nbsp</td>
-                                <td><b>End: </b></td>
-                                <td>{{ project.tent_end_date }} &nbsp</td>
+                                <td><b>Status:<br/></b>{{ project.status }}, &nbsp</td>
+                                
+                                <td><b>FY:<br/></b>{{ project.fiscal_year }} &nbsp</td>
+                                
+                                <td><b>Agency:<br/></b>{{ project.fed_agency }} &nbsp</td>
+                                
+                                <td><b>Award #:<br/></b>{{ project.p_num }} &nbsp</td>
+                                
+                                <td><b>Partner:<br/></b>{{ project.partner }} &nbsp</td>
+                                
+                                <td><b>Place:<br/></b>{{ project.location }} &nbsp</td>
+                                
+                                <td><b>Title:<br/></b>{{ project.project_title }} &nbsp</td>
+                                
+                                <td><b>Total Amount:<br/></b>{{ total_award_amount }} &nbsp</td>
+                                
+                                <td><b>Start: <br/></b>{{ project.tent_start_date }} &nbsp</td>
+                                
+                                <td><b>End: <br/></b>{{ project.tent_end_date }} &nbsp</td>
                             </tr>
                             </tbody>
                         </table>

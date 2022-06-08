@@ -44,7 +44,7 @@ class Location(models.Model):
 
     def __str__(self):
         if self.abbrv:
-            return self.name
+            return self.name + " (" + self.abbrv + ")" 
         else:
             return self.name
 
@@ -91,7 +91,7 @@ class Project(AuditModel):
                                                    verbose_name="Fiscal Year")
     location = models.ManyToManyField(Location,
                                  related_name='location', default=None,
-                                 verbose_name="Place", blank=True, null=True)
+                                 verbose_name="Location", blank=True, null=True)
     init_start_date = models.DateField(blank=True, default=None, null=True,
                                        verbose_name="Project Initially Received")
     monitoring = models.BooleanField(default=False)

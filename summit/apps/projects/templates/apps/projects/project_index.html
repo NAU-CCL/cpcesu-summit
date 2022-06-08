@@ -13,7 +13,9 @@
     {% if pagetitle %}
     <h1 style="text-align: center" class="all-header">
         Project Manager
+        {% if role != 'VIEWER' %}
         <a class="btn btn-primary btm-sm waves-effect right-button" href="/projects/create">Create Project</a>
+        {% endif %}
     </h1>
     {% else %}
     <h1 style="text-align: center">PROJECT PAGE</h1>

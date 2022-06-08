@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Organization, UserProfile, UserGroup, User, CESU
+from .models import CESURole, Organization, UserProfile, UserGroup, User, CESU
 
 
 class ProfileForm(forms.ModelForm):
@@ -31,4 +31,12 @@ class UserForm(forms.ModelForm):
             queryset=CESU.objects.all(),
             widget=forms.CheckboxSelectMultiple
         )
+
+class RoleForm(forms.ModelForm):
+    class Meta:
+        model = CESURole
+        fields = ['role']
+        widgets = {
+            
+        }
         

@@ -3,6 +3,7 @@ $(document).ready(function(){
     $(document.getElementById("contentBody")).addClass("content-background");
     var urlParams = new URLSearchParams(window.location.search);
     console.log(cesuID);
+    console.log(user_role)
     var personid = urlParams.get('id');
     var table = $('#main_table').DataTable();
     table.order([1, "asc"]).draw();
@@ -84,19 +85,22 @@ function loadDetails(id){
                 {
                     groupName = document.getElementById("a" + groupID).innerText;
                 }
-                if (user.title)
+                header.append(`
+                <h4 class="center" style="display: block;">
+                ${user.first_name} ${user.last_name}`)
+                console.log(user_role)
+                if (user_role != 'VIEWER')
                 {
                     header.append(`
-                        <h4 class="center" style="display: block;">
-                        ${user.first_name} ${user.last_name}
-
                         <a href="/accounts/edit_contact/${id}/" title="Edit Contact" 
                             style="float:right; font-size:24px; font-weight: 50%"> <ion-icon name="create-outline"></ion-icon> </a>
                         
-                        </h4>
-                        
-                        
-                        
+                        `)
+                }
+                if (user.title)
+                {
+                    header.append(`
+                    </h4>
                         <div class="center">${user.title}, ${user.department} </br> <a href="/accounts/all_groups/?id=${user.assigned_group_id}">
                     ${groupName}</a></div>
                     </div>`)
@@ -104,12 +108,6 @@ function loadDetails(id){
                 else
                 {
                     header.append(`
-                        <h4 class="center" style="display: block;">
-                        ${user.first_name} ${user.last_name}
-
-                        <a href="/accounts/edit_contact/${id}/" title="Edit Contact" 
-                            style="float:right; font-size:24px; font-weight: 50%"> <ion-icon name="create-outline"></ion-icon> </a>
-                        
                         </h4>
                         <div class="center"><a href="/accounts/all_groups/?id=${user.assigned_group_id}">
                     ${groupName}</a></div>

@@ -6,19 +6,19 @@ from .models import Project, File, Location, Modification, ModFile
 class ProjectForm(forms.ModelForm):
     federal_agency = forms.CharField(required=False)
     partner = forms.CharField(required=False)
-    location = forms.CharField(required=False)
 
     project_manager = forms.CharField(required=False)
     tech_rep = forms.CharField(required=False)
     pp_i = forms.CharField(required=False)
     staff_member = forms.CharField(required=False)
 
+    
     class Meta:
         model = Project
         fields = ['award_office', 'budget', 'description', 'discipline', 'exec_start_date',
                   # 'federal_agency',
                   'field_of_science', 'final_report', 'fiscal_year', 'init_start_date',
-                  # 'location',
+                  'location',
                   'monitoring', 'notes', 'num_of_students', 'p_num',
                   # 'partner',
                   # 'pp_i', 'project_manager',
@@ -42,7 +42,7 @@ class ProjectForm(forms.ModelForm):
             # 'pp_i': forms.Select(attrs={'class': 'custom-select custom-select'}),
             # 'project_manager': forms.Select(attrs={'class': 'custom-select custom-select'}),
             # 'tech_rep': forms.Select(attrs={'class': 'custom-select custom-select'}),
-            # 'location': forms.Select(attrs={'class': 'custom-select custom-select'}),
+            'location': forms.CheckboxSelectMultiple(),
             'budget': forms.NumberInput(attrs={'class': 'form-control'}),
             'fiscal_year': forms.NumberInput(attrs={'class': 'form-control'}),
             'youth_vets': forms.Select(attrs={'class': 'custom-select custom-select'}),
@@ -69,6 +69,8 @@ class ProjectForm(forms.ModelForm):
                                                empty_label=("Year", "Month", "Day"), ),
 
         }
+    
+    
 
 
 class ProjectFileForm(forms.ModelForm):

@@ -9,7 +9,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, View
 
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.files import File
 
@@ -21,7 +21,7 @@ import json
 from summit.apps.generic_views import *
 
 from .tasks import read_pdf
-from summit.libs.auth.models import UserProfile, CESUnit, FederalAgency, Partner, UserGroup, Organization, CESU
+from summit.libs.auth.models import UserProfile, CESUnit, FederalAgency, Partner, UserGroup, Organization, CESU, CESURole
 from .models import Project, File, Location, Modification, ModFile
 from .forms import ProjectForm, ProjectFileForm, LocationForm, ModificationForm, ModificationFileForm, ContactForm
 from .choices import ProjectChoices
@@ -86,6 +86,7 @@ class ProjectListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             'projects': projects
         }
         ctx = super(ProjectListView, self).get_context_data(**kwargs)
+        
         ctx = {**ctx, **context}
         return ctx
 
@@ -140,7 +141,14 @@ class ProjectPublicListView(ListView):
         pk_ = self.kwargs.get("id")
         return get_object_or_404(Project, pk=pk_)
 
-class ProjectUploadView(LoginRequiredMixin, ListView):
+class ProjectUploadView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+
+    def test_func(self):
+        if (CESURole.objects.filter(user_id=self.request.user.id, cesu_id=self.request.session.get('cesu')).exists()):
+            return CESURole.objects.filter(user_id=self.request.user.id, cesu_id=self.request.session.get('cesu')).role != 'VIEWER'
+        else:
+            return self.request.user.is_superuser
+            
     template_name = 'apps/projects/project_upload.html'
     model = Project
     context_object_name = 'projects'
@@ -160,6 +168,7 @@ class ProjectUploadView(LoginRequiredMixin, ListView):
         all_projects = Project.objects.only("id")
         user = self.request.user
         cesu = self.request.session.get('cesu')
+        role = CESURole.objects.get(user_id=self.request.user.id, cesu_id=self.request.session.get('cesu')).role
         cesu_logo = CESU.objects.get(id=cesu).logo
 
         print("session cesu: " + str(cesu))
@@ -235,7 +244,7 @@ class ProjectUploadView(LoginRequiredMixin, ListView):
         pk_ = self.kwargs.get("id")
         return get_object_or_404(Project, pk=pk_)
 
-class ProjectDashboardView(LoginRequiredMixin, ListView):
+class ProjectDashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     template_name = 'apps/projects/project_index.html'
     model = Project
     context_object_name = 'projects'
@@ -244,6 +253,8 @@ class ProjectDashboardView(LoginRequiredMixin, ListView):
     permission_denied_message = 'You do not have the correction permissions to access this page.'
     #raise_exception = False
 
+    def test_func(self):
+        return CESURole.objects.filter(user_id=self.request.user.id, cesu_id=self.request.session.get('cesu')).exists() or self.request.user.is_superuser
 
 
     def get_context_data(self, **kwargs):
@@ -254,10 +265,12 @@ class ProjectDashboardView(LoginRequiredMixin, ListView):
         partners = Organization.objects.all().filter(type="Partner")
         all_projects = Project.objects.only("id")
         user = self.request.user
-        cesu = self.request.session.get('cesu')
+        if self.request.session.get('cesu'):
+            cesu = self.request.session.get('cesu')
+        else:
+            cesu = "NONE"
         cesu_logo = CESU.objects.get(id=cesu).logo
 
-        print("session cesu: " + str(cesu))
 
         try:
             profile = UserProfile.objects.get(user=user)
@@ -322,7 +335,14 @@ class ProjectDashboardView(LoginRequiredMixin, ListView):
 
         }
         ctx = super(ProjectDashboardView, self).get_context_data(**kwargs)
+        
         ctx = {**ctx, **context}
+        if (CESURole.objects.filter(user_id=self.request.user.id, cesu_id=self.request.session.get('cesu')).exists()):
+            ctx['role'] = CESURole.objects.get(user_id=self.request.user.id, cesu_id=self.request.session.get('cesu')).role
+        elif (self.request.user.is_superuser):
+            ctx['role'] = "EDITS ALLOWED" 
+        else:
+            ctx['role'] = "VIEWER" 
         return ctx
 
     # TODO: integrate this get_obkect into context
@@ -331,9 +351,12 @@ class ProjectDashboardView(LoginRequiredMixin, ListView):
         return get_object_or_404(Project, pk=pk_)
 
 
-class ProjectDetail(LoginRequiredMixin, DetailView):
+class ProjectDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Project
     template_name = 'apps/projects/project_detail.html'
+
+    def test_func(self):
+        return CESURole.objects.filter(user_id=self.request.user.id, cesu_id=self.request.session.get('cesu')).exists() or self.request.user.is_superuser
 
     def total_award_amount(self):
         prj = self.get_object()
@@ -381,6 +404,12 @@ class ProjectDetail(LoginRequiredMixin, DetailView):
         ctx = super(ProjectDetail, self).get_context_data(**kwargs)
         ctx = {**ctx, **context}
         ctx['files'] = File.objects.filter(project=self.object)
+        if (CESURole.objects.filter(user_id=self.request.user.id, cesu_id=self.request.session.get('cesu')).exists()):
+            ctx['role'] = CESURole.objects.get(user_id=self.request.user.id, cesu_id=self.request.session.get('cesu')).role
+        elif (self.request.user.is_superuser):
+            ctx['role'] = "EDITS ALLOWED" 
+        else:
+            ctx['role'] = "VIEWER" 
         ctx['mods'] = Modification.objects.filter(project=self.object)
         # ctx['history_data'] =
         return ctx
@@ -547,7 +576,14 @@ class ProjectCreate(CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class ProjectEdit(UpdateView):
+class ProjectEdit(UserPassesTestMixin,UpdateView):
+
+    def test_func(self):
+        if (CESURole.objects.filter(user_id=self.request.user.id, cesu_id=self.request.session.get('cesu')).exists()):
+            return CESURole.objects.filter(user_id=self.request.user.id, cesu_id=self.request.session.get('cesu')).role != 'VIEWER'
+        else:
+            return self.request.user.is_superuser
+
     model = Project
     template_name = 'apps/projects/project_edit_form.html'
     form_class = ProjectForm
@@ -573,7 +609,7 @@ class ProjectEdit(UpdateView):
         form = ProjectForm(instance=proj, initial={
             "federal_agency": proj.federal_agency,
             "partner": proj.partner,
-            "location": proj.location,
+            "location": [i.id for i in proj.location.all()],
 
             "project_manager": proj.project_manager,
             "tech_rep": proj.tech_rep,
@@ -959,7 +995,13 @@ class ProjectModifications(CreateView):
             return self.render_to_response(ctx)
 
 
-class ProjectModEdit(UpdateView):
+class ProjectModEdit(UserPassesTestMixin,UpdateView):
+    def test_func(self):
+        if (CESURole.objects.filter(user_id=self.request.user.id, cesu_id=self.request.session.get('cesu')).exist()):
+            return CESURole.objects.filter(user_id=self.request.user.id, cesu_id=self.request.session.get('cesu')).role != 'VIEWER'
+        else:
+            return self.request.user.is_superuser
+
     model = Modification
     template_name = 'apps/projects/project_modifications.html'
     form_class = ModificationForm

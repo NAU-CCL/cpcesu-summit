@@ -8,12 +8,15 @@
 
 <script>
   const cesuID = {{cesu}};
+  const user_role = `{{role}}`;
 </script>
 
 <div>
     <h1 style="text-align: center" class="all-header">
         {{cesu_name}} Participants
-        <a href="{% get_url_from_app_link 'summit.libs.auth' 'create_contact' %}" class="btn btn-primary waves-effect right-button">Add Person</a>
+        {% if role != 'VIEWER' %}
+            <a href="{% get_url_from_app_link 'summit.libs.auth' 'create_contact' %}" class="btn btn-primary waves-effect right-button">Add Person</a>
+        {% endif %}
     </h1>
    
 </div>
