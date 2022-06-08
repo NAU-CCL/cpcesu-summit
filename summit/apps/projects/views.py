@@ -145,7 +145,7 @@ class ProjectUploadView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
     def test_func(self):
         if (CESURole.objects.filter(user_id=self.request.user.id, cesu_id=self.request.session.get('cesu')).exists()):
-            return CESURole.objects.filter(user_id=self.request.user.id, cesu_id=self.request.session.get('cesu')).role != 'VIEWER'
+            return CESURole.objects.get(user_id=self.request.user.id, cesu_id=self.request.session.get('cesu')).role != 'VIEWER'
         else:
             return self.request.user.is_superuser
             
@@ -580,7 +580,7 @@ class ProjectEdit(UserPassesTestMixin,UpdateView):
 
     def test_func(self):
         if (CESURole.objects.filter(user_id=self.request.user.id, cesu_id=self.request.session.get('cesu')).exists()):
-            return CESURole.objects.filter(user_id=self.request.user.id, cesu_id=self.request.session.get('cesu')).role != 'VIEWER'
+            return CESURole.objects.get(user_id=self.request.user.id, cesu_id=self.request.session.get('cesu')).role != 'VIEWER'
         else:
             return self.request.user.is_superuser
 
@@ -998,7 +998,7 @@ class ProjectModifications(CreateView):
 class ProjectModEdit(UserPassesTestMixin,UpdateView):
     def test_func(self):
         if (CESURole.objects.filter(user_id=self.request.user.id, cesu_id=self.request.session.get('cesu')).exist()):
-            return CESURole.objects.filter(user_id=self.request.user.id, cesu_id=self.request.session.get('cesu')).role != 'VIEWER'
+            return CESURole.objects.get(user_id=self.request.user.id, cesu_id=self.request.session.get('cesu')).role != 'VIEWER'
         else:
             return self.request.user.is_superuser
 
