@@ -3,7 +3,10 @@
 {% load static %}
 {% block primary %}
 
-
+{% csrf_token %}
+<script>
+    var csrf_token = '{{ csrf_token }}';
+</script>
 
 <div class="card">
     <div class="row1">
@@ -371,13 +374,15 @@
                     <td>{{ mod.mod_approved }}</td>
                     <td>{{ mod.mod_executed }}</td>
                     <td>
-                        <!--DOES NOT WORK!-->
-                        {% if mod.files %}
-                            there are files!
-                        {% endif %}
-                        {% for file in mod.files %}
-                            <td><a href=" {{ file.file.url }} " target="_blank"> {{ file.file }}</a><br></td>
-                        {% endfor %}
+                        <li>
+                            {% for file in modfiles %}
+                            
+                                {% if file.modification == mod %}
+                                    <a href=" {{ file.file.url }} " target="_blank"> {{ file.file }}</a>
+                                {% endif %}
+                                
+                            {% endfor %}
+                        </li>
                     </td>
                     <td>{{ mod.mod_status }}</td>
                 </tr>
@@ -398,9 +403,7 @@
             <button type="button" class="btn btn-info">Add Modifications</button>
         </a>
         {% else %}
-        <a href="{% get_url_from_app_link 'summit.apps.projects' 'project_edit' id=object.id %}">
-            <button type="button" class="btn btn-danger">Unarchive Project</button>
-        </a>
+        <button onclick="unarchive({{object.id}})" type="button" class="btn btn-danger">Unarchive Project</button>
         {% endif %}
         
     {% endif %}

@@ -1,4 +1,4 @@
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="row">
         <div class="card col-sm-12">
@@ -11,7 +11,7 @@
                         <td><b>{{ profile_form.last_name.label }}:</b></td><td>{{ profile_form.last_name }}</td>
                     </tr>
                     <tr>
-                        <td><b>{{ profile_form.avatar.label }}:</b></td><td>{{ profile_form.avatar }}</td>
+                        <td><b>Profile Picture (should be 128x128):</b></td><td>{{ profile_form.avatar }}</td>
                     </tr>
                     <tr>
                         <td><b>{{ profile_form.title.label }}:</b></td><td>{{ profile_form.title }}</td>
@@ -37,15 +37,11 @@
                     <tr>
                         <td><b>{{profile_form.assigned_group.label }}:</b></td><td>{{ profile_form.assigned_group }}</td>
                     </tr>
-                    <tr>
-                        <td><b>{{profile_form.cesu.label }}:</b></td><td>{{ profile_form.cesu }}</td>
-                    </tr>
                 </tbody>
             </table>
             <div>
                 <input class="btn btn-light" type="submit" value="Submit" />
-                <button class="btn btn-light" onclick="history.back()">Cancel</button>
-                <button style="float:right" class="btn btn-outline-danger" onclick="history.back()">Delete Contact</button>
+                <button id="delete_button" style="float:right" class="btn btn-outline-danger" onclick=delete_contact(-1)>Delete Contact</button>
             </div>
 
             

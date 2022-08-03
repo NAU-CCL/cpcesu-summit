@@ -1,9 +1,12 @@
-<form method="post" class="card col-lg-6" style="display: inline-block;">
+<form method="post" class="card col-lg-12" enctype="multipart/form-data">
   {% csrf_token %}
+  <script>
+    var csrf_token = '{{ csrf_token }}';
+  </script>
   <div class="row">
       
       <div >
-        <h2>Add New User</h2>
+        <h2>Edit User</h2>
           <table>
               <tbody>
                   <tr>
@@ -26,9 +29,18 @@
 
               </tbody>
           </table>
-          <div>
+          <div style="overflow:auto">
               <input class="btn btn-light" type="submit" value="Submit" />
-              <button class="btn btn-light" onclick="history.back()">Cancel</button>  
+
+            <div style="float: right;">
+                <button class="btn btn-sm btn-outline-danger" onclick=delete_user(-1) style="float:right">
+                    Delete Account
+                  </button>
+                  <button id="suspend-button" onclick=suspend_account(-1) class="btn btn-sm btn-outline-primary" style="float:right">
+                    Suspend Account
+                  </button>
+            </div>
+              
           </div>
 
           

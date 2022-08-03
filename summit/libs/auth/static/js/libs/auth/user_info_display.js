@@ -152,7 +152,7 @@ function loadDetails(id){
               <button class="btn btn-sm btn-outline-primary" style="float:left">
                 Change Password
               </button>
-              <button class="btn btn-sm btn-outline-danger" style="float:right">
+              <button class="btn btn-sm btn-outline-danger" onclick=delete_user(${userID}) style="float:right">
                 Delete Account
               </button>
               
@@ -199,7 +199,7 @@ var suspend_account = function(userID){
         <button class="btn btn-sm btn-outline-primary" style="float:left">
           Change Password
         </button>
-        <button class="btn btn-sm btn-outline-danger" style="float:right">
+        <button class="btn btn-sm btn-outline-danger" onclick=delete_user(${userID}) style="float:right">
           Delete Account
         </button>
         <button id="activate-button" onclick=activate(${userID}) class="btn btn-sm btn-outline-primary" style="float:right">
@@ -226,7 +226,7 @@ var suspend_account = function(userID){
         <button class="btn btn-sm btn-outline-primary" style="float:left">
           Change Password
         </button>
-        <button class="btn btn-sm btn-outline-danger" style="float:right">
+        <button class="btn btn-sm btn-outline-danger" onclick=delete_user(${userID}) style="float:right">
           Delete Account
         </button>
         <button id="suspend-button" onclick=suspend_account(${userID}) class="btn btn-sm btn-outline-primary" style="float:right">
@@ -234,6 +234,23 @@ var suspend_account = function(userID){
         </button>
         
       `)
+  }
+
+  var delete_user = function(userID){
+    console.log(userID);
+    if (confirm('Are you sure you want to delete this user? This action cannot be undone!')) {
+        $.ajax({
+            type: "POST",
+            url: '/auth/delete_user/',
+            data: {"userID": userID},
+            headers: {"X-CSRFToken":csrf_token},
+            success: function(resp){
+                console.log(resp)
+                window.location.reload(true)
+            }
+        })
+    }
+    
   }
 
 

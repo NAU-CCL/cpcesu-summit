@@ -1,3 +1,9 @@
+$('#FY').on('change keyup', function() {
+    // Remove invalid characters
+    var sanitized = $(this).val().replace(/[^0-9]/g, '');
+    // Update value
+    $(this).val(sanitized);
+});
 
 $('#advancedSearchButton').on('click', function(){
 $(document.getElementById('advancedSearch')).removeClass("invisible");

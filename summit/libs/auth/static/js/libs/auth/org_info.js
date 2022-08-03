@@ -121,6 +121,7 @@ $("tr").each(function(index){
 
     let info = $('#info')
 
+
     no_select = $('#nothing-selected');
 
     document.getElementById("projects_header").innerHTML = "Projects";
@@ -141,16 +142,13 @@ $("tr").each(function(index){
       org_selected = id;
     
 
-    let table = $('#org_info')
-    table.empty();
-    let group = document.getElementById("a" + id).innerText
-    if (user_role != 'VIEWER'){
-      table.append(`<a href="/accounts/edit_organization/${id}/" style="float:right; 
-        font-size:24px"> <ion-icon name="create-outline"></ion-icon></a>`)
-    }
-   
-    table.append(`<h4 class="center" style="align: block;">${group}</a></h4>`)
-    table.append(`<h4 class="center"></h4>`)
+    let table = $('#org_info');
+    let pic_container = $('#pic_container');
+    let city = $('#city');
+    let state = $('#state');
+    let description = $('#description');
+
+    
     
     let groupID = id;
     //let groupName = document.getElementById("a" + groupID).innerText;
@@ -164,6 +162,47 @@ $("tr").each(function(index){
         table_2 = $('#table_2').DataTable()
         people_table.clear();
         table_2.clear();
+
+        table.empty();
+        let group = resp['org'][0].name;
+        if (user_role != 'VIEWER'){
+          table.append(`<a href="/accounts/edit_organization/${id}/" style="float:right; 
+            font-size:24px"> <ion-icon name="create-outline"></ion-icon></a>`)
+        }
+        
+        if (resp['org'][0].logo)
+        {
+          pic_container.append(`
+                    <img src="/data/${resp['org'][0].logo}" style="float:right; max-width: 80%; margin-top: 5%; margin-bottom: 5%">`)
+        }
+        
+        table.append(`<h4 class="center" style="display: block;">${resp['org'][0].name}</a></h4>`)
+        table.append(`<h4 class="center"></h4>`)
+        if (resp['org'][0].description)
+        {
+          description.append(`<div><span class="text-muted">
+          Description:
+            </span> ${resp['org'][0].description}</div>`)
+        }
+        if (resp['org'][0].contact)
+        {
+          description.append(`<div><span class="text-muted">
+          Contact Information:
+            </span> ${resp['org'][0].contact}</div>`)
+        }
+        if (resp['org'][0].city)
+        {
+          description.append(`<div><span class="text-muted">
+          City:
+            </span> ${resp['org'][0].city}</div>`)
+        }
+        if (resp['org'][0].state)
+        {
+          description.append(`<div><span class="text-muted">
+          State:
+            </span> ${resp['org'][0].state}</div>`)
+        }
+        
 
         $.each(resp['people'], function(index,person){
             var new_row = people_table.row.add([

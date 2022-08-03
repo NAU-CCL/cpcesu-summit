@@ -360,9 +360,9 @@ class ProjectDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
     def total_award_amount(self):
         prj = self.get_object()
-        modifications = Modification.objects.filter(project=prj)
+        mods = Modification.objects.filter(project=prj)
         total_mod_amount = 0
-        for mod in modifications:
+        for mod in mods:
             total_mod_amount += mod.mod_amount
         return (prj.budget or 0) + total_mod_amount
 
@@ -394,7 +394,8 @@ class ProjectDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
             'jsFiles': [
                 'libs/mdb/DataTables/datatables.min.js',
                 'js/datatables/dashboard.js',
-                'js/apps/projects/editProject.js'
+                'js/apps/projects/editProject.js',
+                'js/apps/projects/unarchive.js',
 
             ],
             'total_award_amount': self.total_award_amount(),
@@ -410,7 +411,12 @@ class ProjectDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
             ctx['role'] = "EDITS ALLOWED" 
         else:
             ctx['role'] = "VIEWER" 
-        ctx['mods'] = Modification.objects.filter(project=self.object)
+        mods = Modification.objects.filter(project=self.object)
+        ctx['mods'] = mods
+        modfiles = ModFile.objects.filter(modification=-1)
+        for mod in mods:
+            modfiles = modfiles.union(ModFile.objects.filter(modification=mod))
+        ctx['modfiles'] = modfiles
         # ctx['history_data'] =
         return ctx
 
@@ -685,19 +691,19 @@ def check_fields(project_form):
     project_form.instance.partner = partner
 
     # Location
-    location = project_form.cleaned_data['location']
-    if location and len(location) > 0:
-        name_parts = location.split(" ")
-        if len(name_parts) >= 2:
-            name = ' '.join(name_parts)
-            try:
-                location = Location.objects.get(name=name)
-            except ObjectDoesNotExist:
-                location = Location(name=name, abbrv=(None))
-                location.save()
-    else:
-        location = None
-    project_form.instance.location = location
+    #location = project_form.cleaned_data['location']
+    #if location and len(location) > 0:
+    #    name_parts = location.split(" ")
+    #    if len(name_parts) >= 2:
+    #        name = ' '.join(name_parts)
+    #        try:
+    #            location = Location.objects.get(name=name)
+    #        except ObjectDoesNotExist:
+    #            location = Location(name=name, abbrv=(None))
+    #            location.save()
+    #else:
+    #    location = None
+    #project_form.instance.location = location
 
     # CES Unit
     #cesu = CESUnit.objects.get(pk=1)
@@ -1499,3 +1505,22 @@ def delete_file(request):
         return JsonResponse({"file": list(return_file)})
     return_user = File.objects.filter(id = file_id).values()
     return JsonResponse({"user": list(return_user)})
+
+def archive_project(request):
+    if request.is_ajax():
+        proj_id = request.POST.get('id')
+        proj = Project.objects.get(id = proj_id)
+        proj.status = "ARCHIVED"
+        proj.save()
+        return JsonResponse({"project": (proj_id)})
+    return JsonResponse({"project": (proj_id)})
+
+def unarchive_project(request):
+    if request.is_ajax():
+        proj_id = request.POST.get('id')
+        proj = Project.objects.get(id = proj_id)
+        proj.status = "CLOSED"
+        proj.save()
+        print(proj.status)
+        return JsonResponse({"project": (proj_id)})
+    return JsonResponse({"project": (proj_id)})

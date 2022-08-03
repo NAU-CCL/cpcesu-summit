@@ -18,7 +18,8 @@
     </a>
     {% else %}
     <a class="navbar-brand" href="/">
-      <img height="50" src="{% static 'imgs/iconsLogos/CPCESULogo_Short_Horizontal.png' %}"/>
+      Example CESU
+      <!--<img height="50" src="{% static 'imgs/iconsLogos/CPCESULogo_Short_Horizontal.png' %}"/>-->
     </a>
     {% endif %}
 
@@ -126,7 +127,6 @@
             <div class="divider dropdown-divider"></div>
             <a class="dropdown-item waves-effect waves-light" href="{% get_url_from_app_link 'summit.libs.auth' 'view_my_contact' %}">My account</a>
             {% if request.user.is_superuser %}
-            <a class="dropdown-item waves-effect waves-light" href="{% get_url_from_app_link 'summit.libs.auth' 'cesu_selector' %}">Select CESU</a>
             <a class="dropdown-item waves-effect waves-light" href="{% get_url_from_app_link 'summit.libs.auth' 'all_users' %}">Manage Users</a>
       
             {% endif %}

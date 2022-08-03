@@ -97,6 +97,8 @@ class AppLinks:
 
     file_upload = DjangoURL('file_upload', r'^upload/', views.file_upload, app_name)
     delete_file = DjangoURL('delete_file', r'^delete_file/', views.delete_file, app_name)
+    unarchive_project = DjangoURL('unarchive_project', r'^unarchive_project/', views.unarchive_project, app_name)
+    archive_project = DjangoURL('archive_project', r'^archive_project/', views.archive_project, app_name)
 
     # Location Related Links/URLs
     # States, Parks, etc. in one model/object

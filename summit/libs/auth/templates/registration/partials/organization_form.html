@@ -1,4 +1,4 @@
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="row">
         <div class="card col-sm-12">
@@ -16,6 +16,12 @@
                     
                     <tr>
                         <td><b>Contact Info:</b></td><td>{{ group_form.contact}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>City:</b></td><td>{{ group_form.city}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>State:</b></td><td>{{ group_form.state}}</td>
                     </tr>
                     <tr>
                         <td><b>Org. Type:</b></td><td>{{ group_form.type}}</td>

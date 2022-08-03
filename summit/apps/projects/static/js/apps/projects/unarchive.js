@@ -1,9 +1,9 @@
-var archive = function(proj_id){
+var unarchive = function(proj_id){
   console.log(proj_id);
-  if (confirm('Are you sure you want to archive this project? You will not be able to find it in search results!')) {
+  if (confirm("Do you really want to unarchive this project?")) {
       $.ajax({
           type: "POST",
-          url: '/projects/archive_project/',
+          url: '/projects/unarchive_project/',
           data: {"id": proj_id},
           headers: {"X-CSRFToken":csrf_token},
           success: function(resp){

@@ -204,6 +204,8 @@ class Organization(AuditModel):
     name = models.CharField(max_length=150, unique=True)
     description = models.TextField(max_length=300, blank=True)
     logo = models.ImageField(blank=True)
+    city = models.CharField(max_length=150, blank=True)
+    state = models.CharField(max_length=150, blank=True)
     type = models.CharField(max_length=50, choices=ORG_TYPE,
                             blank=True, verbose_name="Organization Type")
     contact = models.TextField(max_length=300, blank=True)

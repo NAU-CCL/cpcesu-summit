@@ -30,6 +30,8 @@ urlpatterns = [
     url_wrapper(vars.AppLinks.project_search),
 
     url_wrapper(vars.AppLinks.delete_file),
+    url_wrapper(vars.AppLinks.unarchive_project),
+    url_wrapper(vars.AppLinks.archive_project),
 
     url_wrapper(vars.AppLinks.file_upload),
 

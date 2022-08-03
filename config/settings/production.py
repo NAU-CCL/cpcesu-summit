@@ -68,11 +68,10 @@ DEBUG = False
 # SECRET_KEY = env('SECRET_KEY')
 ALLOWED_HOSTS = ['*']
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = 25
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
-EMAIL_USE_TLS = False
+EMAIL_BACKEND = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'summit.cesu@gmail.com'
+EMAIL_HOST_PASSWORD = '2fastfloCESU!'
+EMAIL_USE_TLS = True
 
 

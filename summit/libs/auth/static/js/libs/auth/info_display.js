@@ -113,12 +113,21 @@ function loadDetails(id){
                     ${groupName}</a></div>
                     </div>`)
                 }
-                pic_container.append(`
+                if (user.avatar)
+                {
+                    pic_container.append(`
+                    <img src="/data/${user.avatar}" style="float:right; max-width: 80%; margin-top: 5%; margin-bottom: 5%">`)
+                }
+                else
+                {
+                    pic_container.append(`
                 <img src="/static/imgs/TEST_AVATAR.png" style="float:right; max-width: 80%; margin-top: 5%; margin-bottom: 5%">`)
+                }
+                
                 
                 
                 email.append(`
-                ${user.email_address}
+                <a href="mailto:${user.email_address}">${user.email_address}</a>
                 <br/>
                 `)
             

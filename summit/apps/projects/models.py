@@ -31,7 +31,19 @@ def get_directory_path(instance, filename):
 
 
 def get_mod_directory_path(instance, filename):
-    return 'projects/{0}/{1}'.format(instance.id, filename)
+    print(instance.modification.project)
+    
+    
+    if (File.objects.last().summit_date >= datetime.date.today()):
+        last_file_index = File.objects.last().summit_index
+        instance.summit_index = last_file_index + 1
+        print(last_file_index)
+    if instance.id is None:
+        current_date = datetime.datetime.now().strftime("%Y%m%d")
+        return '{0}-{1}-{2}-{3}'.format(current_date, instance.summit_index, instance.modification.project.id, filename)
+    else:
+        current_date = datetime.datetime.now().strftime("%d/%m/%Y")
+        return 'projects-{0}-{1}'.format(instance.modification.project.id, filename)
 
 
 class Location(models.Model):
@@ -233,8 +245,10 @@ class SummitID(models.Model):
 class ModFile(models.Model):
     modification = models.ForeignKey(Modification, on_delete=models.SET_NULL, null=True)
     file = models.FileField(blank=True, upload_to=get_mod_directory_path, verbose_name="Select File(s)")
+    summit_index = models.IntegerField(default=1)
+    summit_date = models.DateField(default=now, blank=True)
 
     def __str__(self):
-        return str.rsplit(str(self.file), sep='/', maxsplit=1)
+        return str(self.file)
 
 

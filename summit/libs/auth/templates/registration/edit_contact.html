@@ -6,6 +6,11 @@
 <h1 style="text-align: center" class="all-header">Edit Person Information</h1>
 
     {% include 'registration/partials/contact_form.html'%}
+    {% if has_user %}
+        {% include 'registration/partials/user_form.html'%}
+    {% endif %}
+    <button class="btn btn-light" onclick="history.back()">Cancel</button>  
+    
 {% endblock %}
 
 {% block sidebar %}

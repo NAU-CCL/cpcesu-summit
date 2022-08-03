@@ -18,7 +18,7 @@ class GroupForm(forms.ModelForm):
 
     class Meta:
         model = Organization
-        fields = ['name', 'description', 'logo', 'type', 'contact']
+        fields = ['name', 'description', 'logo', 'type', 'contact', 'city', 'state']
 
 class UserForm(forms.ModelForm):
     class Meta:

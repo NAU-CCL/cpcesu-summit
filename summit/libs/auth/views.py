@@ -54,7 +54,7 @@ def exists_and_is_not_viewer(request):
 
 def exists_and_is_admin(request):
     print(CESURole.objects.filter(user_id=request.user.id, cesu_id=request.session.get('cesu')).exists())
-    return CESURole.objects.get(user_id=request.user.id, cesu_id=request.session.get('cesu')).role == 'ADMIN' and CESURole.objects.filter(user_id=request.user.id, cesu_id=request.session.get('cesu')).exists()
+    return (CESURole.objects.get(user_id=request.user.id, cesu_id=request.session.get('cesu')).role == 'ADMIN' and CESURole.objects.filter(user_id=request.user.id, cesu_id=request.session.get('cesu')).exists()) or request.user.is_superuser
 
 
 class CESUSwitcherView(LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin, ListView):
@@ -192,12 +192,19 @@ def view_contact(request, profile_id=-1):
 def edit_contact(request, profile_id=-1):
     template_name = 'registration/edit_contact.html'
 
+    
     try:
         profile_id = int(profile_id)
         if profile_id <= 0:
             user_profile = UserProfile.objects.get(user=request.user.id)
         else:
             user_profile = UserProfile.objects.get(id=profile_id)
+        if user_profile.user:
+            user = User.objects.get(id=user_profile.user.id)
+            has_user = True
+        else:
+            has_user = False
+            user_form = None
     except ObjectDoesNotExist:
         user_profile = None
 
@@ -206,17 +213,31 @@ def edit_contact(request, profile_id=-1):
             user_profile = UserProfile(user=request.user)
             user_profile.save()
         profile_form = ProfileForm(request.POST, request.FILES, instance=user_profile)
+        profile_form.cesu = request.session.get('cesu')
+        if user_profile.user:
+            user_form = UserForm(request.POST, request.FILES, instance=user)
+        else:
+            user_form = None
+        
+        print(request.FILES)
 
         if profile_form.is_valid():
             profile = profile_form.save()
-            if profile.user is not None and profile.user.id == request.user.id:
-                return HttpResponseRedirect(reverse('summit.libs.auth:all_contacts'))
-            else:
-                return HttpResponseRedirect(reverse('summit.libs.auth:all_contacts'))
+            if user_profile.user:
+                user_form.save()
+                user_role = CESURole.objects.get_or_create(user_id=user_form.id, cesu_id=request.session.get('cesu'))[0]
+                user_role.role = request.POST['role']
+                print(user_role)
+                user_role.save()
+            return HttpResponseRedirect(reverse('summit.libs.auth:all_contacts')+ "?id=" +str(profile_id))
     elif user_profile is None:
         profile_form = ProfileForm()
+        if user_profile.user:
+            user_form = UserForm(instance=user)
     else:
         profile_form = ProfileForm(instance=user_profile)
+        if user_profile.user:
+            user_form = UserForm(instance=user)
 
     context = {
         'name': 'libs.auth.edit_profile',
@@ -228,7 +249,9 @@ def edit_contact(request, profile_id=-1):
             'js/libs/auth/add_people_tab_bg.js'
         ],
         'profile': request.user.get_full_name(),
-        'profile_form': profile_form
+        'profile_form': profile_form,
+        'user_form': user_form,
+        'has_user': has_user
     }
 
     return render(request, template_name, context)
@@ -461,6 +484,7 @@ def create_contact(request, name="summit.libs.auth_Create Contact", group_id=0):
         profile_form = ProfileForm(request.POST, request.FILES)
 
         if profile_form.is_valid():
+            profile_form.cesu = request.session.get('cesu')
             
             profile_form.save()
             return HttpResponseRedirect(reverse('summit.libs.auth:all_contacts'))
@@ -555,12 +579,14 @@ def edit_organization(request, name="summit.libs.auth:edit_organization", group_
                 
 
             if group:
-                group.name=group_form_instance.name
-                group.description=group_form_instance.description
-                group.contact=group_form_instance.contact
-                if not is_cesu:
-                    group.type=group_form_instance.type
-                group.save()
+                print('hey')
+                #group.name=group_form_instance.name
+                #group.description=group_form_instance.description
+                #group.contact=group_form_instance.contact
+                #if not is_cesu:
+                #    group.type=group_form_instance.type
+                #group.save()
+                group = group_form.save()
             else:
                 Organization.objects.get(id=group.id).name=group.name
                 Organization.objects.get(id=group.id).name=group.description
@@ -713,16 +739,16 @@ def org_info(request):
         print(request.GET)
         groupID = request.GET.get('groupID')
         cesuID = request.GET.get('cesuID')
+        org = Organization.objects.filter(id = groupID).values()
         people = UserProfile.objects.filter(cesu = cesuID)
         people = people.filter(assigned_group_id = groupID).values()
         projects = Project.objects.filter(cesu_unit_id = cesuID)
         projects = projects.filter(partner_id = groupID).values() | projects.filter(federal_agency_id = groupID).values()
-        return JsonResponse({"people": list(people), "projects": list(projects)})
+        return JsonResponse({"people": list(people), "projects": list(projects), "org": list(org)})
     people = UserProfile.objects.all().values()
     projects = Project.objects.all().values()
     return JsonResponse({"people": list(people), "projects": list(projects)})
 
-@request_test(exists_and_is_admin)
 def deactivate_user(request):
     if request.is_ajax():
         userID = request.POST.get('userID')
@@ -739,7 +765,6 @@ def deactivate_user(request):
     return_user = User.objects.filter(id = userID).values()
     return JsonResponse({"user": list(return_user)})
 
-@request_test(exists_and_is_admin)
 def delete_user(request):
     if request.is_ajax():
         userID = request.POST.get('userID')

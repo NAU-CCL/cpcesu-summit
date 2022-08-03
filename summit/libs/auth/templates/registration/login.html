@@ -12,12 +12,16 @@
       {% else %}
     <div class="alert alert-info" role="alert" style="text-align: center;">
         Please login to see this page.
+
+        If you are trying to login to the example CESU, use the username and password 'guest'.
     </div>
       {% endif %}
     {% endif %}
 
     {% if form.errors %}
-      <p>Your username and password didn't match. Please try again.</p>
+      
+      <!--<p>Your username and password didn't match. Please try again.</p>-->
+      {{form.errors}}
     {% endif %}
 
     <form method="post" action="{% url 'login' %}">

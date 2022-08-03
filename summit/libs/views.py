@@ -30,9 +30,9 @@ def error403(request, *args, **argv):
         'header': {
             'background': 'imgs/coverImages/canyon-country-2400x600.jpg',
         },
-        'error_msg': 'Error 403 - Forbidden',
-        'error_desc': 'Please check if you are logged in. If you are, check the URL and see if you have access. If \
-            you feel like this is an error, please submit feedback below.'
+        'error_msg': "Oops! You don't have permission!",
+        'error_desc': 'Please check if you are logged in. If you are, check to see if you have access. If \
+            you feel like this is an error, please submit feedback below. [ERROR CODE: 403]'
     }
 
     return render(request, template_name, context=context, status=403)
