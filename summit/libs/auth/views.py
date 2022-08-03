@@ -222,7 +222,9 @@ def edit_contact(request, profile_id=-1):
         print(request.FILES)
 
         if profile_form.is_valid():
-            profile = profile_form.save()
+            profile = profile_form.save(commit=False)
+            profile.cesu.id = request.session.get('cesu')
+            profile.save()
             if user_profile.user:
                 user_form.save()
                 user_role = CESURole.objects.get_or_create(user_id=user_form.id, cesu_id=request.session.get('cesu'))[0]
@@ -485,8 +487,11 @@ def create_contact(request, name="summit.libs.auth_Create Contact", group_id=0):
 
         if profile_form.is_valid():
             profile_form.cesu = request.session.get('cesu')
+            print(profile_form)
             
-            profile_form.save()
+            profile = profile_form.save(commit=False)
+            profile.cesu.id = request.session.get('cesu')
+            profile.save()
             return HttpResponseRedirect(reverse('summit.libs.auth:all_contacts'))
     elif group_id > 0:
         profile_form = ProfileForm(initial={'assigned_group': group_id})
