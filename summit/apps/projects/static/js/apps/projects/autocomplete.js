@@ -183,8 +183,12 @@ $.getJSON("/api/contacts/", function(data){
     contacts['all'] = [];
     contacts['other'] = [];
 
+    console.log(data)
+
+    
+
     $.each( data, function(key, contact){
-        if (contact.cesu == cesuID){
+        if (contact.cesu_id == cesuID){
             if(contact.assigned_group_name){
                 var groupName = contact.assigned_group_name;
                 if(agencies.includes(groupName))
@@ -208,6 +212,8 @@ $.getJSON("/api/contacts/", function(data){
 
     partnerContacts = contacts['all'];
     autocomplete(document.getElementById("pp_i"), partnerContacts);
+
+    console.log(contacts);
     
 
     //autocomplete(document.getElementById("staff_member"), contacts['other']);

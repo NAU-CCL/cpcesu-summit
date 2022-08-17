@@ -33,17 +33,17 @@
         <input type="text" id="Title" value="">
         <label for="AwardNum">Award Number: </label>
         <input type="text" id="AwardNum" name="AwardNum" value="">
-        <span>
+        <!--<span>
             <button id="search-show-more-button" class="btn btn-outline-dark btn-sm m-0">
                 Show More &#9660
             </button>
             <button id="search-show-less-button" class="btn btn-outline-dark btn-sm m-0 invisible">
                 Show Less &#9650
             </button>
-        </span>
+        </span>-->
         
 
-        <div id="search-show-more" class="invisible">
+        <div id="search-show-more" class="">
             <label for="Place">Place: </label>
             <span class="autocomplete">
                 <input id="location" type="text" name="place" placeholder="Place" value="{{ form.location.value|default:'' }}" autocomplete="off" value="{{location.name}}">
@@ -71,14 +71,15 @@
                 <input id="pp_i" type="text" name="pp_i" placeholder="Principal Investigator" value="{{ form.pp_i.value|default:'' }}" autocomplete="off" value="{{pp_i.name}}">
             </span>
             
-            <label for="PM">PL: </label>
-            <span class="autocomplete">
-                <input id="project_manager" type="text" name="project_manager" placeholder="Project Manager" value="{{ form.project_manager.value|default:'' }}" autocomplete="off" value="{{project_manager.name}}">
-            </span>
 
             <label for="tech_lead">Tech Rep: </label>
             <span class="autocomplete">
                 <input id="tech_lead" type="text" name="tech_lead" placeholder="" value="{{ form.tech_lead.value|default:'' }}" autocomplete="off" value="{{tech_lead.name}}">
+            </span>
+
+            <label for="PM">PL: </label>
+            <span class="autocomplete">
+                <input id="project_manager" type="text" name="project_manager" placeholder="Project Lead" value="{{ form.project_manager.value|default:'' }}" autocomplete="off" value="{{project_manager.name}}">
             </span>
         </div>
         <div>

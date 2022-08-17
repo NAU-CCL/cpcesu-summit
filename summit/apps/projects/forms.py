@@ -88,11 +88,11 @@ class ModificationForm(forms.ModelForm):
         fields = ['mod_type', 'mod_num', 'mod_desc', 'mod_amount', 'mod_status',
                   'mod_approved', 'mod_executed', 'mod_notes', 'mod_extension']
         widgets = {
-            'mod_approved': forms.SelectDateWidget(years=list(range(1998, 2100)),
+            'mod_approved': forms.SelectDateWidget(years=list(range(2020, 2051)),
                                                    empty_label=("Year", "Month", "Day"), ),
-            'mod_executed': forms.SelectDateWidget(years=list(range(1998, 2100)),
+            'mod_executed': forms.SelectDateWidget(years=list(range(2020, 2051)),
                                                    empty_label=("Year", "Month", "Day"), ),
-            'mod_extension': forms.SelectDateWidget(years=list(range(1998, 2100)),
+            'mod_extension': forms.SelectDateWidget(years=list(range(2020, 2051)),
                                                     empty_label=("Year", "Month", "Day"), ),
         }
 

@@ -82,6 +82,13 @@ class ProjectChoices:
     FUNDED_ADMIN = 'FUNDED_ADMIN'
     NO_COST_EXT_ADMIN = 'NO_COST_EXT_ADMIN'
 
+    MONEY_ADDED = 'MONEY_ADDED'
+    PERSONNEL = 'PERSONNEL'
+    MULTIPLE = 'MULTIPLE'
+    POTENTIAL = 'POTENTIAL'
+    PENDING = 'PENDING'
+    AWARDED = 'AWARDED'
+
     IMRO = 'IMRO'
     WASO = 'WASO'
     AKRO = 'AKRO'
@@ -134,8 +141,25 @@ class ProjectChoices:
         (APPROVED, 'Approved'),
         (EXECUTED, 'Executed'),
         (CLOSED, 'Closed'),
-        (LEGACY, 'Legacy'),
-        (ARCHIVED, 'Archived'),
+        #(LEGACY, 'Legacy'),
+        #(ARCHIVED, 'Archived'),
+    )
+
+    MOD_TYPE = (
+        (NO_COST, 'No Cost Extension'),
+        (MONEY_ADDED, 'Money-Added'),
+        (PERSONNEL, 'Personnel'),
+        (MULTIPLE, 'Multiple'),
+        #(LEGACY, 'Legacy'),
+        #(ARCHIVED, 'Archived'),
+    )
+
+    MOD_STATUS = (
+        (POTENTIAL, 'Potential'),
+        (PENDING, 'Pending'),
+        (APPROVED, 'Approvived'),
+        (AWARDED, 'Awarded'),
+        (CLOSED, 'Closed')
     )
     DISCIPLINE = (
         (NONE, 'None'),
@@ -148,8 +172,8 @@ class ProjectChoices:
         (NONE, 'None'),
         (EDUCATION, 'Education'),
         (RESEARCH, 'Research'),
-        (TECHNICAL, 'Technical'),
-        (ASSISTANCE, 'Assistance')
+        (TECHNICAL, 'Technical Assistance')
+        #(ASSISTANCE, '')
     )
     SOURCE_OF_FUNDING = (
         (NONE, 'None'),

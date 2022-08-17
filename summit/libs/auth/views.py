@@ -214,10 +214,6 @@ def edit_contact(request, profile_id=-1):
             user_profile.save()
         profile_form = ProfileForm(request.POST, request.FILES, instance=user_profile)
         profile_form.cesu = request.session.get('cesu')
-        if user_profile.user:
-            user_form = UserForm(request.POST, request.FILES, instance=user)
-        else:
-            user_form = None
         
         print(request.FILES)
 
@@ -225,21 +221,11 @@ def edit_contact(request, profile_id=-1):
             profile = profile_form.save(commit=False)
             profile.cesu.id = request.session.get('cesu')
             profile.save()
-            if user_profile.user:
-                user_form.save()
-                user_role = CESURole.objects.get_or_create(user_id=user_form.id, cesu_id=request.session.get('cesu'))[0]
-                user_role.role = request.POST['role']
-                print(user_role)
-                user_role.save()
             return HttpResponseRedirect(reverse('summit.libs.auth:all_contacts')+ "?id=" +str(profile_id))
     elif user_profile is None:
         profile_form = ProfileForm()
-        if user_profile.user:
-            user_form = UserForm(instance=user)
     else:
         profile_form = ProfileForm(instance=user_profile)
-        if user_profile.user:
-            user_form = UserForm(instance=user)
 
     context = {
         'name': 'libs.auth.edit_profile',

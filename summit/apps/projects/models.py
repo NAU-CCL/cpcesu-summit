@@ -203,7 +203,7 @@ class Project(AuditModel):
 
 class Modification(models.Model):
     MOD_TYPE = choices.ProjectChoices.MOD_TYPE
-    STATUS = choices.ProjectChoices.STATUS
+    STATUS = choices.ProjectChoices.MOD_STATUS
 
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True)
     mod_desc = models.TextField(max_length=1000, blank=True, null=True, verbose_name="Description")

@@ -301,6 +301,9 @@ var upload_search = function(){
                 project_partner_id = project.partner_id
                 project_manager_id = project.project_manager_id
                 project_pp_i_id = project.pp_i_id
+
+                let local_num = "N/A"
+
                 let checkBox = ""
                 let status = ""
                 let agency_name = ""
@@ -393,9 +396,17 @@ var upload_search = function(){
                     tech_lead = " "
                 }
 
+                if (project.local_num){
+                    local_num = project.local_num
+                }
+                
+
                 let award_info = "<span style='font-weight: bold;'>Status:</span> " + status 
-                    + "</br><span style='font-weight: bold;'>Award Number:</span> " + AwardNum 
-                    + "</br><span style='font-weight: bold;'>Award Amount:</span> " +  totalAmount;
+                    + "</br><span style='font-weight: bold;'>Award Number:</span> " + AwardNum
+                    + "</br><span style='font-weight: bold;'>Local Number:</span> " + local_num 
+                    + "</br><span style='font-weight: bold;'>Award Amount:</span> " +  totalAmount
+                    + "</br><span style='font-weight: bold;'>Partner:</span> " + partner_name 
+                    + "</br><span style='font-weight: bold;'>Fed. Agency:</span> " + agency_name;
                 let start_end = "<span style='font-weight: bold;'>FY:</span> " + FY
                     + "</br> <span style='font-weight: bold;'>Start:</span> " + startDate 
                     + "</br> <span style='font-weight: bold;'>End:</span> " + endDate;

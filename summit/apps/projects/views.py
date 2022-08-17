@@ -1427,6 +1427,9 @@ def project_search(request):
             p_m= request.GET.get('pm')
             p_m.strip()
             p_m_list = p_m.split()
+            tech_lead= request.GET.get('tech_lead')
+            tech_lead.strip()
+            tech_lead_list = tech_lead.split()
             cesu = request.GET.get('cesu')
             partners = Organization.objects.all().filter(type="Partner")
             agencies = Organization.objects.all().filter(type="Federal Agency")
@@ -1446,16 +1449,7 @@ def project_search(request):
             if (Partner_name != ""):
                 print("partner")
                 projects = projects.filter(partner_id__in=partner_ids)
-            if (place != ""):
-                print("place")
-                
-                projects = projects.filter(location__in=park_id)
-            if (agency_name != ""):
-                print("agency")
-                projects = projects.filter(federal_agency_id__in=agency_ids)
-            if (status != "" and status !=""):
-                print("status")
-                projects = projects.filter(status__icontains=status)
+            
             if (title != ""):
                 print("title")
                 projects = projects.filter(project_title__icontains=title)
@@ -1479,6 +1473,26 @@ def project_search(request):
                         pm_id = UserProfile.objects.filter(first_name__icontains=p_m_list[0]) & UserProfile.objects.filter(last_name__icontains=p_m_list[1])
                     pm_id = pm_id.values_list("id", flat=True)
                 projects = projects.filter(project_manager__in=pm_id)
+            if (tech_lead != ""):
+                print("tech_lead")
+                if tech_lead_list:
+                    if len (tech_lead_list) == 1:
+                        tech_lead_id = UserProfile.objects.filter(first_name__icontains=tech_lead_list[0]) & UserProfile.objects.filter(last_name__icontains=tech_lead_list[0])
+                    else:
+                        tech_lead_id = UserProfile.objects.filter(first_name__icontains=tech_lead_list[0]) & UserProfile.objects.filter(last_name__icontains=tech_lead_list[1])
+                    tech_lead_id = tech_lead_id.values_list("id", flat=True)
+                projects = projects.filter(tech_rep__in=tech_lead_id)
+            
+            if (place != ""):
+                print("place")
+                
+                projects = projects.filter(location__in=park_id)
+            if (agency_name != ""):
+                print("agency")
+                projects = projects.filter(federal_agency_id__in=agency_ids)
+            if (status != "" and status !=""):
+                print("status")
+                projects = projects.filter(status__icontains=status)
 
             projects = projects.filter().exclude(status__icontains="archived")
             projects = projects.values()
