@@ -1,5 +1,9 @@
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
+    <script>
+        var csrf_token = '{{ csrf_token }}';
+        var contact_id = '{{ contact_id }}';
+      </script>
     <div class="row">
         <div class="card col-sm-12">
             <table>
@@ -41,7 +45,7 @@
             </table>
             <div>
                 <input class="btn btn-light" type="submit" value="Submit" />
-                <button id="delete_button" style="float:right" class="btn btn-outline-danger" onclick=delete_contact(-1)>Delete Contact</button>
+                <div id="delete_button" style="float:right" class="btn btn-outline-danger" onclick=delete_contact(contact_id)>Delete Contact</div>
             </div>
 
             

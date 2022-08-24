@@ -367,14 +367,12 @@ class ProjectDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         return (prj.budget or 0) + total_mod_amount
 
     def update_extension(self):
-        time_ext1 = ProjectChoices.MOD_TYPE[2][0]
-        time_ext2 = ProjectChoices.MOD_TYPE[4][0]
-        time_ext3 = ProjectChoices.MOD_TYPE[6][0]
+        time_ext1 = ProjectChoices.MOD_TYPE[1][0]
         prj = self.get_object()
         modifications = Modification.objects.filter(project=prj).order_by('-pk')
         for mod in modifications:
             mod_type = mod.mod_type
-            if mod_type == time_ext1 or mod_type == time_ext2 or mod_type == time_ext3:
+            if mod_type == time_ext1:
                 return mod.mod_extension
 
         modifications1 = Modification.objects.filter(mod_type__contains='Time Extension')

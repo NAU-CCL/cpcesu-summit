@@ -2,7 +2,7 @@
 
 from django.apps import AppConfig
 from config.links import app_link, url_wrapper
-from summit.libs.auth.views import add_users, deactivate_user, delete_user
+from summit.libs.auth.views import add_users, deactivate_user, delete_user, delete_contact
 
 from . import vars
 
@@ -34,5 +34,6 @@ urlpatterns = [
     url_wrapper(vars.AppLinks.user_info_display),
     url_wrapper(vars.AppLinks.deactivate_user),
     url_wrapper(vars.AppLinks.delete_user),
-    url_wrapper(vars.AppLinks.add_users)
+    url_wrapper(vars.AppLinks.delete_contact),
+    url_wrapper(vars.AppLinks.add_users),
 ]

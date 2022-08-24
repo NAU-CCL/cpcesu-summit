@@ -99,7 +99,7 @@ class Project(AuditModel):
                                         verbose_name="Field of Science",
                                         choices=FIELD_OF_SCIENCE, default=FIELD_OF_SCIENCE[0][0])
     final_report = models.BooleanField(verbose_name="Final Report", default=False, blank=True)
-    fiscal_year = models.PositiveSmallIntegerField(null=True, blank=True, default=2021,
+    fiscal_year = models.PositiveSmallIntegerField(null=True, blank=True, default=datetime.date.today().year,
                                                    verbose_name="Fiscal Year")
     location = models.ManyToManyField(Location,
                                  related_name='location', default=None,

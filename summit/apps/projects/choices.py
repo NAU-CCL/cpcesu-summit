@@ -202,15 +202,7 @@ class ProjectChoices:
         (PHYSICAL_SC, 'Physical Sciences'),
         (SOCIAL_SC, 'Social Sciences')
     )
-    MOD_TYPE = (
-        (NONE, 'None'),
-        (FUNDED, 'Funded'),
-        (NO_COST, ' No-cost Time Extension'),
-        (ADMIN, 'Administrative'),
-        (FUNDED_EXT, 'Funded & Time Extension'),
-        (FUNDED_ADMIN, 'Funded & Administrative'),
-        (NO_COST_EXT_ADMIN, 'No-cost Time Extension & Administrative')
-    )
+
     AWARD_OFFICE = (
         (IMRO, 'IMRO'),
         (WASO, 'WASO'),

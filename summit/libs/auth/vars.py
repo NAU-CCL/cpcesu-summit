@@ -95,7 +95,9 @@ class AppLinks:
     org_info = DjangoURL('org_info', r'^org_info/$', views.org_info, app_name)
     user_info_display = DjangoURL('user_info_display', r'^user_info_display/$', views.user_info_display, app_name)
     deactivate_user = DjangoURL('deactivate_user', r'^deactivate_user/$', views.deactivate_user, app_name)
+    delete_contact = DjangoURL('delete_contact', r'^delete_contact/$', views.delete_contact, app_name)
     delete_user = DjangoURL('delete_user', r'^delete_user/$', views.delete_user, app_name)
     add_users = DjangoURL('add_users', r'^add_users/$', views.add_users, app_name)
+
 
 

@@ -3,7 +3,7 @@ var deactivate = function(userID){
   if (confirm('Are you sure you want to deactivate this user?')) {
       $.ajax({
           type: "POST",
-          url: '/auth/deactivate_user/',
+          url: '/accounts/deactivate_user/',
           data: {"userID": userID, "reactivate": false},
           headers: {"X-CSRFToken":csrf_token},
           success: function(resp){
@@ -20,7 +20,7 @@ var reactivate = function(userID){
   if (confirm('Are you sure you want to reactivate this user?')) {
       $.ajax({
           type: "POST",
-          url: '/auth/deactivate_user/',
+          url: '/accounts/deactivate_user/',
           data: {"userID": userID, "reactivate": true},
           headers: {"X-CSRFToken":csrf_token},
           success: function(resp){

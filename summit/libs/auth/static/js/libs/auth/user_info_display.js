@@ -241,7 +241,7 @@ var suspend_account = function(userID){
     if (confirm('Are you sure you want to delete this user? This action cannot be undone!')) {
         $.ajax({
             type: "POST",
-            url: '/auth/delete_user/',
+            url: '/accounts/delete_user/',
             data: {"userID": userID},
             headers: {"X-CSRFToken":csrf_token},
             success: function(resp){

@@ -305,3 +305,10 @@ header {
 .modal-backdrop {
   z-index: -1;
 }
+
+.currencyinput {
+  border: 1px inset #ccc;
+}
+.currencyinput input {
+  border: 0;
+}

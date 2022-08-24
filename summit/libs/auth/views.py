@@ -234,12 +234,14 @@ def edit_contact(request, profile_id=-1):
         'bannerTemplate': 'none',
         'jsFiles': [
             # 'css/apps/core/testing.css'
-            'js/libs/auth/add_people_tab_bg.js'
+            'js/libs/auth/add_people_tab_bg.js',
+            'js/libs/auth/delete_contact.js'
         ],
         'profile': request.user.get_full_name(),
         'profile_form': profile_form,
         'user_form': user_form,
-        'has_user': has_user
+        'has_user': has_user,
+        'contact_id': profile_id
     }
 
     return render(request, template_name, context)
@@ -724,6 +726,20 @@ def user_info_display(request):
     userInfo = User.objects.get(id = 0).values()
     return JsonResponse({"user": list(userInfo)})
 
+def delete_contact(request):
+    if request.is_ajax():
+        print("deleting contact...")
+       
+        userID = request.POST.get('contactID')
+        user = UserProfile.objects.get(id = userID)
+        print(user.first_name)
+        user.delete()
+        print(user.first_name)
+        return_user = UserProfile.objects.filter(id = userID).values()
+        return JsonResponse({"contact": list(return_user)})
+    print("contact not deleted!")
+    return_user = UserProfile.objects.filter(id = userID).values()
+    return JsonResponse({"contact": list(return_user)})
 
 def org_info(request):
     if request.is_ajax():
@@ -765,6 +781,8 @@ def delete_user(request):
         return JsonResponse({"user": list(return_user)})
     return_user = User.objects.filter(id = userID).values()
     return JsonResponse({"user": list(return_user)})
+
+
 
 @request_test(exists_and_is_admin)
 def add_users(request):
