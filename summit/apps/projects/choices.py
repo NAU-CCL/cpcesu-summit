@@ -157,7 +157,7 @@ class ProjectChoices:
     MOD_STATUS = (
         (POTENTIAL, 'Potential'),
         (PENDING, 'Pending'),
-        (APPROVED, 'Approvived'),
+        (APPROVED, 'Approved'),
         (AWARDED, 'Awarded'),
         (CLOSED, 'Closed')
     )
@@ -169,7 +169,6 @@ class ProjectChoices:
         (INTERDISCIPLINARY, 'Interdisciplinary')
     )
     TYPE = (
-        (NONE, 'None'),
         (EDUCATION, 'Education'),
         (RESEARCH, 'Research'),
         (TECHNICAL, 'Technical Assistance')

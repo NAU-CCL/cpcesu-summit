@@ -203,8 +203,8 @@ $.getJSON("/api/contacts/", function(data){
 
     fedContacts = contacts['all'];
     autocomplete(document.getElementById("project_manager"), fedContacts);
-    if (document.getElementById("tech_rep")) {
-        autocomplete(document.getElementById("tech_rep"), fedContacts);
+    if (document.getElementById("tech_lead")) {
+        autocomplete(document.getElementById("tech_lead"), fedContacts);
     }
 
     partnerContacts = contacts['all'];
