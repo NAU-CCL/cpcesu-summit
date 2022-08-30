@@ -128,8 +128,7 @@ function autocomplete(inp, arr, inp2, inp2_list, inp3) {
 var agencies = [];
 $.getJSON("/api/federal_agencies/", function(data){
     $.each( data, function(key, agency){
-        agencies.push(agency.name);
-        agencies.push(agency.abbrv);
+        agencies.push(agency.name + " (" +agency.abbrv +")");
     });
     if (document.getElementById("federal_agency")) {
         autocomplete(document.getElementById("federal_agency"), agencies, 'project_manager', "feds", "tech_rep");
@@ -143,8 +142,7 @@ var partners = [];
 $.getJSON("/api/partners/", function(data){
     $.each( data, function(key, partner){
         
-            partners.push(partner.name);
-            partners.push(partner.abbrv);
+            partners.push(partner.name + " (" +partner.abbrv +")");
         
     });
 
@@ -155,8 +153,7 @@ $.getJSON("/api/partners/", function(data){
 $.getJSON("/api/locations/", function(data){
     var locations = [];
     $.each( data, function(key, location){
-        locations.push(location.name);
-        locations.push(location.abbrv);
+        locations.push(location.name + " (" +location.abbrv +")");
     });
 
     autocomplete(document.getElementById("location"), locations);

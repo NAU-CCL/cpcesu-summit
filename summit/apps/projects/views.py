@@ -412,8 +412,12 @@ class ProjectDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         mods = Modification.objects.filter(project=self.object)
         ctx['mods'] = mods
         modfiles = ModFile.objects.filter(modification=-1)
+        ctx['mod_extension'] = None
         for mod in mods:
             modfiles = modfiles.union(ModFile.objects.filter(modification=mod))
+            ctx['mod_extension'] = mod.mod_extension
+
+            
         ctx['modfiles'] = modfiles
         # ctx['history_data'] =
         return ctx
@@ -1408,15 +1412,22 @@ def project_search(request):
             FY = request.GET.get('FY')
             Partner_name = request.GET.get('partner_name')
             Partner_name.strip()
+            if "(" in Partner_name:
+                Partner_name = Partner_name.rsplit(' ', 1)[0]
+            print(Partner_name)
             AwardNum = request.GET.get('AwardNumber')
             AwardNum.strip()
             place = request.GET.get('place')
             place.strip()
+            if ("(" in place):
+                place = place.rsplit(' ', 1)[0]
             status = request.GET.get('status')
             status.strip()
             status.upper()
             agency_name = request.GET.get('agency')
             agency_name.strip()
+            if ("(" in agency_name):
+                agency_name = agency_name.rsplit(' ', 1)[0]
             title = request.GET.get('title')
             title.strip()
             p_i = request.GET.get('pi')

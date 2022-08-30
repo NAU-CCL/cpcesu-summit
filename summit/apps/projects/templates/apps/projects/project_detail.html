@@ -204,12 +204,12 @@
                             {{ object.task_agreement_start_date }}
                         </td>
                     </tr>
-                    <tr>
+                    <!--<tr>
                         <td><b>Executed:</b></td>
                         <td>
                             {{ object.exec_start_date }}
                         </td>
-                    </tr>
+                    </tr>-->
                     <tr>
                         <td><b>Start:</b></td>
                         <td>
@@ -218,6 +218,12 @@
                     </tr>
                     <tr>
                         <td><b>End:</b></td>
+                        {% if object.mod_extension != NONE %}
+                            {{object.mod_extension}}
+                        {% else %}
+                            {{ object.tent_end_date }}
+                        {% endif %}
+                        
                         <td>
                             {{ object.tent_end_date }}
                         </td>

@@ -199,12 +199,6 @@ def edit_contact(request, profile_id=-1):
             user_profile = UserProfile.objects.get(user=request.user.id)
         else:
             user_profile = UserProfile.objects.get(id=profile_id)
-        if user_profile.user:
-            user = User.objects.get(id=user_profile.user.id)
-            has_user = True
-        else:
-            has_user = False
-            user_form = None
     except ObjectDoesNotExist:
         user_profile = None
 
@@ -239,8 +233,6 @@ def edit_contact(request, profile_id=-1):
         ],
         'profile': request.user.get_full_name(),
         'profile_form': profile_form,
-        'user_form': user_form,
-        'has_user': has_user,
         'contact_id': profile_id
     }
 
