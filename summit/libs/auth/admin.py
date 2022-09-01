@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group, Permission
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from summit.libs.auth.models import User, UserProfile, Partner, CESU, FederalAgency
+from summit.libs.auth.models import Organization, User, UserProfile, Partner, CESU, FederalAgency, Organization
 
 
 class UserCreationForm(forms.ModelForm):
@@ -44,11 +44,11 @@ class UserCreationForm(forms.ModelForm):
 
         # Making user profile and assigning to CPCESU
         # CPCESU
-        group = CESUnit.objects.get(pk=1)
+        #group = Organization.objects.get(name='Colorado Plateau')
 
         # New profile with group
         profile = UserProfile(user=user, first_name=self.cleaned_data.get('first_name'),
-                              last_name=self.cleaned_data.get('last_name'), assigned_group=group)
+                              last_name=self.cleaned_data.get('last_name'))
         profile.save()
 
         return user
